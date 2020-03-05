@@ -1,0 +1,53 @@
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `RISCAuthors` (
+  `UID` int(11) NOT NULL AUTO_INCREMENT,
+  `ID` bigint(50) NOT NULL,
+  `Name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`UID`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `RISCPublications` (
+  `ID` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Responce` text COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `RISCRelationAuthorPublication` (
+  `Author_ID` bigint(20) NOT NULL,
+  `Publication_ID` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`Author_ID`,`Publication_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ScopusAuthors` (
+  `UID` int(11) NOT NULL AUTO_INCREMENT,
+  `ID` bigint(20) NOT NULL,
+  `Name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`UID`),
+  KEY `ID` (`ID`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ScopusPublications` (
+  `ID` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Responce` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ScopusRelationAuthorPublication` (
+  `Author_ID` bigint(20) NOT NULL,
+  `Publication_ID` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`Author_ID`,`Publication_ID`),
+  KEY `Publication_ID` (`Publication_ID`),
+  CONSTRAINT `ScopusRelationAuthorPublication_ibfk_1` FOREIGN KEY (`Author_ID`) REFERENCES `ScopusAuthors` (`ID`) ON UPDATE CASCADE,
+  CONSTRAINT `ScopusRelationAuthorPublication_ibfk_2` FOREIGN KEY (`Publication_ID`) REFERENCES `ScopusPublications` (`ID`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
