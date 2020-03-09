@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash
+from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, login_required
 from app import app, login
 from app.forms import LoginForm
@@ -12,14 +12,14 @@ def index():
     publications = Publication.query.order_by(Publication.year.desc()).paginate(
             page, app.config['PUBLICATIONS_PER_PAGE'], False)
     next_url = url_for('index', page=publications.next_num) \
-        if posts.has_next else None
+        if publications.has_next else None
     prev_url = url_for('index', page=publications.prev_num) \
-        if posts.has_prev else None
+        if publications.has_prev else None
     return render_template('index.html', title='RLib', publications = publications.items,
-                            next_url=ndexy_url, prev_url=prev_url)
+                            next_url=next_url, prev_url=prev_url)
 
-@app.route('/login', methods=['GET','POST'])
-def login():
+@app.route('/signin', methods=['GET','POST'])
+def signin():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = LoginForm()
@@ -34,7 +34,7 @@ def login():
 
 @login.unauthorized_handler
 def unauthorized():
-    return redirect(url_for('login'))
+    return redirect(url_for('signin'))
 
 @app.route('/add')
 @login_required
