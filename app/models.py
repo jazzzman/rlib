@@ -49,6 +49,7 @@ class Publication(db.Model):
     authors = db.relationship('Author', 
             secondary=author_publication,
             backref='publications')
+    #journal - backref
 
     def __repr__(self):
         return f'{self.authors_raw} {self.title}'
