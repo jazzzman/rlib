@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-<div class="row">
+<div id="search-div" class="row">
     <div class="col-sm-1">
         <form id="form-author">
             <div class="form-group">
@@ -128,7 +128,7 @@
     <div class="col-sm-3">
         <form id="form-journal">
             <div class="form-group">
-                <span class="float-left">Publication Type</span>
+                <span class="float-left">Journal</span>
                 <div class="float-right">
                     <button class="btn btn-sm btn-outline-light" type="button" id="drop-journal"><i class="fas fa-times"></i></button>
                 </div>
@@ -164,12 +164,35 @@
         {% endfor %}
     </tbody>
 </table>
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-end">
+    {% if prev_url %}
+    <li class="page-item">
+        <a class="page-link" href="{{ prev_url }}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    {% endif %}
+    {% for nav_btn in nav_btns %}
+    <li class="page-item"><a class="page-link" href="{{ nav_btn[0]}}">{{ nav_btn[1] }}</a></li>
+    {% endfor %}
+    {% if next_url %}
+    <li class="page-item">
+        <a class="page-link" href="{{ next_url }}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+    {% endif %} 
+  </ul>
+</nav>
 {% endblock %}
 
-
+{% block scripts %}
+  {{super()}}
   <script>
    $('#dt-basic-checkbox').dataTable({
-
+    searching: false,
+    paging: false,
    columnDefs: [{
    orderable: false,
    className: 'select-checkbox',
@@ -179,6 +202,9 @@
    style: 'os',
    selector: 'td:first-child'
    }
-       "searching": false
    });
+    $('#dt-basic-checkbox_length').insertBefore('#dt-basic-checkbox_paginate');
+    $('#dt-basic-checkbox_length').addClass('dataTables_paginate float-left')
+    $('#dt-basic-checkbox_paginate').addClass('float-right')
    </script>
+{% endblock %}
