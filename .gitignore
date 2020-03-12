@@ -36,5 +36,4 @@ nosetests.xml
 .pydevproject
 
 venv
-app.db
 rlib.log*

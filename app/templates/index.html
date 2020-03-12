@@ -1,41 +1,184 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-    <h1> Greetings, user, on RLib! </h1>
-    <hr>
-    <form>
+<div class="row">
+    <div class="col-sm-1">
+        <form id="form-author">
+            <div class="form-group">
+                <span class="float-left">Authors</span>
+                <div class="float-right">
+                    <button class="btn btn-sm btn-outline-light" type="button" id="drop-authors"><i class="fas fa-times"></i></button>
+                </div>
+                <select class="custom-select" id="input-authors" size="5" multiple>
+                    <option hidden disabled selected value> -- select an option -- </option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                    <option value="4">One</option>
+                    <option value="5">Two</option>
+                    <option value="6">Three</option>
+                    <option value="7">One</option>
+                    <option value="8">Two</option>
+                    <option value="9">Three</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-2">
+        <form id="form-pub-type">
+            <div class="form-group">
+                <span class="float-left">Publication Type</span>
+                <div class="float-right">
+                    <button class="btn btn-sm btn-outline-light" type="button" id="drop-pub-type"><i class="fas fa-times"></i></button>
+                </div>
+                <select class="custom-select" id="input-pub-type" size="5" multiple>
+                    <option hidden disabled selected value> -- select an option -- </option>
+                    <option value="1">Publication</option>
+                    <option value="2">Thesis</option>
+                    <option value="3">Patent</option>
+                    <option value="4">Conf</option>
+                    <option value="5">PhdThesis</option>
+                    <option value="6">DocThesis</option>
+                    <option value="7">Proceeding</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-1">
+        <form id="form-pub-year">
+            <div class="form-group">
+                <span class="float-left">Year(s):</span>
+                <div class="float-right">
+                    <button class="btn btn-sm btn-outline-light" type="button" id="drop-pub-year"><i class="fas fa-times"></i></button>
+                </div>
+                <select class="custom-select" id="input-pub-year" size="5" multiple>
+                    <option hidden disabled selected value> -- select an option -- </option>
+                    <option value="1">1990</option>
+                    <option value="2">1991</option>
+                    <option value="3">1992</option>
+                    <option value="4">1993</option>
+                    <option value="5">1994</option>
+                    <option value="6">1995</option>
+                    <option value="7">1996</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="col">
         <div class="form-group">
-          <label>Authors</label>
-          <select class="custom-select" id="inputauthors" size="10" multiple>
-            <option hidden disabled selected value> -- select an option -- </option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-            <option value="4">One</option>
-            <option value="5">Two</option>
-            <option value="6">Three</option>
-            <option value="7">One</option>
-            <option value="8">Two</option>
-            <option value="9">Three</option>
-          </select>
+            <form id="form-title">
+                <div class="form-group">
+                    <span class="float-left">Title:</span>
+                    <div class="float-right">
+                        <button class="btn btn-sm btn-outline-light" type="button" id="drop-title"><i class="fas fa-times"></i></button>
+                    </div>
+                    <input type="text" class="form-control" id="title" aria-describedby="basic-addon3">
+                </div>
+            </form>
         </div>
-    </form>
-    <hr>
-    <table id="dt-basic-checkbox" class="table table-striped table-bordered" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-                <th></th>
-                <th scope="th-sm">#</th>
-                <th scope="th-sm">Authors</th>
-                <th scope="th-sm">Title</th>
-                <th scope="th-sm">Journal</th>
-                <th scope="th-sm">Year</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for pub in publications %}
-                {% include '_publication.html' %}
-            {% endfor %}
-        </tbody>
-    </table>
+        <div class="form-group">
+            <form id="form-qurtile">
+                <div class="form-group">
+                    <span class="float-left mr-2">Quartile:</span>
+                    <div class="float-right">
+                        <button class="btn btn-sm btn-outline-light" type="button" id="drop-quartile"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="custom-control custom-switch custom-control-inline mr-1">
+                      <input type="checkbox" class="custom-control-input" id="sw-q1" value="q1">
+                      <label class="custom-control-label" for="sw-q1">Q1</label>
+                    </div>
+                    <div class="custom-control custom-switch custom-control-inline mr-1">
+                      <input type="checkbox" class="custom-control-input" id="sw-q2" value="q2">
+                      <label class="custom-control-label" for="sw-q2">Q2</label>
+                    </div>
+                    <div class="custom-control custom-switch custom-control-inline mr-1">
+                      <input type="checkbox" class="custom-control-input" id="sw-q3" value="q3">
+                      <label class="custom-control-label" for="sw-q3">Q3</label>
+                    </div>
+                    <div class="custom-control custom-switch custom-control-inline mr-1">
+                      <input type="checkbox" class="custom-control-input" id="sw-q4" value="q4">
+                      <label class="custom-control-label" for="sw-q4">Q4</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="form-group">
+            <form id="form-db">
+                <div class="form-group">
+                    <span class="float-left mr-2">DataBase:</span>
+                    <div class="float-right">
+                        <button class="btn btn-sm btn-outline-light" type="button" id="drop-db"><i class="fas fa-times"></i></button>
+                    </div>
+                    <div class="custom-control custom-switch custom-control-inline mr-1">
+                      <input type="checkbox" class="custom-control-input" id="sw-db-wos" value="wos">
+                      <label class="custom-control-label" for="sw-db-wos">WOS</label>
+                    </div>
+                    <div class="custom-control custom-switch custom-control-inline mr-1">
+                      <input type="checkbox" class="custom-control-input" id="sw-db-scopus" value="scopus">
+                      <label class="custom-control-label" for="sw-db-scopus">Scopus</label>
+                    </div>
+                    <div class="custom-control custom-switch custom-control-inline mr-1">
+                      <input type="checkbox" class="custom-control-input" id="sw-db-risc" value="risc">
+                      <label class="custom-control-label" for="sw-risc">Risc</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <form id="form-journal">
+            <div class="form-group">
+                <span class="float-left">Publication Type</span>
+                <div class="float-right">
+                    <button class="btn btn-sm btn-outline-light" type="button" id="drop-journal"><i class="fas fa-times"></i></button>
+                </div>
+                <select class="custom-select" id="input-journal" size="5" multiple>
+                    <option hidden disabled selected value> -- select an option -- </option>
+                    <option value="1">J1</option>
+                    <option value="2">J2</option>
+                    <option value="3">J3</option>
+                    <option value="4">J4</option>
+                    <option value="5">J5</option>
+                    <option value="6">J6</option>
+                    <option value="7">J7</option>
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+<hr>
+<table id="dt-basic-checkbox" class="table table-striped table-bordered" cellspacing="0" width="100%">
+    <thead>
+        <tr>
+            <th></th>
+            <th scope="th-sm">#</th>
+            <th scope="th-sm">Authors</th>
+            <th scope="th-sm">Title</th>
+            <th scope="th-sm">Journal</th>
+            <th scope="th-sm">Year</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pub in publications %}
+        {% include '_publication.html' %}
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
+
+
+  <script>
+   $('#dt-basic-checkbox').dataTable({
+
+   columnDefs: [{
+   orderable: false,
+   className: 'select-checkbox',
+   targets: 0
+   }],
+   select: {
+   style: 'os',
+   selector: 'td:first-child'
+   }
+       "searching": false
+   });
+   </script>
