@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, login_required
 from app import app, login
 from app.forms import LoginForm
-from app.models import User, Publication
+from app.models import User, Publication, Journal
 
 @app.route('/')
 @app.route('/index')
@@ -15,9 +15,13 @@ def index():
         if publications.has_next else None
     prev_url = url_for('index', page=publications.prev_num) \
         if publications.has_prev else None
-    nav_btns = [(url_for('index',page=i),i) for i in range(max(1,page-2),min(publications.total//publications.per_page+1,page+3))]
+    max_nav_btn = min(publications.total//publications.per_page+1,page+3)+1
+    nav_btns = [(url_for('index',page=i),i) for i in range(max(1,page-2),max_nav_btn)]
+    journals = Journal.query.all()
+    years = Journal.query.all()
     return render_template('index.html', title='RLib', publications = publications.items,
-                            next_url=next_url, prev_url=prev_url, nav_btns=nav_btns)
+                            next_url=next_url, prev_url=prev_url, nav_btns=nav_btns,
+                            journals=journals)
 
 @app.route('/signin', methods=['GET','POST'])
 def signin():

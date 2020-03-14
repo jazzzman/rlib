@@ -53,13 +53,9 @@
                 </div>
                 <select class="custom-select" id="input-pub-year" size="5" multiple>
                     <option hidden disabled selected value> -- select an option -- </option>
-                    <option value="1">1990</option>
-                    <option value="2">1991</option>
-                    <option value="3">1992</option>
-                    <option value="4">1993</option>
-                    <option value="5">1994</option>
-                    <option value="6">1995</option>
-                    <option value="7">1996</option>
+                    {% for y in years %}
+                    <option value="{{ j }}">{{ j }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </form>
@@ -119,7 +115,7 @@
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
                       <input type="checkbox" class="custom-control-input" id="sw-db-risc" value="risc">
-                      <label class="custom-control-label" for="sw-risc">Risc</label>
+                      <label class="custom-control-label" for="sw-db-risc">Risc</label>
                     </div>
                 </div>
             </form>
@@ -134,13 +130,9 @@
                 </div>
                 <select class="custom-select" id="input-journal" size="5" multiple>
                     <option hidden disabled selected value> -- select an option -- </option>
-                    <option value="1">J1</option>
-                    <option value="2">J2</option>
-                    <option value="3">J3</option>
-                    <option value="4">J4</option>
-                    <option value="5">J5</option>
-                    <option value="6">J6</option>
-                    <option value="7">J7</option>
+                    {% for j in journals %}
+                    <option value="{{ j.id }}">{{ j.title }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </form>
@@ -204,7 +196,9 @@
    }
    });
     $('#dt-basic-checkbox_length').insertBefore('#dt-basic-checkbox_paginate');
-    $('#dt-basic-checkbox_length').addClass('dataTables_paginate float-left')
-    $('#dt-basic-checkbox_paginate').addClass('float-right')
+    $('#dt-basic-checkbox_length').addClass('dataTables_paginate float-left');
+    //TODO implement ajax paging
+    var p = /page=(\d*)/.exec($(location).attr('href'));
+    $("li.page-item:contains("+p[1]+")").addClass('active');
    </script>
 {% endblock %}
