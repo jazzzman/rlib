@@ -49,12 +49,14 @@
             <div class="form-group">
                 <span class="float-left">Year(s):</span>
                 <div class="float-right">
-                    <button class="btn btn-sm btn-outline-light" type="button" id="drop-pub-year"><i class="fas fa-times"></i></button>
+                    <button class="btn btn-sm btn-outline-light" type="button" id="drop-pub-year">
+                        <i class="fas fa-times"></i>
+                    </button>
                 </div>
                 <select class="custom-select" id="input-pub-year" size="5" multiple>
                     <option hidden disabled selected value> -- select an option -- </option>
                     {% for y in years %}
-                    <option value="{{ j }}">{{ j }}</option>
+                    <option value="{{ y[0] }}">{{ y[0] }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -68,7 +70,7 @@
                     <div class="float-right">
                         <button class="btn btn-sm btn-outline-light" type="button" id="drop-title"><i class="fas fa-times"></i></button>
                     </div>
-                    <input type="text" class="form-control" id="title" aria-describedby="basic-addon3">
+                    <input type="text" class="form-control" id="input-title" aria-describedby="basic-addon3">
                 </div>
             </form>
         </div>
@@ -80,20 +82,20 @@
                         <button class="btn btn-sm btn-outline-light" type="button" id="drop-quartile"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
-                      <input type="checkbox" class="custom-control-input" id="sw-q1" value="q1">
-                      <label class="custom-control-label" for="sw-q1">Q1</label>
+                        <input type="checkbox" class="custom-control-input" id="sw-q1" value="q1">
+                        <label class="custom-control-label" for="sw-q1">Q1</label>
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
-                      <input type="checkbox" class="custom-control-input" id="sw-q2" value="q2">
-                      <label class="custom-control-label" for="sw-q2">Q2</label>
+                        <input type="checkbox" class="custom-control-input" id="sw-q2" value="q2">
+                        <label class="custom-control-label" for="sw-q2">Q2</label>
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
-                      <input type="checkbox" class="custom-control-input" id="sw-q3" value="q3">
-                      <label class="custom-control-label" for="sw-q3">Q3</label>
+                        <input type="checkbox" class="custom-control-input" id="sw-q3" value="q3">
+                        <label class="custom-control-label" for="sw-q3">Q3</label>
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
-                      <input type="checkbox" class="custom-control-input" id="sw-q4" value="q4">
-                      <label class="custom-control-label" for="sw-q4">Q4</label>
+                        <input type="checkbox" class="custom-control-input" id="sw-q4" value="q4">
+                        <label class="custom-control-label" for="sw-q4">Q4</label>
                     </div>
                 </div>
             </form>
@@ -106,16 +108,16 @@
                         <button class="btn btn-sm btn-outline-light" type="button" id="drop-db"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
-                      <input type="checkbox" class="custom-control-input" id="sw-db-wos" value="wos">
-                      <label class="custom-control-label" for="sw-db-wos">WOS</label>
+                        <input type="checkbox" class="custom-control-input" id="sw-db-wos" value="wos">
+                        <label class="custom-control-label" for="sw-db-wos">WOS</label>
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
-                      <input type="checkbox" class="custom-control-input" id="sw-db-scopus" value="scopus">
-                      <label class="custom-control-label" for="sw-db-scopus">Scopus</label>
+                        <input type="checkbox" class="custom-control-input" id="sw-db-scopus" value="scopus">
+                        <label class="custom-control-label" for="sw-db-scopus">Scopus</label>
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
-                      <input type="checkbox" class="custom-control-input" id="sw-db-risc" value="risc">
-                      <label class="custom-control-label" for="sw-db-risc">Risc</label>
+                        <input type="checkbox" class="custom-control-input" id="sw-db-risc" value="risc">
+                        <label class="custom-control-label" for="sw-db-risc">Risc</label>
                     </div>
                 </div>
             </form>
@@ -157,48 +159,29 @@
     </tbody>
 </table>
 <nav aria-label="Page navigation example">
-  <ul class="pagination justify-content-end">
-    {% if prev_url %}
-    <li class="page-item">
-        <a class="page-link" href="{{ prev_url }}" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
-      </a>
-    </li>
-    {% endif %}
-    {% for nav_btn in nav_btns %}
-    <li class="page-item"><a class="page-link" href="{{ nav_btn[0]}}">{{ nav_btn[1] }}</a></li>
-    {% endfor %}
-    {% if next_url %}
-    <li class="page-item">
-        <a class="page-link" href="{{ next_url }}" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
-      </a>
-    </li>
-    {% endif %} 
-  </ul>
+    <ul class="pagination justify-content-end">
+        {% if prev_url %}
+        <li class="page-item">
+            <a class="page-link" href="{{ prev_url }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+        {% for nav_btn in nav_btns %}
+        <li class="page-item"><a class="page-link" href="{{ nav_btn[0]}}">{{ nav_btn[1] }}</a></li>
+        {% endfor %}
+        {% if next_url %}
+        <li class="page-item">
+            <a class="page-link" href="{{ next_url }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+    </ul>
 </nav>
 {% endblock %}
 
 {% block scripts %}
-  {{super()}}
-  <script>
-   $('#dt-basic-checkbox').dataTable({
-    searching: false,
-    paging: false,
-   columnDefs: [{
-   orderable: false,
-   className: 'select-checkbox',
-   targets: 0
-   }],
-   select: {
-   style: 'os',
-   selector: 'td:first-child'
-   }
-   });
-    $('#dt-basic-checkbox_length').insertBefore('#dt-basic-checkbox_paginate');
-    $('#dt-basic-checkbox_length').addClass('dataTables_paginate float-left');
-    //TODO implement ajax paging
-    var p = /page=(\d*)/.exec($(location).attr('href'));
-    $("li.page-item:contains("+p[1]+")").addClass('active');
-   </script>
+{{super()}}
+<script src="{{ url_for('static', filename='js/index.page.js') }}"></script>
 {% endblock %}
