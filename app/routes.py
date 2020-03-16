@@ -3,17 +3,36 @@ from flask_login import current_user, login_user, login_required
 from app import app, login
 from app.forms import LoginForm
 from app.models import User, Publication, Journal
+from sqlalchemy.ext import baked
+from sqlalchemy import bindparam
+
 
 @app.route('/')
 @app.route('/index', methods=['GET','POST'])
 @login_required
 def index():
+
     if request.method == 'POST':
+        bakery = baked.bakery()
+        b_query = bakery(lambda session: session.query(Publication))
         filters = request.get_json();
-        print(filters)
-    page = request.args.get('page', 1, type=int)
-    authors = request.args.get('page', 1, type=int)
-    ptub_type = request.args.get('page', 1, type=int)
+        if 'authors' in filters:
+            authors = filters['authors']
+            b_query += lambda q: q.filter(Author.id.in_(authors))
+        if 'pub-type' in filters:
+            pub_type = filters['pub-type']
+            b_query += lambda q: q.filter(Publication.pub_type.in_(pub_type))
+        if 'pub-year' in filters:
+            pub_year = filters['pub-year']
+            b_query += lambda q: q.filter(Publication.year.in_(pub_year))
+        if 'title' in filters:
+            title = filters['title']
+            b_query += lambda q: q.filter(Publication.title.ilike(title))
+        if 'journal' in filters:
+            journal = filters['journal']
+            b_query += lambda q: q.filter(Publication.year.in_(pub_year))
+        db.session.query(Publication)
+
     page = request.args.get('page', 1, type=int)
     publications = Publication.query.order_by(Publication.year.desc()).paginate(
             page, app.config['PUBLICATIONS_PER_PAGE'], False)

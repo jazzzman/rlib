@@ -26,7 +26,9 @@ $(function (){
         var inputId = this.id.replace("drop","input");
         var key = this.id.replace("drop-","");
         //deselect selects
-        $("#"+inputId)[0].selectedIndex = 0;
+        if ($("#"+inputId).length > 0){
+            $("#"+inputId)[0].selectedIndex = 0;
+        }
         $("#"+inputId).val("");
         if (key in filter){
             delete filter[key];
