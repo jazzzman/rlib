@@ -15,13 +15,8 @@ $('#dt-basic-checkbox').dataTable({
 });
 $('#dt-basic-checkbox_length').insertBefore('#dt-basic-checkbox_paginate');
 $('#dt-basic-checkbox_length').addClass('dataTables_paginate float-left');
-//TODO implement ajax paging
-var page = 1;
-if (/page=(\d*)/.test($(location).attr('href'))){
-    page = /page=(\d*)/.exec($(location).attr('href'));
-}
-$("li.page-item:contains("+page+")").addClass('active');
 $(function (){
+    paintCurrentPage();
     $("[id^='drop-']").click(function(){
         var inputId = this.id.replace("drop","input");
         var key = this.id.replace("drop-","");
@@ -46,17 +41,24 @@ $(function (){
         activateBtnClass(id);
         var key = this.id.replace("input-","");
         filter[key] = selectedValues;
-        console.log(filter);
         sendFilters();
     });
     $("#input-title").change(function(){
         var id = this.id.replace("input","drop");
         activateBtnClass(id);
         filter["title"] = this.value;
-        console.log(filter);
         sendFilters();
     });
 });
+function paintCurrentPage(){
+    return
+    //TODO implement ajax paging & updating paint
+    var page = 1;
+    if (/page=(\d*)/.test($(location).attr('href'))){
+        page = /page=(\d*)/.exec($(location).attr('href'));
+    }
+    $("li.page-item:contains("+page+")").addClass('active');
+}
 function activateBtnClass(id){
         $("#"+id).removeClass("btn-outline-light");
         $("#"+id).addClass("btn-outline-secondary");
@@ -71,6 +73,9 @@ function sendFilters(){
             type: "POST",
             data: JSON.stringify(filter),
             contentType: "application/json",
-            //complete: callback
+            success: function(result){
+                $(".table-responsive").html(result);
+                paintCurrentPage();
+            }
         });
 }
