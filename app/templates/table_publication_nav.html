@@ -9,7 +9,7 @@
             <th scope="th-sm">Year</th>
         </tr>
     </thead>
-    <tbody id="dt-publication-body">
+    <tbody>
         {% for pub in publications %}
         {% include '_publication.html' %}
         {% endfor %}
@@ -26,7 +26,7 @@
         {% endif %}
         {% for nav_btn in nav_btns %}
             {% if curr_page == nav_btn[1] %}
-            <li class="page-item"><a class="page-link active" href="{{ nav_btn[0]}}">{{ nav_btn[1] }}</a></li>
+            <li class="page-item active"><a class="page-link" href="{{ nav_btn[0]}}">{{ nav_btn[1] }}</a></li>
             {% else %}
             <li class="page-item"><a class="page-link" href="{{ nav_btn[0]}}">{{ nav_btn[1] }}</a></li>
             {% endif %}

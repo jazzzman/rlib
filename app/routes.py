@@ -2,7 +2,8 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user, login_user, login_required
 from app import app, login, db
 from app.forms import LoginForm
-from app.models import User, Author, Publication, Journal, PubType
+from app.models import User, Author, Publication, Journal, PubType, lab_ids,\
+                        AuthorSynonym
 from sqlalchemy import func, distinct
 
 
@@ -13,6 +14,7 @@ def index():
     publications = Publication.query.order_by(Publication.year.desc())
     journals = Journal.query.all()
     years = sorted(set(Publication.query.values(Publication.year)))
+    lab_authors = Author.query.filter(Author.id.in_(lab_ids))
 
     if request.method == 'POST':
         filters = request.get_json();
@@ -23,7 +25,6 @@ def index():
                     group_by(Publication.id).\
                     having(func.count(Publication.id) == len(authors))
         if 'pub-type' in filters:
-            print(filters['pub-type'])
             pub_type = [PubType(int(i)) for i in filters['pub-type']]
             publications = publications.filter(Publication.pub_type.in_(pub_type))
         if 'pub-year' in filters:
@@ -37,6 +38,12 @@ def index():
             publications = publications.join(Publication.journal).\
                     filter(Journal.id.in_(journal)).\
                     distinct(Publication.id)
+        if 'quartile' in filters:
+            publications = publications.join(Publication.journal).\
+                    filter(Journal.quartile.in_(filters['quartile']))
+        if 'db' in filters:
+            publications = publications.join(Publication.journal).\
+                    filter(Journal.is_risc)
 
     page = request.args.get('page', 1, type=int)
     publications = publications.paginate(page, 
@@ -49,11 +56,13 @@ def index():
     nav_btns = [(url_for('index',page=i),i) for i in range(max(1,page-2),max_nav_btn)]
 
     if request.method == 'POST':
+        print(publications.items)
         return render_template('table_publication_nav.html', 
                             publications = publications.items, curr_page = page,
                             next_url=next_url, prev_url=prev_url, nav_btns=nav_btns)
     return render_template('index.html', title='RLib', publications = publications.items,
-                            next_url=next_url, prev_url=prev_url, nav_btns=nav_btns,
+                            curr_page=page, next_url=next_url, prev_url=prev_url, 
+                            nav_btns=nav_btns,  lab_authors=lab_authors,
                             journals=journals, years=years, pub_type = PubType)
 
 @app.route('/signin', methods=['GET','POST'])
@@ -78,6 +87,12 @@ def unauthorized():
 @login_required
 def add():
     return render_template('index.html', title='RLib')
+
+@app.route('/authors')
+@login_required
+def authors():
+    authors = AuthorSynonym.query.order_by(AuthorSynonym.id.asc())
+    return render_template('authors.html', title='RLib.Authors')
 
 @app.route('/settings')
 @login_required

@@ -16,7 +16,6 @@ $('#dt-basic-checkbox').dataTable({
 $('#dt-basic-checkbox_length').insertBefore('#dt-basic-checkbox_paginate');
 $('#dt-basic-checkbox_length').addClass('dataTables_paginate float-left');
 $(function (){
-    paintCurrentPage();
     $("[id^='drop-']").click(function(){
         var inputId = this.id.replace("drop","input");
         var key = this.id.replace("drop-","");
@@ -49,16 +48,29 @@ $(function (){
         filter["title"] = this.value;
         sendFilters();
     });
+    $(".custom-control-input").change(function(){
+        var key = ""
+        if (this.name == "db-indexing"){
+            key = "db";
+            var dbs = $("[name='db-indexing']:checked").map(function(){
+                return this.value;
+            })
+            .toArray()
+            filter[key] = dbs;
+        }
+        else {
+            key = "quartile";
+            var qs = $("[name='quartile']:checked").map(function(){
+                return this.value;
+            })
+            .toArray()
+            filter[key] = qs;
+        }
+        if (key in filter && filter[key].length==0){
+            delete filter[key];
+        }
+    });
 });
-function paintCurrentPage(){
-    return
-    //TODO implement ajax paging & updating paint
-    var page = 1;
-    if (/page=(\d*)/.test($(location).attr('href'))){
-        page = /page=(\d*)/.exec($(location).attr('href'));
-    }
-    $("li.page-item:contains("+page+")").addClass('active');
-}
 function activateBtnClass(id){
         $("#"+id).removeClass("btn-outline-light");
         $("#"+id).addClass("btn-outline-secondary");
@@ -74,8 +86,7 @@ function sendFilters(){
             data: JSON.stringify(filter),
             contentType: "application/json",
             success: function(result){
-                $(".table-responsive").html(result);
-                paintCurrentPage();
+                $("#table-container").html(result);
             }
         });
 }

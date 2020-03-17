@@ -13,6 +13,9 @@ author_organisation = db.Table('author_organisation',
         db.Column('author_id', db.Integer, db.ForeignKey('author.id')),
         db.Column('organisation_id', db.Integer, db.ForeignKey('organisation.id')))
 
+lab_ids = [12, 9, 20, 10, 15, 8]
+
+
 class User(UserMixin):
     id = 0
     password_hash = "pbkdf2:sha256:150000$ge61Utf3$65dd72e931cb6ee6bae9848a0c9d6ea2565b4765e7944271ef1d431d96cd235e"
@@ -58,7 +61,7 @@ class Publication(db.Model):
 class Journal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(8128))
-    quartille = db.Column(db.Integer)
+    quartile = db.Column(db.Integer)
     is_wos = db.Column(db.Boolean)
     is_scopus = db.Column(db.Boolean)
     is_risc = db.Column(db.Boolean)
@@ -76,6 +79,7 @@ class Author(db.Model):
     ename = db.Column(db.String(255))
     epatronymic = db.Column(db.String(255))
     elastname = db.Column(db.String(255))
+    synonym = db.relationship("AuthorSynonym", backref="main")
     # publications - backref
     # organisations - backref
 
@@ -91,3 +95,14 @@ class Organisation(db.Model):
 
     def __repr__(self):
         return self.title
+
+class AuthorSynonym(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    author_id = db.Column(db.Integer, db.ForeignKey("author.id"))
+    lastname = db.Column(db.String(255))
+    name = db.Column(db.String(255)) 
+    patronymic = db.Column(db.String(255))
+    # main - backref
+
+    def __repr__(self):
+        return f'{self.lastname} {self.name}'
