@@ -14,15 +14,15 @@ function updateVal(currentEle, value) {
     $(".thVal").keyup(function (event) {
         if (event.keyCode == 13) {
             $(currentEle).html($(".thVal").val().trim());
-            $.ajax({
-                url: "/index",
-                type: "POST",
-                data: JSON.stringify(filter),
-                contentType: "application/json",
-                success: function(result){
-                    $("#table-container").html(result);
-                }
-            });
+            //$.ajax({
+                //url: "/index",
+                //type: "POST",
+                //data: JSON.stringify({"auth":}),
+                //contentType: "application/json",
+                //success: function(result){
+                    //$("#table-container").html(result);
+                //}
+            //});
         }
     });
 		$(".thVal").focusout(function(event){
