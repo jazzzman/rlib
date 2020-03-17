@@ -1,7 +1,7 @@
 <tr>
     <td>{{ author.id }}</td>
-    <td>{{ author.author_id }}</td>
-    <td>{{ author.parent }}</td>
+    <td class="editable-cell" id="{{ author.author_id }}">{{ author.author_id }}</td>
+    <td id="{{ 'm'+ author.author_id|string }}">{{ author.main }}</td>
     <td>{{ author.lastname }}</td>
     <td>{{ author.name }}</td>
     <td>{{ author.patronymic }}</td>

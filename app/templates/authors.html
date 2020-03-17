@@ -18,5 +18,9 @@
       {% endfor %}
   </tbody>
 </table>
-</div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script src="{{ url_for('static', filename='js/authors.page.js') }}"></script>
 {% endblock %}

@@ -91,8 +91,9 @@ def add():
 @app.route('/authors')
 @login_required
 def authors():
-    authors = AuthorSynonym.query.order_by(AuthorSynonym.id.asc())
-    return render_template('authors.html', title='RLib.Authors')
+    authors = AuthorSynonym.query.order_by(AuthorSynonym.author_id.asc()).all()
+    return render_template('authors.html', title='RLib.Authors',
+            authors=authors)
 
 @app.route('/settings')
 @login_required
