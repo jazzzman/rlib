@@ -18,16 +18,14 @@ function updateVal(currentEle, value) {
                 'id': $(currentEle).siblings().first().attr("id").slice(2),
                 'main_id': $(currentEle).text()
             }
-            console.log(data)
             $.ajax({
                 url: "/authors",
                 type: "POST",
                 data: JSON.stringify(data),
                 contentType: "application/json",
                 success: function(result){
-                    console.log(result);
                     $(currentEle).attr("id", "main_id"+result["main_id"]);
-                    $("#main"+result['id']).text(result["repr"]);
+                    $("#main"+result['id']).text(result["main_repr"]);
                 }
             });
         }

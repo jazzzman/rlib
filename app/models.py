@@ -51,9 +51,9 @@ class Publication(db.Model):
     pub_type = db.Column(db.Enum(PubType))
     journal_id = db.Column(db.Integer, db.ForeignKey('journal.id', name='journal_id_fk'))
     authors = db.relationship('Author', 
-            secondary=author_publication,
-            backref='publications')
-    #journal - backref
+                              secondary=author_publication,
+                              backref='publications')
+    # journal - backref
 
     def from_dict(self, data):
         if 'title' in data:
@@ -95,15 +95,11 @@ class Publication(db.Model):
                     a = a.first()
                     if a is None:
                         a = Author(lastname=lastname, name=name, patronymic=patr)
-                        asy = AuthorSynonym(name=name, lastname=lastname, main=a)
                         db.session.add(a)
-                        db.session.add(asy)
-                    self.authors.append(a)
+                    self.authors.append(a.main or a)
                 else:
                     print(author_raw,'doesnt match to pattern')
         return True
-
-
 
     def __repr__(self):
         return f'{self.authors_raw} {self.title}'
@@ -130,11 +126,26 @@ class Author(db.Model):
     ename = db.Column(db.String(255))
     epatronymic = db.Column(db.String(255))
     elastname = db.Column(db.String(255))
-    synonym_id = db.Column(db.Integer, db.ForeignKey('author.id', name='synonym_id_fk'))
-    synonym = db.relationship("Author", backref=db.backref('main', remote_side=[id]))
+    synonym_id = db.Column(db.Integer, 
+            db.ForeignKey('author.id', name='synonym_id_fk'))
+    synonym = db.relationship("Author", 
+            backref=db.backref('main', remote_side=[id]))
     # publications - backref
     # organisations - backref
 
+    def to_dict(self):
+        data = {
+                "id": self.id,
+                "name": self.name,
+                "lastname": self.lastname,
+                "patronymic": self.patronymic,
+                "ename": self.ename,
+                "elastname": self.elastname,
+                "epatronymic": self.epatronymic,
+                "main_id": self.main.id if self.main else -1,
+                "synonym": [s.id for s in self.synonym],
+            }
+        return data
     def __repr__(self):
         return f'{self.lastname} {self.name[0] if self.name is not None else "X"}.'
 

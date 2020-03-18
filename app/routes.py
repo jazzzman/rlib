@@ -98,11 +98,13 @@ def authors():
         data = request.get_json() or {}
         if 'id' not in data:
             return
-        asyn = AuthorSynonym.query.get_or_404(data['id'])
-        asyn.main_id = data['main_id']
+        asyn = Author.query.get_or_404(data['id'])
+        asyn.main = Author.query.get(data['main_id'])
         db.session.commit()
-        return jsonify(asyn.to_dict())
-    authors = AuthorSynonym.query.order_by(AuthorSynonym.main_id.asc()).all()
+        rdata = asyn.to_dict()
+        rdata["main_repr"] = str(asyn.main) if asyn.main else ""
+        return jsonify(rdata)
+    authors = Author.query.order_by(Author.id.asc()).all()
     return render_template('authors.html', title='RLib.Authors',
             authors=authors)
 
