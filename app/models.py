@@ -130,12 +130,14 @@ class Author(db.Model):
     ename = db.Column(db.String(255))
     epatronymic = db.Column(db.String(255))
     elastname = db.Column(db.String(255))
-    synonym = db.relationship("AuthorSynonym", backref="main")
+    synonym_id = db.Column(db.Integer, db.ForeignKey('author.id', name='synonym_id_fk'))
+    synonym = db.relationship("Author", backref=db.backref('main', remote_side=[id]))
     # publications - backref
     # organisations - backref
 
     def __repr__(self):
         return f'{self.lastname} {self.name[0] if self.name is not None else "X"}.'
+
 
 class Organisation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -146,25 +148,3 @@ class Organisation(db.Model):
 
     def __repr__(self):
         return self.title
-
-class AuthorSynonym(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    main_id = db.Column(db.Integer, db.ForeignKey("author.id", name='main_id_fk'))
-    lastname = db.Column(db.String(255))
-    name = db.Column(db.String(255)) 
-    patronymic = db.Column(db.String(255))
-    # main - backref
-
-    def to_dict(self):
-        data = {
-            'id': self.id,
-            'main_id': self.main_id,
-            'lastname': self.lastname,
-            'name': self.name,
-            'patronymic': self.patronymic,
-            'repr': str(self.main)
-        }
-        return data
-
-    def __repr__(self):
-        return f'{self.lastname} {self.name}'

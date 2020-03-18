@@ -2,8 +2,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import current_user, login_user, login_required
 from app import app, login, db
 from app.forms import LoginForm
-from app.models import (User, Author, Publication, Journal, PubType, lab_ids,
-                        AuthorSynonym)
+from app.models import User, Author, Publication, Journal, PubType, lab_ids
 from sqlalchemy import func, distinct
 
 

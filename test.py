@@ -129,10 +129,6 @@ class PublicationAdding(unittest.TestCase):
         print(pb.authors)
 
 
-
-
-
-
 if __name__ == '__main__':
     unittest.main(verbosity=2)
 
