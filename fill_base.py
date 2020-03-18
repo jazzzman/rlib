@@ -1,6 +1,6 @@
 from app import app, db
-from app.models import Author, Publication, Journal, Organisation,
-                        AuthorSynonym, PubType
+from app.models import (Author, Publication, Journal, Organisation,
+                        AuthorSynonym, PubType)
 import random as rnd
 
 pubs = []

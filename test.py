@@ -1,4 +1,5 @@
 import unittest
+import re
 from app import app, db
 from app.models import Author, Publication, Journal, Organisation
 
@@ -74,6 +75,60 @@ class Relations(unittest.TestCase):
         self.assertEqual(p3.journal, j2)
         self.assertEqual(j3.publications.all(), [])
         self.assertEqual(p1.journal_id, j1.id)
+
+
+class RegexAuthors(unittest.TestCase):
+    def test_authors_parser(self):
+        with open(r'misc\authors_raw.txt', 'r') as alines:
+            for authors_raw in alines.readlines():
+                for author_raw in authors_raw.split(','):
+                    r = r"([\w\-'`]+)\.?\s*([\w\-`]+)?\.?\s*([\w\-`]+)*"
+                    ms = re.match(r,author_raw)
+                    if ms:
+                        lastname, name, patr = ms.groups()
+                        if len(lastname)<2 and patr is not None:
+                            lastname, name, patr = patr, lastname, name
+                        if len(lastname)<2 and patr is None:
+                            lastname, name, patr = name, lastname, patr
+                        if len(lastname)<3 and lastname.isupper():
+                            lastname, name, patr = name, lastname[0], lastname[1]
+                        # print(author_raw, lastname, name, patr)
+
+class PublicationAdding(unittest.TestCase):
+    def tearDown(self):
+        db.session.remove()
+
+    def test_by_json(self):
+        pb = Publication()
+        data = {
+            "title": "NewP4ublication",
+            "journal": "Journal 9",
+            "authors_raw": "LN17 AN17, LN14 AN14"
+        }
+        self.assertEqual(pb.from_dict(data), True)
+        print(pb.authors)
+
+    def test_json_author_exist(self):
+        pb = Publication()
+        data = {
+            "title": "NewNwPublication",
+            "journal": "Journal 9",
+            "authors_raw": "LN17 AN7, N14 AN14"
+        }
+        self.assertEqual(pb.from_dict(data), True)
+        print(pb.authors)
+    
+    def test_json_publ_exist(self):
+        pb = Publication()
+        data = {
+            "title": "Publication 23",
+            "journal": "Journal 9",
+            "authors_raw": "LN17 AN7, N14 AN14"
+        }
+        self.assertEqual(pb.from_dict(data), False)
+        print(pb.authors)
+
+
 
 
 

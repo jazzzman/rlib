@@ -3,6 +3,7 @@ from app import login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 import enum
+import re
 
 
 author_publication = db.Table('author_publication',
@@ -53,6 +54,56 @@ class Publication(db.Model):
             secondary=author_publication,
             backref='publications')
     #journal - backref
+
+    def from_dict(self, data):
+        if 'title' in data:
+            if Publication.query.filter_by(title=data['title']).first():
+                print("Publication already exist", data['title'])
+                return False
+        if 'doi' in data:
+            if Publication.query.filter_by(doi=data['doi']).first():
+                print("Publication already exist")
+                return False
+        for field in ['title', 'volume', 'issue', 'pages', 'year', 'doi', 'pub_type']:
+            if field in data:
+                setattr(self, field, data[field])
+        if 'journal' in data:
+            journal = Journal.query.filter(Journal.title == data['journal']).first()
+            if journal is not None:
+                self.journal = journal
+            else:
+                db.session.add(Journal(title=data['journal']))
+        if 'authors_raw' in data:
+            self.authors_raw = data['authors_raw']
+            for author_raw in data['authors_raw'].split(','):
+                author_raw = author_raw.strip(" \t\n")
+                r = r"([\w\-'`]+)\.?\s*([\w\-'`]+)?\.?\s*([\w\-'`]+)*"
+                ms = re.match(r,author_raw)
+                if ms:
+                    lastname, name, patr = ms.groups()
+                    if len(lastname)<2 and patr is not None:
+                        lastname, name, patr = patr, lastname, name
+                    if len(lastname)<2 and patr is None:
+                        lastname, name, patr = name, lastname, patr
+                    if len(lastname)<3 and lastname.isupper():
+                        lastname, name, patr = name, lastname[0], lastname[1]
+
+                    a = Author.query.filter(Author.lastname == lastname).\
+                                     filter(Author.name == name)
+                    if patr is not None:
+                        a=a.filter(Author.patronymic == patr)
+                    a = a.first()
+                    if a is None:
+                        a = Author(lastname=lastname, name=name, patronymic=patr)
+                        asy = AuthorSynonym(name=name, lastname=lastname, main=a)
+                        db.session.add(a)
+                        db.session.add(asy)
+                    self.authors.append(a)
+                else:
+                    print(author_raw,'doesnt match to pattern')
+        return True
+
+
 
     def __repr__(self):
         return f'{self.authors_raw} {self.title}'
