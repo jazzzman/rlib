@@ -1,12 +1,14 @@
 from app import app, db
-from app.models import Author, Publication, Journal, Organisation, AuthorSynonym
+from app.models import Author, Publication, Journal, Organisation,
+                        AuthorSynonym, PubType
 import random as rnd
 
 pubs = []
+ptypes = [p for p in PubType]
 for i in range(4,25):
     pubs.append(Publication(title=f'Publication {i}',
         authors_raw=', '.join([f'a{a}' for a in range(rnd.randint(1,12))]),
-        year=rnd.randint(1990,2021),))
+        year=rnd.randint(1990,2021),pub_type = rnd.choice(ptypes)))
 
 jrs = []
 for i in range(4,25):
@@ -18,9 +20,9 @@ for i in range(4,25):
         lastname=f'LN{i}',))
 
 asys = []
-for a in aths[7:]:
+for i, a in enumerate(aths):
     asys.append(AuthorSynonym(name=a.name, lastname=a.lastname, 
-        main=rnd.choice(aths[:7])))
+        main=a if i < 7 else rnd.choice(aths[:7])))
 
 db.session.add_all(pubs)
 db.session.add_all(jrs)

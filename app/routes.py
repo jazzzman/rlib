@@ -56,7 +56,6 @@ def index():
     nav_btns = [(url_for('index',page=i),i) for i in range(max(1,page-2),max_nav_btn)]
 
     if request.method == 'POST':
-        print(publications.items)
         return render_template('table_publication_nav.html', 
                             publications = publications.items, curr_page = page,
                             next_url=next_url, prev_url=prev_url, nav_btns=nav_btns)
@@ -88,10 +87,11 @@ def unauthorized():
 def add():
     return render_template('index.html', title='RLib')
 
-@app.route('/authors', methods=['POST'])
+@app.route('/authors', methods=['GET','POST'])
 @login_required
 def authors():
     if request.method == 'POST':
+        # TODO implement through api
         data = request.get_json() or {}
         if 'id' not in data:
             return
@@ -99,7 +99,7 @@ def authors():
         asyn.main_id = data['main_id']
         db.session.commit()
         return jsonify(asyn.to_dict())
-    authors = AuthorSynonym.query.order_by(AuthorSynonym.author_id.asc()).all()
+    authors = AuthorSynonym.query.order_by(AuthorSynonym.main_id.asc()).all()
     return render_template('authors.html', title='RLib.Authors',
             authors=authors)
 

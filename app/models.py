@@ -110,7 +110,8 @@ class AuthorSynonym(db.Model):
             'main_id': self.main_id,
             'lastname': self.lastname,
             'name': self.name,
-            'patronymic': self.patronymic
+            'patronymic': self.patronymic,
+            'repr': str(self.main)
         }
         return data
 
