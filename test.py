@@ -88,11 +88,12 @@ class RegexAuthors(unittest.TestCase):
                         lastname, name, patr = ms.groups()
                         if len(lastname)<2 and patr is not None:
                             lastname, name, patr = patr, lastname, name
-                        if len(lastname)<2 and patr is None:
+                        elif len(lastname)<2 and patr is None:
                             lastname, name, patr = name, lastname, patr
-                        if len(lastname)<3 and lastname.isupper():
+                        elif len(lastname)<3 and lastname.isupper():
                             lastname, name, patr = name, lastname[0], lastname[1]
-                        # print(author_raw, lastname, name, patr)
+                        elif len(name)==2 and name.isupper():
+                            lastname, name, patr = lastname, name[0], name[1]                       # print(author_raw, lastname, name, patr)
 
 class PublicationAdding(unittest.TestCase):
     def tearDown(self):

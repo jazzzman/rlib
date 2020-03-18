@@ -88,7 +88,7 @@ def add():
         # TODO implement through api
         data = request.get_json() or {}
 
-    return render_template('index.html', title='RLib')
+    return render_template('add.html', title='RLib', pub_type = PubType)
 
 @app.route('/authors', methods=['GET','POST'])
 @login_required

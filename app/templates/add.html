@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block app_content %}
+
+<div id="search-div" class="row">
+    <div class="col-sm">
+        <form id="form-authors">
+            <div class="form-group">
+                <span class="float-left">Authors:</span>
+                <input type="text" class="form-control" id="input-authors-raw" aria-describedby="basic-addon3">
+            </div>
+        </form>
+        <form id="form-title">
+            <div class="form-group">
+                <span class="float-left">Title:</span>
+                <input type="text" class="form-control" id="input-title" aria-describedby="basic-addon3">
+            </div>
+        </form>
+        <button type="button" class="btn btn-primary btn-lg" id='parse'>Parse</button>
+        <button type="button" class="btn btn-success btn-lg" id='add'>+Add</button>
+    </div>
+    <div class="col-sm-4">
+        <form id="form-journal">
+            <div class="form-group">
+                <span class="float-left">Journal:</span>
+                <input type="text" class="form-control" id="input-journal" aria-describedby="basic-addon3">
+            </div>
+        </form>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Volume</span>
+                  </div>
+                  <input type="text" class="form-control" id="input-volume" placeholder="..." aria-label="..." aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Issue</span>
+                  </div>
+                  <input type="text" class="form-control" id="input-issue" placeholder="..." aria-label="..." aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Pages</span>
+                  </div>
+                  <input type="text" class="form-control" id="input-pages" placeholder="..." aria-label="..." aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">Year</span>
+                  </div>
+                  <input type="text" class="form-control" id="input-year" placeholder="..." aria-label="..." aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">DOI</span>
+                  </div>
+                  <input type="text" class="form-control" id="input-doi" placeholder="..." aria-label="..." aria-describedby="basic-addon1">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <form id="form-pub-type">
+            <div class="form-group">
+                <span class="float-left">Publication Type:</span>
+
+                <select class="custom-select" id="input-pub-type" size="8" multiple>
+                    <option hidden disabled selected value> -- select an option -- </option>
+                    {% for pt in pub_type  %}
+                    <option value="{{ pt.value }}">{{ pt.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text">Input area</span>
+            </div>
+            <textarea class="form-control" id="input-area" aria-label="Input area"></textarea>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/add.page.js') }}"></script>
+{% endblock %}
