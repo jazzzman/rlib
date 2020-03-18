@@ -6,12 +6,12 @@ import enum
 
 
 author_publication = db.Table('author_publication',
-        db.Column('author_id', db.Integer, db.ForeignKey('author.id')),
-        db.Column('publication_id', db.Integer, db.ForeignKey('publication.id')))
+        db.Column('author_id', db.Integer, db.ForeignKey('author.id', name='author_id_fk')),
+        db.Column('publication_id', db.Integer, db.ForeignKey('publication.id', name='publication_id_fk')))
 
 author_organisation = db.Table('author_organisation',
-        db.Column('author_id', db.Integer, db.ForeignKey('author.id')),
-        db.Column('organisation_id', db.Integer, db.ForeignKey('organisation.id')))
+        db.Column('author_id', db.Integer, db.ForeignKey('author.id', name='author_id_fk')), 
+        db.Column('organisation_id', db.Integer, db.ForeignKey('organisation.id', name='organisation_id_fk')))
 
 lab_ids = [12, 9, 20, 10, 15, 8]
 
@@ -48,7 +48,7 @@ class Publication(db.Model):
     doi = db.Column(db.String(250))
     authors_raw = db.Column(db.String(250))
     pub_type = db.Column(db.Enum(PubType))
-    journal_id = db.Column(db.Integer, db.ForeignKey('journal.id'))
+    journal_id = db.Column(db.Integer, db.ForeignKey('journal.id', name='journal_id_fk'))
     authors = db.relationship('Author', 
             secondary=author_publication,
             backref='publications')
@@ -98,11 +98,21 @@ class Organisation(db.Model):
 
 class AuthorSynonym(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    author_id = db.Column(db.Integer, db.ForeignKey("author.id"))
+    main_id = db.Column(db.Integer, db.ForeignKey("author.id", name='main_id_fk'))
     lastname = db.Column(db.String(255))
     name = db.Column(db.String(255)) 
     patronymic = db.Column(db.String(255))
     # main - backref
+
+    def to_dict(self):
+        data = {
+            'id': self.id,
+            'main_id': self.main_id,
+            'lastname': self.lastname,
+            'name': self.name,
+            'patronymic': self.patronymic
+        }
+        return data
 
     def __repr__(self):
         return f'{self.lastname} {self.name}'

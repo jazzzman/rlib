@@ -1,5 +1,5 @@
 from app import app, db
-from app.models import Author, Publication, Journal, Organisation
+from app.models import Author, Publication, Journal, Organisation, AuthorSynonym
 import random as rnd
 
 pubs = []
@@ -17,9 +17,15 @@ for i in range(4,25):
     aths.append(Author(name=f'AN{i}', 
         lastname=f'LN{i}',))
 
+asys = []
+for a in aths[7:]:
+    asys.append(AuthorSynonym(name=a.name, lastname=a.lastname, 
+        main=rnd.choice(aths[:7])))
+
 db.session.add_all(pubs)
 db.session.add_all(jrs)
 db.session.add_all(aths)
+db.session.add_all(asys)
 db.session.commit()
 
 for ath in aths:
@@ -27,6 +33,9 @@ for ath in aths:
 
 for jr, pub in zip(jrs,pubs):
     jr.publications.append(pub)
+
+
+
 
 db.session.commit()
 print(pubs)

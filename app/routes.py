@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import current_user, login_user, login_required
 from app import app, login, db
 from app.forms import LoginForm
@@ -88,9 +88,17 @@ def unauthorized():
 def add():
     return render_template('index.html', title='RLib')
 
-@app.route('/authors')
+@app.route('/authors', methods=['POST'])
 @login_required
 def authors():
+    if request.method == 'POST':
+        data = request.get_json() or {}
+        if 'id' not in data:
+            return
+        asyn = AuthorSynonym.query.get_or_404(data['id'])
+        asyn.main_id = data['main_id']
+        db.session.commit()
+        return jsonify(asyn.to_dict())
     authors = AuthorSynonym.query.order_by(AuthorSynonym.author_id.asc()).all()
     return render_template('authors.html', title='RLib.Authors',
             authors=authors)
