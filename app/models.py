@@ -69,10 +69,10 @@ class Publication(db.Model):
                 setattr(self, field, data[field])
         if 'journal' in data:
             journal = Journal.query.filter(Journal.title == data['journal']).first()
-            if journal is not None:
-                self.journal = journal
-            else:
-                db.session.add(Journal(title=data['journal']))
+            if journal is None:
+                journal = Journal(title=data['journal'])
+                db.session.add(journal)
+            self.journal = journal
         if 'authors_raw' in data:
             self.authors_raw = data['authors_raw']
             for author_raw in data['authors_raw'].split(','):

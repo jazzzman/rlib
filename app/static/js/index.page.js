@@ -69,6 +69,7 @@ $(function (){
         if (key in filter && filter[key].length==0){
             delete filter[key];
         }
+        sendFilters();
     });
 });
 function activateBtnClass(id){

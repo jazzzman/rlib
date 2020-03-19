@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, login_required
 from app import app, login, db
 from app.forms import LoginForm
 from app.models import User, Author, Publication, Journal, PubType, lab_ids
-from sqlalchemy import func, distinct
+from sqlalchemy import func, distinct, or_
 
 
 @app.route('/')
@@ -16,7 +16,8 @@ def index():
     lab_authors = Author.query.filter(Author.id.in_(lab_ids))
 
     if request.method == 'POST':
-        filters = request.get_json();
+        filters = request.get_json()
+        print(filters)
         if 'authors' in filters:
             authors = filters['authors']
             publications = publications.join(Publication.authors).\
@@ -39,7 +40,8 @@ def index():
                     distinct(Publication.id)
         if 'quartile' in filters:
             publications = publications.join(Publication.journal).\
-                    filter(Journal.quartile.in_(filters['quartile']))
+                    filter(or_(Journal.quartile_SJR.in_(filters['quartile']),
+                               Journal.quartile_JCR.in_(filters['quartile'])))
         if 'db' in filters:
             publications = publications.join(Publication.journal).\
                     filter(Journal.is_risc)
