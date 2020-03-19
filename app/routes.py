@@ -126,7 +126,7 @@ def journals():
             j = Journal.query.get(data["id"])
             setattr(j, data['field'], data['value'])
             db.session.commit()
-            return True
+            return str(True)
         except Exception as ex:
             return ex
     journals = Journal.query.all()
