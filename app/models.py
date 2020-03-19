@@ -108,11 +108,15 @@ class Publication(db.Model):
 class Journal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(8128))
-    quartile = db.Column(db.Integer)
+    quartile_SJR = db.Column(db.Integer)
+    quartile_JCR = db.Column(db.Integer)
     is_wos = db.Column(db.Boolean)
     is_scopus = db.Column(db.Boolean)
     is_risc = db.Column(db.Boolean)
     publications = db.relationship('Publication', backref='journal', lazy='dynamic')
+
+    def publication_count(self):
+        return self.publications.count()
 
     def __repr__(self):
         return f'{self.title}'

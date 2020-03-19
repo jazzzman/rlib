@@ -1,0 +1,34 @@
+<tr>
+    <td id="{{ journal.id }}">{{ journal.id }}</td>
+    <td class="editable-cell" id="{{ 'title:' + journal.id|string }}">{{ journal.title }}</td>
+    <td>
+        <div class="checkbox">
+            {% if journal.is_scopus %}
+            <input type="checkbox" id="{{ 'is_scopus:' + journal.id|string }}" checked>
+            {% else %}
+            <input type="checkbox" id="{{ 'is_scopus:' + journal.id|string }}">
+            {% endif %}
+        </div>
+    </td>
+    <td>
+        <div class="checkbox">
+            {% if journal.is_wos %}
+            <input type="checkbox" id="{{ 'is_wos:' + journal.id|string }}" checked>
+            {% else %}
+            <input type="checkbox" id="{{ 'is_wos:' + journal.id|string }}">
+            {% endif %}
+        </div>
+    </td>
+    <td>
+        <div class="checkbox">
+            {% if journal.is_risc %}
+            <input type="checkbox" id="{{ 'is_risc:' + journal.id|string }}" checked>
+            {% else %}
+            <input type="checkbox" id="{{ 'is_risc:' + journal.id|string }}">
+            {% endif %}
+        </div>
+    </td>
+    <td class="editable-cell" id="{{ 'quartile_SJR:' + journal.id|string }}">{{ journal.quartile_SJR }}</td>
+    <td class="editable-cell" id="{{ 'quartile_SJR:' + journal.id|string }}">{{ journal.quartile_SJR }}</td>
+    <td>{{ journal.publication_count() }}</td>
+</tr>

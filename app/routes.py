@@ -63,6 +63,7 @@ def index():
                             nav_btns=nav_btns,  lab_authors=lab_authors,
                             journals=journals, years=years, pub_type = PubType)
 
+
 @app.route('/signin', methods=['GET','POST'])
 def signin():
     if current_user.is_authenticated:
@@ -77,9 +78,11 @@ def signin():
         return redirect(url_for('index'))
     return render_template('login.html', title='Sign In', form=form)
 
+
 @login.unauthorized_handler
 def unauthorized():
     return redirect(url_for('signin'))
+
 
 @app.route('/add', methods=['GET','POST'])
 @login_required
@@ -87,8 +90,12 @@ def add():
     if request.method == 'POST':
         # TODO implement through api
         data = request.get_json() or {}
-
+        pb = Publication()
+        pb.from_dict(data)
+        db.session.commit()
+        return res
     return render_template('add.html', title='RLib', pub_type = PubType)
+
 
 @app.route('/authors', methods=['GET','POST'])
 @login_required
@@ -107,6 +114,25 @@ def authors():
     authors = Author.query.order_by(Author.id.asc()).all()
     return render_template('authors.html', title='RLib.Authors',
             authors=authors)
+
+
+@app.route('/journals', methods=['GET','POST'])
+@login_required
+def journals():
+    if request.method == 'POST':
+        # TODO implement through api
+        data = request.get_json() or {}
+        try:
+            j = Journal.query.get(data["id"])
+            setattr(j, data['field'], data['value'])
+            db.session.commit()
+            return True
+        except Exception as ex:
+            return ex
+    journals = Journal.query.all()
+    return render_template('journals.html', title = 'RLib.Journals',
+            journals=journals)
+
 
 @app.route('/settings')
 @login_required
