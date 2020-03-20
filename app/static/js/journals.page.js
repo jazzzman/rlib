@@ -47,7 +47,6 @@ function send_ajax(data){
         success: function(result){
             if (result != "True"){
                 $(currentEle).html(value);
-                console.log(result);
             }
         }
     });

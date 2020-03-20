@@ -112,7 +112,7 @@ class Publication(db.Model):
         data={}
         for field in ['title', 'volume', 'issue', 'pages', 'year', 'doi', 'pub_type']:
             data[field] = getattr(self,field)
-        data['authors'] = ','.join(str(self.authors))
+        data['authors'] = ', '.join([str(a) for a in self.authors])
         data['journal'] = self.journal.title if self.journal is not None else ''
         return(data)
 

@@ -1,24 +1,24 @@
-from flask import render_template, redirect, url_for, flash, request, jsonify
+from flask import (render_template, redirect, url_for, flash, 
+        request, jsonify, session)
 from flask_login import current_user, login_user, login_required
 from app import app, login, db
 from app.forms import LoginForm
 from app.models import User, Author, Publication, Journal, PubType, lab_ids
 from sqlalchemy import func, distinct, or_
 
-
 @app.route('/')
 @app.route('/index', methods=['GET','POST'])
 @login_required
 def index():
     publications = Publication.query.order_by(Publication.year.desc())
-    journals = Journal.query.all()
-    print(*Publication.query.values(Publication.year,Publication.title), sep='\n')
-    years = sorted(set(Publication.query.values(Publication.year)))
+    journals = Journal.query.order_by(Journal.title.asc()).all()
+    years = sorted(set(Publication.query.values(Publication.year)),
+                reverse=True)
     lab_authors = Author.query.filter(Author.id.in_(lab_ids))
 
-    if request.method == 'POST':
-        filters = request.get_json()
-        print(filters)
+    filters = session.get('filters', None)
+    if request.method == 'POST' or filters is not None:
+        filters = request.get_json() or filters
         if 'authors' in filters:
             authors = filters['authors']
             publications = publications.join(Publication.authors).\
@@ -46,6 +46,7 @@ def index():
         if 'db' in filters:
             publications = publications.join(Publication.journal).\
                     filter(Journal.is_risc)
+        session['filters'] = filters
 
     page = request.args.get('page', 1, type=int)
     publications = publications.paginate(page, 
@@ -106,6 +107,7 @@ def authors():
     if request.method == 'POST':
         # TODO implement through api
         data = request.get_json() or {}
+        print(data)
         if 'id' not in data:
             return
         asyn = Author.query.get_or_404(data['id'])
@@ -114,7 +116,7 @@ def authors():
         rdata = asyn.to_dict()
         rdata["main_repr"] = str(asyn.main) if asyn.main else ""
         return jsonify(rdata)
-    authors = Author.query.order_by(Author.id.asc()).all()
+    authors = Author.query.order_by(Author.lastname.asc()).all()
     return render_template('authors.html', title='RLib.Authors',
             authors=authors)
 
