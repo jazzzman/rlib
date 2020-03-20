@@ -15,10 +15,9 @@ def index():
     years = sorted(set(Publication.query.values(Publication.year)),
                 reverse=True)
     lab_authors = Author.query.filter(Author.id.in_(lab_ids))
-
-    filters = session.get('filters', None)
-    if request.method == 'POST' or filters is not None:
-        filters = request.get_json() or filters
+    page=1
+    if request.method == 'POST':
+        filters = request.get_json()
         if 'authors' in filters:
             authors = filters['authors']
             publications = publications.join(Publication.authors).\
@@ -46,9 +45,9 @@ def index():
         if 'db' in filters:
             publications = publications.join(Publication.journal).\
                     filter(Journal.is_risc)
-        session['filters'] = filters
+        page = int(filters.get('page',1))
 
-    page = request.args.get('page', 1, type=int)
+    # page = request.args.get('page', 1, type=int)
     publications = publications.paginate(page, 
             app.config['PUBLICATIONS_PER_PAGE'], False)
     next_url = url_for('index', page=publications.next_num) \

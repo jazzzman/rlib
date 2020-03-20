@@ -71,6 +71,8 @@ $(function (){
         }
         sendFilters();
     });
+    // <a> - ajax
+    bindNavBtns();
 });
 function activateBtnClass(id){
         $("#"+id).removeClass("btn-outline-light");
@@ -81,13 +83,25 @@ function deactivateBtnClass(id) {
         $("#"+id).addClass("btn-outline-light");
 }
 function sendFilters(){
-        $.ajax({
-            url: "/index",
-            type: "POST",
-            data: JSON.stringify(filter),
-            contentType: "application/json",
-            success: function(result){
-                $("#table-container").html(result);
-            }
-        });
+    delete filter['page'];
+    navigate();
+}
+function navigate(){
+    $.ajax({
+        url: "/index",
+        type: "POST",
+        data: JSON.stringify(filter),
+        contentType: "application/json",
+        success: function(result){
+            $("#table-container").html(result);
+            bindNavBtns();
+        }
+    });
+}
+function bindNavBtns(){
+    $('a.page-link').on('click', function(e) {
+        e.preventDefault();
+        filter['page'] = $(this).attr('href').split('=')[1]
+        navigate();
+    });
 }
