@@ -3,19 +3,19 @@
     <td class="editable-cell" id="{{ 'title:' + journal.id|string }}">{{ journal.title }}</td>
     <td>
         <div class="checkbox">
-            {% if journal.is_scopus %}
-            <input type="checkbox" id="{{ 'is_scopus:' + journal.id|string }}" checked>
+            {% if journal.is_wos %}
+            <input type="checkbox" id="{{ 'is_wos:' + journal.id|string }}" checked>
             {% else %}
-            <input type="checkbox" id="{{ 'is_scopus:' + journal.id|string }}">
+            <input type="checkbox" id="{{ 'is_wos:' + journal.id|string }}">
             {% endif %}
         </div>
     </td>
     <td>
         <div class="checkbox">
-            {% if journal.is_wos %}
-            <input type="checkbox" id="{{ 'is_wos:' + journal.id|string }}" checked>
+            {% if journal.is_scopus %}
+            <input type="checkbox" id="{{ 'is_scopus:' + journal.id|string }}" checked>
             {% else %}
-            <input type="checkbox" id="{{ 'is_wos:' + journal.id|string }}">
+            <input type="checkbox" id="{{ 'is_scopus:' + journal.id|string }}">
             {% endif %}
         </div>
     </td>

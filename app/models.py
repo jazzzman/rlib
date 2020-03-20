@@ -60,15 +60,15 @@ class Publication(db.Model):
             if Publication.query.filter_by(title=data['title']).first():
                 print("Publication already exist", data['title'])
                 return False
-        if 'doi' in data:
+        if 'doi' in data and data['doi'] != '':
             if Publication.query.filter_by(doi=data['doi']).first():
-                print("Publication already exist")
+                print("Publication already exist. doi:",data['doi'])
                 return False
         for field in ['title', 'volume', 'issue', 'pages', 'year', 'doi', 'pub_type']:
             if field in data:
                 setattr(self, field, data[field])
         if 'journal' in data:
-            journal = Journal.query.filter(Journal.title == data['journal']).first()
+            journal = Journal.query.filter_by(title = data['journal']).first()
             if journal is None:
                 journal = Journal(title=data['journal'])
                 db.session.add(journal)
@@ -77,16 +77,23 @@ class Publication(db.Model):
             self.authors_raw = data['authors_raw']
             for author_raw in data['authors_raw'].split(','):
                 author_raw = author_raw.strip(" \t\n")
-                r = r"([\w\-'`]+)\.?\s*([\w\-'`]+)?\.?\s*([\w\-'`]+)*"
+                r = r"\s*?([\w\\\-'`]+)\.?\s*([\w\-`]+)?\.?\s*([\w\-`]+)*"
                 ms = re.match(r,author_raw)
                 if ms:
                     lastname, name, patr = ms.groups()
-                    if len(lastname)<2 and patr is not None:
-                        lastname, name, patr = patr, lastname, name
-                    if len(lastname)<2 and patr is None:
-                        lastname, name, patr = name, lastname, patr
-                    if len(lastname)<3 and lastname.isupper():
-                        lastname, name, patr = name, lastname[0], lastname[1]
+                    try:
+                        if len(lastname)<2 and patr is not None:
+                            lastname, name, patr = patr, lastname, name
+                        elif len(lastname)<2 and patr is None:
+                            lastname, name, patr = name, lastname, patr
+                        elif len(lastname)<3 and lastname.isupper():
+                            lastname, name, patr = name, lastname[0], lastname[1]
+                        elif len(name)==2 and name.isupper():
+                            lastname, name, patr = lastname, name[0], name[1]
+                    except Exception as ex:
+                        print(ex,'\n',data['title'],data['authors_raw'],author_raw)
+                        continue
+
 
                     a = Author.query.filter(Author.lastname == lastname).\
                                      filter(Author.name == name)
@@ -100,6 +107,16 @@ class Publication(db.Model):
                 else:
                     print(author_raw,'doesnt match to pattern')
         return True
+
+    def to_dict(self):
+        data={}
+        for field in ['title', 'volume', 'issue', 'pages', 'year', 'doi', 'pub_type']:
+            data[field] = getattr(self,field)
+        data['authors'] = ','.join(str(self.authors))
+        data['journal'] = self.journal.title if self.journal is not None else ''
+        return(data)
+
+
 
     def __repr__(self):
         return f'{self.authors_raw} {self.title}'
@@ -117,6 +134,20 @@ class Journal(db.Model):
 
     def publication_count(self):
         return self.publications.count()
+
+    def from_dict(self, data):
+        if 'title' in data and Journal.query.filter_by(title=data['title']).first():
+            print('Journal already exist:',data['title'])
+            return False
+
+        for field in ['title', 'quartile_JCR', 'quartile_SJR', 'is_risc', 'is_scopus', 'is_wos']:
+            if field in data:
+                setattr(self, field, data[field])
+        if 'quartile' in data:
+            self.quartile_JCR = self.quartile_SJR = data['quartile']
+        return True
+
+
 
     def __repr__(self):
         return f'{self.title}'

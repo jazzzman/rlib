@@ -12,6 +12,7 @@ from sqlalchemy import func, distinct, or_
 def index():
     publications = Publication.query.order_by(Publication.year.desc())
     journals = Journal.query.all()
+    print(*Publication.query.values(Publication.year,Publication.title), sep='\n')
     years = sorted(set(Publication.query.values(Publication.year)))
     lab_authors = Author.query.filter(Author.id.in_(lab_ids))
 
