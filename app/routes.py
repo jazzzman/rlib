@@ -1,9 +1,11 @@
+import clipboard
 from flask import (render_template, redirect, url_for, flash, 
-        request, jsonify, session)
+        request, jsonify, session, abort)
 from flask_login import current_user, login_user, login_required
 from app import app, login, db
 from app.forms import LoginForm
-from app.models import User, Author, Publication, Journal, PubType, lab_ids
+from app.models import (User, Author, Publication, Journal, PubType, 
+        lab_ids)
 from sqlalchemy import func, distinct, or_
 
 @app.route('/')
@@ -18,53 +20,31 @@ def index():
     page=1
     if request.method == 'POST':
         filters = request.get_json()
-        if 'authors' in filters:
-            authors = filters['authors']
-            publications = publications.join(Publication.authors).\
-                    filter(Author.id.in_(authors)).\
-                    group_by(Publication.id).\
-                    having(func.count(Publication.id) == len(authors))
-        if 'pub-type' in filters:
-            pub_type = [PubType(int(i)) for i in filters['pub-type']]
-            publications = publications.filter(Publication.pub_type.in_(pub_type))
-        if 'pub-year' in filters:
-            pub_year = filters['pub-year']
-            publications = publications.filter(Publication.year.in_(pub_year))
-        if 'title' in filters:
-            title = filters['title']
-            publications = publications.filter(Publication.title.ilike(f'%{title}%'))
-        if 'journal' in filters:
-            journal = filters['journal']
-            publications = publications.join(Publication.journal).\
-                    filter(Journal.id.in_(journal)).\
-                    distinct(Publication.id)
-        if 'quartile' in filters:
-            publications = publications.join(Publication.journal).\
-                    filter(or_(Journal.quartile_SJR.in_(filters['quartile']),
-                               Journal.quartile_JCR.in_(filters['quartile'])))
-        if 'db' in filters:
-            publications = publications.join(Publication.journal).\
-                    filter(Journal.is_risc)
+        publications = apply_filters(publications ,filters)
         page = int(filters.get('page',1))
 
-    # page = request.args.get('page', 1, type=int)
     publications = publications.paginate(page, 
             app.config['PUBLICATIONS_PER_PAGE'], False)
     next_url = url_for('index', page=publications.next_num) \
         if publications.has_next else None
     prev_url = url_for('index', page=publications.prev_num) \
         if publications.has_prev else None
-    max_nav_btn = min(publications.total//publications.per_page+1,page+3)+1
+    max_nav_btn = min(publications.total//publications.per_page+1,page+2)+1
     nav_btns = [(url_for('index',page=i),i) for i in range(max(1,page-2),max_nav_btn)]
+    pages_info = {'total':publications.total} 
+    pages_info['from'] = (page-1)*app.config['PUBLICATIONS_PER_PAGE']+1
+    pages_info['to'] = min(pages_info['total'],page*app.config['PUBLICATIONS_PER_PAGE'])
 
     if request.method == 'POST':
         return render_template('table_publication_nav.html', 
                             publications = publications.items, curr_page = page,
-                            next_url=next_url, prev_url=prev_url, nav_btns=nav_btns)
+                            next_url=next_url, prev_url=prev_url, nav_btns=nav_btns,
+                            pages_info=pages_info)
     return render_template('index.html', title='RLib', publications = publications.items,
                             curr_page=page, next_url=next_url, prev_url=prev_url, 
                             nav_btns=nav_btns,  lab_authors=lab_authors,
-                            journals=journals, years=years, pub_type = PubType)
+                            journals=journals, years=years, pub_type = PubType,
+                            pages_info=pages_info)
 
 
 @app.route('/signin', methods=['GET','POST'])
@@ -106,7 +86,6 @@ def authors():
     if request.method == 'POST':
         # TODO implement through api
         data = request.get_json() or {}
-        print(data)
         if 'id' not in data:
             return
         asyn = Author.query.get_or_404(data['id'])
@@ -142,3 +121,62 @@ def journals():
 @login_required
 def settings():
     return render_template('index.html', title='RLib')
+
+
+@app.route('/output', methods=['GET','POST'])
+@login_required
+def output():
+    if request.method == 'POST':
+        data = request.get_json()
+        print(data)
+        if data['type'] == 'clipboard':
+            publications = Publication.query.order_by(Publication.year.desc())
+            publications = apply_filters(publications, 
+                    data.get('filters',{})).\
+                    all()
+            clipboard.copy('\n'.join([p.to_gost() for p in publications]))
+            return '200' 
+        elif data['type'] == 'csv':
+            return send_file('file', attachment_filename='python.jpg')
+    else:
+        abort(404)
+
+
+def apply_filters(publications, filters):
+    print(filters)
+    if 'authors' in filters:
+        publications = publications.join(Publication.authors).\
+                filter(Author.id.in_(authors))#.\
+                # TODO commented filters should apply for distinct publications
+                # group_by(Publication.id).\
+                # having(func.count(Publication.id) == len(authors))
+    if 'pub-type' in filters:
+        pub_type = [PubType(int(i)) for i in filters['pub-type']]
+        publications = publications.filter(Publication.pub_type.in_(pub_type))
+    if 'pub-year' in filters:
+        pub_year = filters['pub-year']
+        publications = publications.filter(Publication.year.in_(pub_year))
+    if 'title' in filters:
+        title = filters['title']
+        publications = publications.filter(Publication.title.ilike(f'%{title}%'))
+    if 'journal' in filters:
+        journal = filters['journal']
+        publications = publications.join(Publication.journal).\
+                filter(Journal.id.in_(journal)).\
+                distinct(Publication.id)
+    if 'quartile' in filters:
+        publications = publications.join(Publication.journal).\
+                filter(or_(Journal.quartile_SJR.in_(filters['quartile']),
+                           Journal.quartile_JCR.in_(filters['quartile'])))
+    if 'db' in filters:
+        db = []
+        if 'wos' in filters['db']:
+            db.append(Journal.is_wos)
+        if 'scopus' in filters['db']:
+            db.append(Journal.is_scopus)
+        if 'risc' in filters['db']:
+            db.append(Journal.is_risc)
+        publications = publications.join(Publication.journal).\
+                filter(or_(*db))
+    return publications
+

@@ -14,7 +14,7 @@ author_organisation = db.Table('author_organisation',
         db.Column('author_id', db.Integer, db.ForeignKey('author.id', name='author_id_fk')), 
         db.Column('organisation_id', db.Integer, db.ForeignKey('organisation.id', name='organisation_id_fk')))
 
-lab_ids = [12, 9, 20, 10, 15, 8]
+lab_ids = [69, 9, 20, 10, 15, 8]
 
 
 class User(UserMixin):
@@ -94,14 +94,28 @@ class Publication(db.Model):
                         print(ex,'\n',data['title'],data['authors_raw'],author_raw)
                         continue
 
+                    isen = re.search('[A-Za-z]', lastname) is not None
+                    attr_ln = 'elastname' if isen else 'lastname'
+                    attr_n = 'ename' if isen else 'name'
+                    attr_p = 'epatronymic' if isen else 'patronymic'
+                    if isen:
+                        a = Author.query.filter(Author.elastname == lastname).\
+                                         filter(Author.ename == name)
+                    else:
+                        a = Author.query.filter(Author.lastname == lastname).\
+                                         filter(Author.name == name)
 
-                    a = Author.query.filter(Author.lastname == lastname).\
-                                     filter(Author.name == name)
                     if patr is not None:
-                        a=a.filter(Author.patronymic == patr)
+                        if isen:
+                            a=a.filter(Author.epatronymic == patr)
+                        else:
+                            a=a.filter(Author.patronymic == patr)
                     a = a.first()
                     if a is None:
-                        a = Author(lastname=lastname, name=name, patronymic=patr)
+                        a = Author()
+                        setattr(a, attr_ln, lastname)
+                        setattr(a, attr_n, name)
+                        setattr(a, attr_p, patr)
                         db.session.add(a)
                     self.authors.append(a.main or a)
                 else:
@@ -117,6 +131,25 @@ class Publication(db.Model):
         return(data)
 
 
+    def to_gost(self):
+        isen = len(re.findall('[a-zA-z]', self.title)) > .6*len(self.title)
+        attr = []
+        attr.append(self.journal.title if self.journal is not None else None)
+        attr.append(self.year)
+        attr.append(self.volume)
+        attr.append(self.issue)
+        attr.append("С. " + self.pages if self.pages is not None else None)
+        attr = [str(a) for a in attr if a is not None]
+        try:
+            output =(
+                    f'{", ".join([a.to_gost(not isen) for a in self.authors])} '
+                    f'{self.title} //'
+                    f'{". - ".join(attr)}'
+                    )
+        except:
+            print(self.id, self.title, end=' ') 
+            output = 'None'
+        return output
 
     def __repr__(self):
         return f'{self.authors_raw} {self.title}'
@@ -167,6 +200,11 @@ class Author(db.Model):
             backref=db.backref('main', remote_side=[id]))
     # publications - backref
     # organisations - backref
+    # main - backref
+
+    def get_all_publications(self):
+        author = self.main or self
+        return author.publications + [p for s in author.synonym for p in s.publications]
 
     def to_dict(self):
         data = {
@@ -181,8 +219,29 @@ class Author(db.Model):
                 "synonym": [s.id for s in self.synonym],
             }
         return data
+
+    def to_gost(self, rus=None):
+        ruath = self.lastname not in ['', None]
+        if rus is None or (rus ^ ruath):
+            return self.to_gost(ruath)
+        elif rus and ruath:
+            return (
+                    f'{self.lastname} '
+                    f'{self.name[0]}.'
+                    f'{self.patronymic[0]+"." if self.patronymic is not None else ""}'
+                    )
+        elif not rus and not ruath:
+            return (
+                    f'{self.elastname} '
+                    f'{self.ename[0]}.'
+                    f'{self.epatronymic[0]+"." if self.epatronymic is not None else ""}'
+                    )
+        else:
+            return 
+
+
     def __repr__(self):
-        return f'{self.lastname} {self.name[0] if self.name is not None else "X"}.'
+        return self.to_gost() 
 
 
 class Organisation(db.Model):
@@ -194,3 +253,5 @@ class Organisation(db.Model):
 
     def __repr__(self):
         return self.title
+
+

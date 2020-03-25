@@ -11,7 +11,18 @@ $(document).ready(function(){
         $("#dt-authors tr").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
+    });{
+    $("[id^='sort-a']").on('click', function(e) {
+        e.preventDefault();
+        $(this).blur();
+        sortT2($(this).closest('th').get(0),true);
     });
+    $("[id^='sort-d']").on('click', function(e) {
+        e.preventDefault();
+        $(this).blur();
+        sortT2($(this).closest('th').get(0),false);
+    });
+}
 });
 
 function updateVal(currentEle, value) {
@@ -47,3 +58,23 @@ function updateVal(currentEle, value) {
         $(currentEle).html(value);
     });
 }
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+function sortT2(th, n){
+        const table = th.closest('table');
+        Array.from(table.children[1].querySelectorAll('tr:nth-child(n+2)'))
+        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), n))
+        .forEach(tr => table.children[1].appendChild(tr) );
+}
+//document.querySelectorAll('th').forEach(
+    //th => th.addEventListener('click', (() => {
+        //console.log(th);
+        //const table = th.closest('table');
+        //Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
+        //.sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+        //.forEach(tr => table.appendChild(tr) );
+    //}))
+//)

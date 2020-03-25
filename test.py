@@ -129,6 +129,64 @@ class PublicationAdding(unittest.TestCase):
         self.assertEqual(pb.from_dict(data), False)
         print(pb.authors)
 
+class MainAuthorSetting(unittest.TestCase):
+    def setUp(self):
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        db.create_all()
+    def tearDown(self):
+        db.session.remove()
+
+    def test_main_set(self):
+        a1 = Author(name='1',lastname='L1')
+        a2 = Author(name='2',lastname='L2')
+        a3 = Author(name='3',lastname='L3')
+        pb1 = Publication(title='Pb1')
+        pb2 = Publication(title='Pb2')
+        db.session.add_all([a1,a2,a3,pb1,pb2])
+        pb1.authors.extend([a1,a3])
+        pb2.authors.extend([a2])
+        print(a1.publications)
+        print(a2.publications)
+        print(a3.publications)
+        print(pb1.authors)
+        print(pb2.authors)
+        a3.set_main(a2)
+        print(a1.publications)
+        print(a2.publications)
+        print(a3.publications)
+        print(pb1.authors)
+        print(pb2.authors)
+        a3.set_main(None)
+        print(a1.publications)
+        print(a2.publications)
+        print(a3.publications)
+        print(pb1.authors)
+        print(pb2.authors)
+
+class exportGOST(unittest.TestCase):
+    def setUp(self):
+        # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        db.create_all()
+    def tearDown(self):
+        db.session.remove()
+
+    def test_export(self):
+        print(Author.query.all())
+        a1 = Author.query.get(5)
+        a2 = Author.query.get(795)
+        print(a1.to_gost())
+        print(a1.to_gost(True))
+        print(a1.to_gost(False))
+        print(a2.to_gost())
+        print(a2.to_gost(True))
+        print(a2.to_gost(False))
+        p1 = Publication.query.get(319)
+        p2 = Publication.query.get(320)
+        print(p1.to_gost())
+        print(p2.to_gost())
+
+        
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

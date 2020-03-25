@@ -12,9 +12,6 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="{{url_for('static', filename='css/bootstrap.min.css')}}">
-  <!-- DataTable Style -->
-  <link rel="stylesheet" href="{{url_for('static', filename='css/addons/datatables.min.css')}}">
-  <link rel="stylesheet" href="{{url_for('static', filename='css/addons/datatables-select.min.css')}}">
 {% endblock %}
 {% block title %}
     {{ title }}
@@ -47,8 +44,6 @@
   <!-- Bootstrap tooltips -->
   <script type="text/javascript" src="static/js/popper.min.js"></script>
   {{super()}}
-  <!-- MDB core JavaScript -->
-  <script type="text/javascript" src="static/js/mdb.min.js"></script>
-  <script type="text/javascript" src="{{url_for('static', filename='js/addons/datatables.min.js')}}"></script>
-  <script type="text/javascript" src="{{url_for('static', filename='js/addons/datatables-select.min.js')}}"></script>
+  <!-- jquery redirect -->
+  <script type="text/javascript" src="{{url_for('static', filename='js/jquery.redirect.js')}}"></script>
 {% endblock %}

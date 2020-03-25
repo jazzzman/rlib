@@ -2,7 +2,7 @@
 
 {% block app_content %}
 <div id="search-div" class="row">
-    <div class="col-sm-1">
+    <div class="col-sm-2">
         <form id="form-authors">
             <div class="form-group">
                 <span class="float-left">Authors</span>
@@ -21,7 +21,7 @@
     <div class="col-sm-2">
         <form id="form-pub-type">
             <div class="form-group">
-                <span class="float-left">Publication Type</span>
+                <span class="float-left">Type</span>
                 <div class="float-right">
                     <button class="btn btn-sm btn-outline-light" type="button" id="drop-pub-type"><i class="fas fa-times"></i></button>
                 </div>
@@ -130,8 +130,9 @@
         </form>
     </div>
 </div>
-<hr>
-<div id="table-container" class="container-fluid">
+
+{% include 'export_panel.html' %}
+<div id="table-container" class="row mt-2 mx-1">
     {% include 'table_publication_nav.html' %}
 </div>
 

@@ -1,23 +1,114 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-<input class="form-control" id="author-filter" type="text" placeholder="Search..">
+<form class="form-inline py-2 mb-2">
+<div class="input-group">
+    <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fas fa-search"></i></span>
+    </div>
+    <input class="form-control" id="author-filter" type="text" placeholder="Search..">
+</div>
+</form>
 <table class="table table-hover table-bordered" cellspacing="0" width="100%">
-  <thead class="thead-dark ">
-    <tr>
-      <th>ID</th>
-      <th>Main ID</th>
-      <th>Main</th>
-      <th>Lastname</th>
-      <th>Name</th>
-      <th>Patronymic</th>
-    </tr>
-  </thead>
-  <tbody id="dt-authors">
-      {% for author in authors %}
-      {% include '_author.html' %}
-      {% endfor %}
-  </tbody>
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">ID</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-id" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-id" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">Main ID</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-mid" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-mid" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">Main</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-m" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-m" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">Lastname</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-ln" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-ln" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">Name</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-n" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-n" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">Patronymic</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-p" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-p" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">Eng Lastname</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-eln" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-eln" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">Eng Name</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-en" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-en" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">Eng Patronymic</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-ep" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-ep" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            <th>
+                <div class="d-flex align-content-center">
+                    <div class="w-100">Publications</div>
+                    <div class="d-flex flex-column flex-shrink-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-pb" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-pb" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody id="dt-authors">
+        {% for author in authors %}
+        {% include '_author.html' %}
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}
 

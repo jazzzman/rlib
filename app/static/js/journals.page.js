@@ -16,6 +16,22 @@ $(function () {
         };
         send_ajax(data);
     });
+    $("#journal-filter").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#dt-journals tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+    $("[id^='sort-a']").on('click', function(e) {
+        e.preventDefault();
+        $(this).blur();
+        sortT2($(this).closest('th').get(0),true);
+    });
+    $("[id^='sort-d']").on('click', function(e) {
+        e.preventDefault();
+        $(this).blur();
+        sortT2($(this).closest('th').get(0),false);
+    });
 });
 
 function updateVal(currentEle, value) {
@@ -50,4 +66,15 @@ function send_ajax(data){
             }
         }
     });
+}
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+function sortT2(th, n){
+        const table = th.closest('table');
+        Array.from(table.children[1].querySelectorAll('tr:nth-child(n+1)'))
+        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), n))
+        .forEach(tr => table.children[1].appendChild(tr) );
 }

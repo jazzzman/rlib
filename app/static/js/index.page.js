@@ -1,20 +1,4 @@
 var filter = {};
-// Setting dataTable
-$('#dt-basic-checkbox').dataTable({
-    searching: false,
-    paging: false,
-    columnDefs: [{
-        orderable: false,
-        className: 'select-checkbox',
-        targets: 0
-    }],
-    select: {
-        style: 'os',
-        selector: 'td:first-child'
-    }
-});
-$('#dt-basic-checkbox_length').insertBefore('#dt-basic-checkbox_paginate');
-$('#dt-basic-checkbox_length').addClass('dataTables_paginate float-left');
 $(function (){
     $("[id^='drop-']").click(function(){
         var inputId = this.id.replace("drop","input");
@@ -73,6 +57,42 @@ $(function (){
     });
     // <a> - ajax
     bindNavBtns();
+    // Sorting
+    $("[id^='sort-a']").on('click', function(e) {
+        e.preventDefault();
+        $(this).blur();
+        sortT2($(this).closest('th').get(0),true);
+    });
+    $("[id^='sort-d']").on('click', function(e) {
+        e.preventDefault();
+        $(this).blur();
+        sortT2($(this).closest('th').get(0),false);
+    });
+    // exporting
+    $("#to-clipboard").click(function (){
+        $.ajax({
+            url: "/output",
+            type: "POST",
+            data: JSON.stringify({'type':'clipboard','filters':filter}),
+            contentType: "application/json",
+        });
+    });
+    $("#to-csv").click(function (){
+        //$("#file").trigger("click");
+        $.redirect('/output', 
+            JSON.stringify({'type':'csv','filters':filter}),
+            "POST");
+        //$.ajax({
+            //url: "/output",
+            //type: "POST",
+            //data: JSON.stringify({'type':'clipboard','filters':filter}),
+            //contentType: "application/json",
+        //});
+    });
+    $("#file").change(function() {
+        var filename = $(this).val();
+        console.log(filename);
+    });
 });
 function activateBtnClass(id){
         $("#"+id).removeClass("btn-outline-light");
@@ -104,4 +124,15 @@ function bindNavBtns(){
         filter['page'] = $(this).attr('href').split('=')[1]
         navigate();
     });
+}
+const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+    v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+function sortT2(th, n){
+        const table = th.closest('table');
+        Array.from(table.children[1].querySelectorAll('tr:nth-child(n+1)'))
+        .sort(comparer(Array.from(th.parentNode.children).indexOf(th), n))
+        .forEach(tr => table.children[1].appendChild(tr) );
 }

@@ -72,5 +72,8 @@ for p in data:
         print(p)
 
 db.session.commit()
+print(Publication.query.filter_by(title=None).count(),'empty rows were deleted')
+Publication.query.filter_by(title=None).delete()
+db.session.commit()
 
 
