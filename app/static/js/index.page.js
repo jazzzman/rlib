@@ -80,7 +80,7 @@ $(function (){
     $("#to-csv").click(function (){
         //$("#file").trigger("click");
         $.redirect('/output', 
-            JSON.stringify({'type':'csv','filters':filter}),
+            {'json':JSON.stringify({'type':'csv','filters':filter})},
             "POST");
         //$.ajax({
             //url: "/output",

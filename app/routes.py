@@ -1,6 +1,8 @@
 import clipboard
+import tempfile
+import json
 from flask import (render_template, redirect, url_for, flash, 
-        request, jsonify, session, abort)
+        request, jsonify, session, abort, send_file)
 from flask_login import current_user, login_user, login_required
 from app import app, login, db
 from app.forms import LoginForm
@@ -127,7 +129,9 @@ def settings():
 @login_required
 def output():
     if request.method == 'POST':
-        data = request.get_json()
+        data = request.get_data()
+        print(data)
+        data = json.load(data.decode('utf8').split('=')[1])
         print(data)
         if data['type'] == 'clipboard':
             publications = Publication.query.order_by(Publication.year.desc())
@@ -137,7 +141,9 @@ def output():
             clipboard.copy('\n'.join([p.to_gost() for p in publications]))
             return '200' 
         elif data['type'] == 'csv':
-            return send_file('file', attachment_filename='python.jpg')
+            tp = tempfile.TemporaryFile() 
+            tp.write(b'Hello world!')
+            return send_file(tp, as_attachment=True,attachment_filename='tp.txt')
     else:
         abort(404)
 
