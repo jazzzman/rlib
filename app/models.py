@@ -16,6 +16,20 @@ author_organisation = db.Table('author_organisation',
 
 lab_ids = [69, 9, 20, 10, 15, 8]
 
+pub_columns = {
+        'id': True, 
+        'authors': True,
+        'title': True,
+        'journal': True,
+        'year': False,
+        'volume': False,
+        'issue': False,
+        'pages': False,
+        'doi': False,
+        'quartile_JCR': False,
+        'quartile_SJR': False,
+        'pub_type': True,
+        } 
 
 class User(UserMixin):
     id = 0
@@ -152,7 +166,7 @@ class Publication(db.Model):
         return output
 
     def __repr__(self):
-        return f'{self.authors_raw} {self.title}'
+        return self.to_gost()
 
 
 class Journal(db.Model):
@@ -179,8 +193,6 @@ class Journal(db.Model):
         if 'quartile' in data:
             self.quartile_JCR = self.quartile_SJR = data['quartile']
         return True
-
-
 
     def __repr__(self):
         return f'{self.title}'
@@ -238,7 +250,6 @@ class Author(db.Model):
                     )
         else:
             return 
-
 
     def __repr__(self):
         return self.to_gost() 

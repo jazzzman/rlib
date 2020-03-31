@@ -1,8 +1,12 @@
 <tr>
-    <td></td>
-    <td>{{ pub.id }}</td>
-    <td>{{ pub.authors_raw }}</td>
-    <td>{{ pub.title }}</td>
-    <td>{{ pub.journal }}</td>
+    {% for key, value in pub_columns.items() %}
+        {% if value %}
+            {% if key == 'authors' %}
+                <td>{{ pub[key] | join(', ') }}</td>
+            {% else %}
+                <td>{{ pub[key] }}</td>
+            {% endif %}
+        {% endif %}    
+    {% endfor %}
     <td>{{ pub.year }}</td>
 </tr>

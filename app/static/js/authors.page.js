@@ -31,11 +31,13 @@ function updateVal(currentEle, value) {
     $(".thVal").keyup(function (event) {
         if (event.keyCode == 13) {
             $(currentEle).html($(".thVal").val().trim());
-            data = {
-                'id': $(currentEle).siblings().first().attr("id").split(':')[1],
-                'main_id': $(currentEle).text()
+            var field = $(currentEle).attr("id").split(':')[0]
+            var id = $(currentEle).attr("id").split(':')[1]
+            var data = {
+                'id': id,
+                [field]: $(currentEle).text()
             }
-            if (data['main_id'] != ''){
+            if ('main_id' in data && data['main_id'] != ''){
                 $(currentEle).parent().addClass("table-info");
             }
             else{
@@ -48,8 +50,10 @@ function updateVal(currentEle, value) {
                 data: JSON.stringify(data),
                 contentType: "application/json",
                 success: function(result){
-                    $(currentEle).attr("id", "main_id:"+result["main_id"]);
-                    $("#main:"+result['id']).text(result["main_repr"]);
+                    if (Object.keys(result).length !== 0){
+                        $(currentEle).attr("id", "main_id:"+result["main_id"]);
+                        $("#main:"+result['id']).text(result["main_repr"]);
+                    }
                 }
             });
         }

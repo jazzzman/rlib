@@ -7,7 +7,7 @@ from flask_login import current_user, login_user, login_required
 from app import app, login, db
 from app.forms import LoginForm
 from app.models import (User, Author, Publication, Journal, PubType, 
-        lab_ids)
+        lab_ids, pub_columns)
 from sqlalchemy import func, distinct, or_
 
 @app.route('/')
@@ -41,12 +41,12 @@ def index():
         return render_template('table_publication_nav.html', 
                             publications = publications.items, curr_page = page,
                             next_url=next_url, prev_url=prev_url, nav_btns=nav_btns,
-                            pages_info=pages_info)
+                            pages_info=pages_info, pub_columns=pub_columns)
     return render_template('index.html', title='RLib', publications = publications.items,
                             curr_page=page, next_url=next_url, prev_url=prev_url, 
                             nav_btns=nav_btns,  lab_authors=lab_authors,
                             journals=journals, years=years, pub_type = PubType,
-                            pages_info=pages_info)
+                            pages_info=pages_info, pub_columns=pub_columns)
 
 
 @app.route('/signin', methods=['GET','POST'])
@@ -87,14 +87,18 @@ def add():
 def authors():
     if request.method == 'POST':
         # TODO implement through api
+        rdata = {}
         data = request.get_json() or {}
         if 'id' not in data:
             return
         asyn = Author.query.get_or_404(data['id'])
-        asyn.main = Author.query.get(data['main_id'])
+        if 'main_id' in data:
+            asyn.main = Author.query.get(data['main_id'])
+            rdata = asyn.to_dict()
+            rdata["main_repr"] = str(asyn.main) if asyn.main else ""
+        for field in [k for k in data.keys() if k not in ['id','main_id']]:
+            setattr(asyn, field, data[field] if data[field] != '' else None)
         db.session.commit()
-        rdata = asyn.to_dict()
-        rdata["main_repr"] = str(asyn.main) if asyn.main else ""
         return jsonify(rdata)
     authors = Author.query.order_by(Author.lastname.asc()).all()
     return render_template('authors.html', title='RLib.Authors',
@@ -129,33 +133,29 @@ def settings():
 @login_required
 def output():
     if request.method == 'POST':
-        data = request.get_data()
-        print(data)
-        data = json.load(data.decode('utf8').split('=')[1])
-        print(data)
+        data = request.get_json()
+        publications = Publication.query.order_by(Publication.year.desc())
+        publications = apply_filters(publications, 
+                data.get('filters',{})).\
+                all()
+        plain = '\n'.join([p.to_gost() for p in publications])
         if data['type'] == 'clipboard':
-            publications = Publication.query.order_by(Publication.year.desc())
-            publications = apply_filters(publications, 
-                    data.get('filters',{})).\
-                    all()
-            clipboard.copy('\n'.join([p.to_gost() for p in publications]))
+            clipboard.copy(plain)
             return '200' 
         elif data['type'] == 'csv':
-            tp = tempfile.TemporaryFile() 
-            tp.write(b'Hello world!')
-            return send_file(tp, as_attachment=True,attachment_filename='tp.txt')
+            return jsonify([plain, 'publications.txt'])
     else:
         abort(404)
 
 
 def apply_filters(publications, filters):
-    print(filters)
     if 'authors' in filters:
+        authors = filters['authors']
         publications = publications.join(Publication.authors).\
                 filter(Author.id.in_(authors))#.\
-                # TODO commented filters should apply for distinct publications
-                # group_by(Publication.id).\
-                # having(func.count(Publication.id) == len(authors))
+        if filters.get('ath_intersection', False):
+            publications = publications.group_by(Publication.id).\
+                        having(func.count(Publication.id) == len(authors))
     if 'pub-type' in filters:
         pub_type = [PubType(int(i)) for i in filters['pub-type']]
         publications = publications.filter(Publication.pub_type.in_(pub_type))

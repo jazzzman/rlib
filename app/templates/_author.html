@@ -6,11 +6,11 @@
     <td id="{{ 'id:' + author.id|string }}">{{ author.id }}</td>
     <td class="editable-cell" id="{{ 'main_id:' + author.id|string }}">{{ author.main.id }}</td>
     <td id="{{ 'main:'+ author.id|string }}">{{ author.main }}</td>
-    <td>{{ author.lastname }}</td>
-    <td>{{ author.name }}</td>
-    <td>{{ author.patronymic }}</td>
-    <td>{{ author.elastname }}</td>
-    <td>{{ author.ename }}</td>
-    <td>{{ author.epatronymic }}</td>
-    <td>{{ author.publications|length }}</td>
+    <td class="editable-cell" id="{{ 'lastname:' + author.id|string }}">{{ author.lastname }}</td>
+    <td class="editable-cell" id="{{ 'name:' + author.id|string }}">{{ author.name }}</td>
+    <td class="editable-cell" id="{{ 'patronymic:' + author.id|string }}">{{ author.patronymic }}</td>
+    <td class="editable-cell" id="{{ 'elastname:' + author.id|string }}">{{ author.elastname }}</td>
+    <td class="editable-cell" id="{{ 'ename:' + author.id|string }}">{{ author.ename }}</td>
+    <td class="editable-cell" id="{{ 'epatronymic:' + author.id|string }}">{{ author.epatronymic }}</td>
+    <td >{{ author.publications|length }}</td>
 </tr>

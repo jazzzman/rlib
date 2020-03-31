@@ -1,11 +1,38 @@
 {% extends "base.html" %}
 
 {% block app_content %}
+<!-- Modal -->
+<div class="modal fade" id="column-selector" tabindex="-1" role="dialog" aria-labelledby="columnselector" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="search-div" class="row">
     <div class="col-sm-2">
         <form id="form-authors">
             <div class="form-group">
-                <span class="float-left">Authors</span>
+                <div class="float-left">
+                    Authors
+                    <div class="custom-control custom-switch custom-control-inline mx-1" data-toggle="tooltip" title="If it's checked, selected authors will be in the same publication" data-delay="500">
+                        <input type="checkbox" class="custom-control-input" id="sw-intersect" value="intersect" name="sw-intersect">
+                        <label class="custom-control-label" for="sw-intersect">intersect</label>
+                    </div>
+                </div>
                 <div class="float-right">
                     <button class="btn btn-sm btn-outline-light" type="button" id="drop-authors"><i class="fas fa-times"></i></button>
                 </div>
@@ -130,8 +157,13 @@
         </form>
     </div>
 </div>
-
+<div class="clearfix">
 {% include 'export_panel.html' %}
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#column-selector">
+    Columns 
+</button>
+</div>
 <div id="table-container" class="row mt-2 mx-1">
     {% include 'table_publication_nav.html' %}
 </div>

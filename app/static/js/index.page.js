@@ -1,5 +1,6 @@
 var filter = {};
 $(function (){
+    // Drop filter button
     $("[id^='drop-']").click(function(){
         var inputId = this.id.replace("drop","input");
         var key = this.id.replace("drop-","");
@@ -14,6 +15,10 @@ $(function (){
         deactivateBtnClass(this.id);
         sendFilters();
     });
+    //Drop selected filters onload
+    $("[id^='drop-']").each(function(i,el){
+        el.click();
+    }) 
     // Filters
     $(".custom-select").change(function(){
         var selectedValues = $("option:selected", this).map(function(){
@@ -41,6 +46,10 @@ $(function (){
             })
             .toArray()
             filter[key] = dbs;
+        }
+        else if (this.name == "sw-intersect"){
+            key = "ath_intersection";
+            filter[key] = this.checked
         }
         else {
             key = "quartile";
@@ -78,22 +87,28 @@ $(function (){
         });
     });
     $("#to-csv").click(function (){
-        //$("#file").trigger("click");
-        $.redirect('/output', 
-            {'json':JSON.stringify({'type':'csv','filters':filter})},
-            "POST");
-        //$.ajax({
-            //url: "/output",
-            //type: "POST",
-            //data: JSON.stringify({'type':'clipboard','filters':filter}),
-            //contentType: "application/json",
-        //});
-    });
-    $("#file").change(function() {
-        var filename = $(this).val();
-        console.log(filename);
+        $.ajax({
+            url: "/output",
+            async: false,
+            type: "POST",
+            data: JSON.stringify({'type':'csv','filters':filter}),
+            contentType: "application/json",
+            success: saveData
+        });
+
     });
 });
+function saveData(data) {
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style = "display: none";
+    var blob = new Blob([data[0]], {type: "text/plain"}),
+        url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = data[1];
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
 function activateBtnClass(id){
         $("#"+id).removeClass("btn-outline-light");
         $("#"+id).addClass("btn-outline-secondary");
