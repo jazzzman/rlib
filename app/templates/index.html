@@ -3,23 +3,40 @@
 {% block app_content %}
 <!-- Modal -->
 <div class="modal fade" id="column-selector" tabindex="-1" role="dialog" aria-labelledby="columnselector" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+    <div class="modal-dialog modal-dialog-centered w-25" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="column-selector-header">Column Selector</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% for key, value in pub_columns.items() %}
+                <div class="form-check">
+                    {% if value %}
+                    <input type="checkbox" class="form-check-input" value="{{key}}" id="colsel-{{key}}" autocomplete="off" checked>
+                    {% else %}
+                    <input type="checkbox" class="form-check-input" value="{{key}}" id="colsel-{{key}}" autocomplete="off">
+                    {% endif %}
+                    <label class="form-check-label" for="colsel-{{key}}">{{key}}</label>
+                </div>
+                {% endfor %}
+                <hr>
+                <h5>Add new column</h5>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <button class="btn btn-outline-secondary" type="button">Add</button>
+                    </div>
+                    <input type="text" class="form-control" placeholder="unique column name" aria-label="" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="column-selector-update">Save changes</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <div id="search-div" class="row">
@@ -28,7 +45,7 @@
             <div class="form-group">
                 <div class="float-left">
                     Authors
-                    <div class="custom-control custom-switch custom-control-inline mx-1" data-toggle="tooltip" title="If it's checked, selected authors will be in the same publication" data-delay="500">
+                    <div class="custom-control custom-switch custom-control-inline mx-1" data-toggle="tooltip" title="if it's checked, selected authors will be in the same publication" data-delay="500">
                         <input type="checkbox" class="custom-control-input" id="sw-intersect" value="intersect" name="sw-intersect">
                         <label class="custom-control-label" for="sw-intersect">intersect</label>
                     </div>
@@ -39,7 +56,7 @@
                 <select class="custom-select" id="input-authors" size="5" multiple>
                     <option hidden disabled selected value> -- select an option -- </option>
                     {% for au in lab_authors %}
-                    <option value="{{ au.id }}">{{ au }}</option>
+                    <option value="{{ au.id }}" autocomplete="off">{{ au }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -120,13 +137,13 @@
         <div class="form-group">
             <form id="form-db">
                 <div class="form-group">
-                    <span class="float-left mr-2">DataBase:</span>
+                    <span class="float-left mr-2">Database:</span>
                     <div class="float-right">
                         <button class="btn btn-sm btn-outline-light" type="button" id="drop-db"><i class="fas fa-times"></i></button>
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
                         <input type="checkbox" class="custom-control-input" id="sw-db-wos" value="wos" name="db-indexing">
-                        <label class="custom-control-label" for="sw-db-wos">WOS</label>
+                        <label class="custom-control-label" for="sw-db-wos">WoS</label>
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
                         <input type="checkbox" class="custom-control-input" id="sw-db-scopus" value="scopus" name="db-indexing">
@@ -134,7 +151,7 @@
                     </div>
                     <div class="custom-control custom-switch custom-control-inline mr-1">
                         <input type="checkbox" class="custom-control-input" id="sw-db-risc" value="risc" name="db-indexing">
-                        <label class="custom-control-label" for="sw-db-risc">Risc</label>
+                        <label class="custom-control-label" for="sw-db-risc">RISC</label>
                     </div>
                 </div>
             </form>
@@ -158,11 +175,10 @@
     </div>
 </div>
 <div class="clearfix">
-{% include 'export_panel.html' %}
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#column-selector">
-    Columns 
-</button>
+    {% include 'export_panel.html' %}
+    <button type="button" class="btn btn-info float-right" data-toggle="modal" data-target="#column-selector">
+        Columns
+    </button>
 </div>
 <div id="table-container" class="row mt-2 mx-1">
     {% include 'table_publication_nav.html' %}
@@ -172,5 +188,20 @@
 
 {% block scripts %}
 {{super()}}
+<script>
+var pub_columns  = {{pub_columns|jsonPresOrd|safe}};
+var html_pub_dd = `
+<div class="btn-group">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    curr-pub
+  </button>
+  <div class="dropdown-menu dropdown-menu-right">
+    {% for pt in pub_type %}
+    <button class="dropdown-item context-pub-type-selector" type="button">{{pt.name}}</button>
+    {% endfor%}
+  </div>
+</div>
+`
+</script>
 <script src="{{ url_for('static', filename='js/index.page.js') }}"></script>
 {% endblock %}

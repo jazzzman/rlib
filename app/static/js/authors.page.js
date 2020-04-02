@@ -11,7 +11,7 @@ $(document).ready(function(){
         $("#dt-authors tr").filter(function() {
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
-    });{
+    });
     $("[id^='sort-a']").on('click', function(e) {
         e.preventDefault();
         $(this).blur();
@@ -22,12 +22,11 @@ $(document).ready(function(){
         $(this).blur();
         sortT2($(this).closest('th').get(0),false);
     });
-}
 });
 
 function updateVal(currentEle, value) {
     $(currentEle).html('<input class="thVal form-control" size="1" type="text" value="' + value + '" />');
-    $(".thVal").focus();
+    $(".thVal").select();
     $(".thVal").keyup(function (event) {
         if (event.keyCode == 13) {
             $(currentEle).html($(".thVal").val().trim());

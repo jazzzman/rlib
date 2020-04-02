@@ -1,23 +1,22 @@
 var filter = {};
-$(function (){
+var columns = {};
+$(document).ready(function (){
     // Drop filter button
     $("[id^='drop-']").click(function(){
         var inputId = this.id.replace("drop","input");
         var key = this.id.replace("drop-","");
-        //deselect selects
-        if ($("#"+inputId).length > 0){
-            $("#"+inputId)[0].selectedIndex = 0;
-        }
         $("#"+inputId).val("");
         if (key in filter){
             delete filter[key];
         }
+        deselectOptions(inputId);
         deactivateBtnClass(this.id);
-        sendFilters();
+        sendFilters('drop');
     });
     //Drop selected filters onload
     $("[id^='drop-']").each(function(i,el){
-        el.click();
+        var inputId = el.id.replace("drop","input");
+        deselectOptions(inputId);
     }) 
     // Filters
     $(".custom-select").change(function(){
@@ -29,13 +28,13 @@ $(function (){
         activateBtnClass(id);
         var key = this.id.replace("input-","");
         filter[key] = selectedValues;
-        sendFilters();
+        sendFilters('selcet');
     });
     $("#input-title").change(function(){
         var id = this.id.replace("input","drop");
         activateBtnClass(id);
         filter["title"] = this.value;
-        sendFilters();
+        sendFilters('title');
     });
     $(".custom-control-input").change(function(){
         var key = ""
@@ -62,9 +61,9 @@ $(function (){
         if (key in filter && filter[key].length==0){
             delete filter[key];
         }
-        sendFilters();
+        sendFilters('inputs');
     });
-    // <a> - ajax
+    // Navigation <a> - ajax
     bindNavBtns();
     // Sorting
     $("[id^='sort-a']").on('click', function(e) {
@@ -95,7 +94,28 @@ $(function (){
             contentType: "application/json",
             success: saveData
         });
-
+    });
+    // column selector events
+    $("#column-selector-update").click(function (){
+        $("#column-selector").modal('hide');
+        for (key in columns) {
+            pub_columns[key] = columns[key];
+        }
+        filter['pub_columns'] = pub_columns;
+        navigate();
+    });
+    $("[id^='colsel-']").change(function(){
+        var key = $(this).attr("value");
+        var value = $(this).is(":checked");
+        columns[key] = value;
+    });
+    // Editable Cell
+    $(".editable-cell").dblclick(function (e) {
+        e.stopPropagation();
+        var currentEle = $(this);
+        var value = $(this).html();
+        if ($(this).has("input").length > 0){return}
+        updateVal(currentEle, value);
     });
 });
 function saveData(data) {
@@ -109,6 +129,11 @@ function saveData(data) {
     a.click();
     window.URL.revokeObjectURL(url);
 }
+function deselectOptions(inputId){
+        if ($("#"+inputId).length > 0){
+            $("#"+inputId)[0].selectedIndex = 0;
+        }
+}
 function activateBtnClass(id){
         $("#"+id).removeClass("btn-outline-light");
         $("#"+id).addClass("btn-outline-secondary");
@@ -117,7 +142,7 @@ function deactivateBtnClass(id) {
         $("#"+id).removeClass("btn-outline-secondary");
         $("#"+id).addClass("btn-outline-light");
 }
-function sendFilters(){
+function sendFilters(sender){
     delete filter['page'];
     navigate();
 }
@@ -150,4 +175,48 @@ function sortT2(th, n){
         Array.from(table.children[1].querySelectorAll('tr:nth-child(n+1)'))
         .sort(comparer(Array.from(th.parentNode.children).indexOf(th), n))
         .forEach(tr => table.children[1].appendChild(tr) );
+}
+function updateVal(currentEle, value) {
+    var field = $(currentEle).attr("id").split(':')[0];
+    var id = $(currentEle).attr("id").split(':')[1];
+    var data = { 'id': id };
+
+    if ($(currentEle).attr('id').split(":")[0]=="pub_type"){
+        $(currentEle).html(html_pub_dd.replace('curr-pub',value));
+        var new_pub_type = '----------';
+        $('.context-pub-type-selector').click(function(){
+            new_pub_type = $(this).text();
+            $(currentEle).html(new_pub_type);   
+            data[field] = new_pub_type;
+            updatePublication(data);
+        });
+    }
+    else {
+        $(currentEle).html('<input class="thVal form-control" size="1" type="text" value="' + value + '" />');
+    }
+    $(".thVal").select();
+    $(".thVal").keyup(function (event) {
+        if (event.keyCode == 13) {
+            $(currentEle).html($(".thVal").val().trim());
+            data[field] = $(currentEle).text();
+            if ('main_id' in data && data['main_id'] != ''){
+                $(currentEle).parent().addClass("table-info");
+            }
+            else{
+                $(currentEle).parent().removeClass("table-info");
+            }
+            updatePublication(data);
+        }
+    });
+		$(".thVal").focusout(function(event){
+        $(currentEle).html(value);
+    });
+}
+function updatePublication(data){
+    $.ajax({
+        url: "/update",
+        type: "POST",
+        data: JSON.stringify(data),
+        contentType: "application/json",
+    });
 }

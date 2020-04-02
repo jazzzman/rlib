@@ -33,7 +33,6 @@
                 </ul>
             </div>
         </nav>
-        <!-- Your page content -->
         {% block content %}
         <div class="container-fluid">
             {% block app_content %}{% endblock %}
@@ -41,7 +40,6 @@
         {% endblock %}
 
         {% block scripts %}
-        <!-- Optional JavaScript -->
         {{ bootstrap.load_js() }}
         {% endblock %}
     </body>

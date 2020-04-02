@@ -21,7 +21,7 @@ pub_columns = {
         'authors': True,
         'title': True,
         'journal': True,
-        'year': False,
+        'year': True,
         'volume': False,
         'issue': False,
         'pages': False,

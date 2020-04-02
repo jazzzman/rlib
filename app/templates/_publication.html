@@ -1,12 +1,16 @@
 <tr>
     {% for key, value in pub_columns.items() %}
         {% if value %}
+            {% set attr_id = key+':'+pub['id']|string %}
             {% if key == 'authors' %}
-                <td>{{ pub[key] | join(', ') }}</td>
+                <td id="{{attr_id}}">{{ pub[key] | join(', ') }}</td>
+            {% elif key == 'pub_type' %}
+                <td id="{{attr_id}}" class="editable-cell">{{ pub[key].name }}</td>
+            {% elif key == 'id' %}
+                <td id="{{attr_id}}">{{ pub[key] }}</td>
             {% else %}
-                <td>{{ pub[key] }}</td>
+                <td id="{{attr_id}}" class="editable-cell">{{ pub[key] }}</td>
             {% endif %}
         {% endif %}    
     {% endfor %}
-    <td>{{ pub.year }}</td>
 </tr>

@@ -4,11 +4,13 @@ import json
 from flask import (render_template, redirect, url_for, flash, 
         request, jsonify, session, abort, send_file)
 from flask_login import current_user, login_user, login_required
-from app import app, login, db
+from app import app, login, db, bootstrap
 from app.forms import LoginForm
 from app.models import (User, Author, Publication, Journal, PubType, 
         lab_ids, pub_columns)
 from sqlalchemy import func, distinct, or_
+from jinja2 import Template, Environment, PackageLoader, select_autoescape
+
 
 @app.route('/')
 @app.route('/index', methods=['GET','POST'])
@@ -24,6 +26,10 @@ def index():
         filters = request.get_json()
         publications = apply_filters(publications ,filters)
         page = int(filters.get('page',1))
+        if 'pub_columns' in filters:
+            pub_cols = filters['pub_columns']
+        else:
+            pub_cols=pub_columns
 
     publications = publications.paginate(page, 
             app.config['PUBLICATIONS_PER_PAGE'], False)
@@ -41,7 +47,7 @@ def index():
         return render_template('table_publication_nav.html', 
                             publications = publications.items, curr_page = page,
                             next_url=next_url, prev_url=prev_url, nav_btns=nav_btns,
-                            pages_info=pages_info, pub_columns=pub_columns)
+                            pages_info=pages_info, pub_columns=pub_cols)
     return render_template('index.html', title='RLib', publications = publications.items,
                             curr_page=page, next_url=next_url, prev_url=prev_url, 
                             nav_btns=nav_btns,  lab_authors=lab_authors,
@@ -148,6 +154,23 @@ def output():
         abort(404)
 
 
+@app.route('/update', methods=['GET','POST'])
+@login_required
+def update():
+    if request.method == 'POST':
+        data = request.get_json()
+        publication = Publication.query.get_or_404(data['id'])
+        for field in [f for f in data.keys() if f not in ['id','pub_type']]:
+            setattr(publication,field,data[field])
+        if 'pub_type' in data:
+            setattr(publication,'pub_type',PubType[data['pub_type']])
+
+        db.session.commit()
+        return '200' 
+    else:
+        abort(404)
+
+
 def apply_filters(publications, filters):
     if 'authors' in filters:
         authors = filters['authors']
@@ -186,3 +209,6 @@ def apply_filters(publications, filters):
                 filter(or_(*db))
     return publications
 
+@app.template_filter('jsonPresOrd')
+def json_preserve_order(input):
+    return json.dumps(input)
