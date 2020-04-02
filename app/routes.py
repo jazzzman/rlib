@@ -171,6 +171,15 @@ def update():
         abort(404)
 
 
+@app.route('/addcolumn', methods=['GET','POST'])
+@login_required
+def addcolumn():
+    if request.method == 'POST':
+        data = request.get_data().decode('utf8')
+        return data
+    return abort(400)
+
+
 def apply_filters(publications, filters):
     if 'authors' in filters:
         authors = filters['authors']

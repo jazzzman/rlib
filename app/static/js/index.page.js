@@ -117,6 +117,16 @@ $(document).ready(function (){
         if ($(this).has("input").length > 0){return}
         updateVal(currentEle, value);
     });
+    $("#add-new-column").click(function(){
+        $.ajax({
+            url: "/addcolumn",
+            type: "POST",
+            data: $("#new-column-input").val(),
+            success: function(result){
+                console.log(result);
+            }
+        });
+    });
 });
 function saveData(data) {
     var a = document.createElement("a");
@@ -183,12 +193,19 @@ function updateVal(currentEle, value) {
 
     if ($(currentEle).attr('id').split(":")[0]=="pub_type"){
         $(currentEle).html(html_pub_dd.replace('curr-pub',value));
+        $("#pub_type_dd_btn").focus();
         var new_pub_type = '----------';
         $('.context-pub-type-selector').click(function(){
             new_pub_type = $(this).text();
             $(currentEle).html(new_pub_type);   
             data[field] = new_pub_type;
             updatePublication(data);
+        });
+        $("#pub_type_dd").on('hidden.bs.dropdown', function(){
+            $(currentEle).html(value);   
+        });
+        $("#pub_type_dd").focusout(function(event){
+            $(currentEle).html(value);
         });
     }
     else {
@@ -208,7 +225,7 @@ function updateVal(currentEle, value) {
             updatePublication(data);
         }
     });
-		$(".thVal").focusout(function(event){
+    $(".thVal").focusout(function(event){
         $(currentEle).html(value);
     });
 }

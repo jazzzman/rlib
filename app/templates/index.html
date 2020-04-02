@@ -26,9 +26,9 @@
                 <h5>Add new column</h5>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <button class="btn btn-outline-secondary" type="button">Add</button>
+                        <button id="add-new-column" class="btn btn-outline-secondary" type="button">Add</button>
                     </div>
-                    <input type="text" class="form-control" placeholder="unique column name" aria-label="" aria-describedby="basic-addon1">
+                    <input type="text" id="new-column-input" class="form-control" placeholder="unique column name" aria-label="" aria-describedby="basic-addon1">
                 </div>
             </div>
             <div class="modal-footer">
@@ -191,8 +191,8 @@
 <script>
 var pub_columns  = {{pub_columns|jsonPresOrd|safe}};
 var html_pub_dd = `
-<div class="btn-group">
-  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<div class="btn-group" id="pub_type_dd">
+  <button type="button" id="pub_type_dd_btn" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     curr-pub
   </button>
   <div class="dropdown-menu dropdown-menu-right">
