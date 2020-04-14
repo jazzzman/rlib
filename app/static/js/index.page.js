@@ -66,16 +66,8 @@ $(document).ready(function (){
     // Navigation <a> - ajax
     bindNavBtns();
     // Sorting
-    $("[id^='sort-a']").on('click', function(e) {
-        e.preventDefault();
-        $(this).blur();
-        sortT2($(this).closest('th').get(0),true);
-    });
-    $("[id^='sort-d']").on('click', function(e) {
-        e.preventDefault();
-        $(this).blur();
-        sortT2($(this).closest('th').get(0),false);
-    });
+    $("[id^='sort-a']").on('click', sortA);
+    $("[id^='sort-d']").on('click', sortD);
     // exporting
     $("#to-clipboard").click(function (){
         $.ajax({
@@ -95,6 +87,10 @@ $(document).ready(function (){
             success: saveData
         });
     });
+    $("[id^='colsel-']").change(columnVisChanged);
+    // Editable Cell
+    $(".editable-cell").on('dblclick',startEditing);
+    // Modal Btns
     // column selector events
     $("#column-selector-update").click(function (){
         $("#column-selector").modal('hide');
@@ -104,29 +100,40 @@ $(document).ready(function (){
         filter['pub_columns'] = pub_columns;
         navigate();
     });
-    $("[id^='colsel-']").change(function(){
-        var key = $(this).attr("value");
-        var value = $(this).is(":checked");
-        columns[key] = value;
-    });
-    // Editable Cell
-    $(".editable-cell").dblclick(function (e) {
-        e.stopPropagation();
-        var currentEle = $(this);
-        var value = $(this).html();
-        if ($(this).has("input").length > 0){return}
-        updateVal(currentEle, value);
-    });
     $("#add-new-column").click(function(){
+        var field = $("#new-column-input").val();
         $.ajax({
             url: "/addcolumn",
             type: "POST",
-            data: $("#new-column-input").val(),
+            data: field,
             success: function(result){
-                console.log(result);
-            }
+                if ($('#new-column-input').hasClass("is-invalid")){
+                    $('#new-column-input').removeClass("is-invalid");
+                }
+                $('#column-selector-list').append(result);
+                columns[field] = true;
+                $("#colsel-"+field).change(columnVisChanged);
+            },
+            error: function(result){
+                $('#new-column-input').addClass("is-invalid");
+            },
         });
     });
+    $("#delete-columns-btn").click(function(){
+        var ids = $(".table-success").map(function(){
+                return $(this).children().first().text();
+            })
+            .get();
+        $.ajax({
+            url: "/deletepubs",
+            type: "POST",
+            data: JSON.stringify(ids),
+            contentType: "application/json",
+        });
+        $(".table-success").toggle();
+        $("#delete-columns-modal").modal('hide');
+    });
+    $("tr").on('click', selectRow);
 });
 function saveData(data) {
     var a = document.createElement("a");
@@ -164,6 +171,10 @@ function navigate(){
         contentType: "application/json",
         success: function(result){
             $("#table-container").html(result);
+            $(".editable-cell").on('dblclick',startEditing);
+            $("[id^='sort-a']").on('click', sortA);
+            $("[id^='sort-d']").on('click', sortD);
+            $("tr").on('click', selectRow);
             bindNavBtns();
         }
     });
@@ -179,12 +190,28 @@ const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx]
 const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
     v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
-
+function sortA() {
+    event.preventDefault();
+    $(this).blur();
+    sortT2($(this).closest('th').get(0),true);
+}
+function sortD() {
+    event.preventDefault();
+    $(this).blur();
+    sortT2($(this).closest('th').get(0),false);
+}
 function sortT2(th, n){
         const table = th.closest('table');
         Array.from(table.children[1].querySelectorAll('tr:nth-child(n+1)'))
         .sort(comparer(Array.from(th.parentNode.children).indexOf(th), n))
         .forEach(tr => table.children[1].appendChild(tr) );
+}
+function startEditing() {
+    event.stopPropagation();
+    var currentEle = $(this);
+    var value = $(this).html();
+    if ($(this).has("input").length > 0){return}
+    updateVal(currentEle, value);
 }
 function updateVal(currentEle, value) {
     var field = $(currentEle).attr("id").split(':')[0];
@@ -236,4 +263,18 @@ function updatePublication(data){
         data: JSON.stringify(data),
         contentType: "application/json",
     });
+}
+function columnVisChanged(){
+    var key = $(this).attr("value");
+    var value = $(this).is(":checked");
+    columns[key] = value;
+}
+function selectRow(){
+    if ($(this).hasClass("table-success")){
+        $(this).removeClass("table-success");
+    }
+    else{
+        $(this).addClass("table-success");
+    }
+    $('#delete-cols-toolbar-btn').toggle($(".table-success").length>0);
 }

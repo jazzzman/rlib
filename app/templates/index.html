@@ -2,7 +2,7 @@
 
 {% block app_content %}
 <!-- Modal -->
-<div class="modal fade" id="column-selector" tabindex="-1" role="dialog" aria-labelledby="columnselector" aria-hidden="true">
+<div class="modal fade" id="column-selector-modal" tabindex="-1" role="dialog" aria-labelledby="columnselector" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered w-25" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,16 +12,18 @@
                 </button>
             </div>
             <div class="modal-body">
-                {% for key, value in pub_columns.items() %}
-                <div class="form-check">
-                    {% if value %}
-                    <input type="checkbox" class="form-check-input" value="{{key}}" id="colsel-{{key}}" autocomplete="off" checked>
-                    {% else %}
-                    <input type="checkbox" class="form-check-input" value="{{key}}" id="colsel-{{key}}" autocomplete="off">
-                    {% endif %}
-                    <label class="form-check-label" for="colsel-{{key}}">{{key}}</label>
+                <div id="column-selector-list">
+                    {% for key, value in pub_columns.items() %}
+                    <div class="form-check">
+                        {% if value %}
+                        <input type="checkbox" class="form-check-input" value="{{key}}" id="colsel-{{key}}" autocomplete="off" checked>
+                        {% else %}
+                        <input type="checkbox" class="form-check-input" value="{{key}}" id="colsel-{{key}}" autocomplete="off">
+                        {% endif %}
+                        <label class="form-check-label" for="colsel-{{key}}">{{key}}</label>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
                 <hr>
                 <h5>Add new column</h5>
                 <div class="input-group mb-3">
@@ -29,6 +31,7 @@
                         <button id="add-new-column" class="btn btn-outline-secondary" type="button">Add</button>
                     </div>
                     <input type="text" id="new-column-input" class="form-control" placeholder="unique column name" aria-label="" aria-describedby="basic-addon1">
+                    <div class="invalid-feedback">Column already exists.</div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -38,7 +41,25 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="delete-columns-modal" tabindex="-1" role="dialog" aria-labelledby="Delete Columns" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Publications</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          Are you shure want to delete selected publications?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-danger" id="delete-columns-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
 <div id="search-div" class="row">
     <div class="col-sm-2">
         <form id="form-authors">
@@ -176,9 +197,14 @@
 </div>
 <div class="clearfix">
     {% include 'export_panel.html' %}
-    <button type="button" class="btn btn-info float-right" data-toggle="modal" data-target="#column-selector">
-        Columns
-    </button>
+    <div class="btn-toolbar float-right" role="toolbar" aria-label="Editor panel">
+        <button id="delete-cols-toolbar-btn" type="button" class="btn btn-danger mr-1" data-toggle="modal" data-target="#delete-columns-modal" style="display:none;">
+            Delete
+        </button>
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#column-selector-modal">
+            Columns
+        </button>
+    </div>
 </div>
 <div id="table-container" class="row mt-2 mx-1">
     {% include 'table_publication_nav.html' %}

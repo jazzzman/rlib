@@ -2,12 +2,12 @@ import clipboard
 import tempfile
 import json
 from flask import (render_template, redirect, url_for, flash, 
-        request, jsonify, session, abort, send_file)
+        request, jsonify, session, abort, send_file, make_response)
 from flask_login import current_user, login_user, login_required
 from app import app, login, db, bootstrap
 from app.forms import LoginForm
 from app.models import (User, Author, Publication, Journal, PubType, 
-        lab_ids, pub_columns)
+        lab_ids, pub_columns, ExtPubColumn)
 from sqlalchemy import func, distinct, or_
 from jinja2 import Template, Environment, PackageLoader, select_autoescape
 
@@ -78,13 +78,31 @@ def unauthorized():
 @app.route('/add', methods=['GET','POST'])
 @login_required
 def add():
+    required = {
+            'authors_raw':'Empty authors', 
+            'title':'Empty title',
+            'journal':'Empty journal/book/issue',
+            'year':'Year cannot be Null',
+            'pub_type':'Select publication type'
+        }
     if request.method == 'POST':
         # TODO implement through api
         data = request.get_json() or {}
+        empty_required={k:v for k,v in required.items() if k in data and (data[k]=='' or data[k]==None)}
+        if ('title' not in empty_required and
+            Publication.query.filter_by(title=data['title']).count()!=0):
+            empty_required['title']='Publication already exists'
+        if len(empty_required)>0:
+            return abort(make_response(jsonify(empty_required), 400))
+
         pb = Publication()
-        pb.from_dict(data)
+        resp = pb.from_dict(data)
         db.session.commit()
-        return res
+        if resp['reject']:
+            return jsonify({'reject':resp['message']})
+        elif resp['warnings'] != '':
+            return jsonify({'warnings':resp['warnings']})
+        return '200'
     return render_template('add.html', title='RLib', pub_type = PubType)
 
 
@@ -176,7 +194,33 @@ def update():
 def addcolumn():
     if request.method == 'POST':
         data = request.get_data().decode('utf8')
-        return data
+        if data in [*db.session.query(ExtPubColumn.name).distinct(), *pub_columns.keys()]:
+            return abort(404)
+        for p in Publication.query.all():
+            p.add_fields.append(ExtPubColumn(name=data))
+
+        return ''' 
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" value="{{key}}" id="colsel-{{key}}" autocomplete="off" checked>
+                        <label class="form-check-label" for="colsel-{{key}}">{{key}}</label>
+                    </div>
+                '''.replace('{{key}}',data)
+    return abort(400)
+
+
+@app.route('/deletepubs', methods=['GET','POST'])
+@login_required
+def deletepubs():
+    if request.method == 'POST':
+        data = request.get_json() or []
+        dicts = [p.to_gost()
+                for p in Publication.query.filter(Publication.id.in_(data))]
+        nt = '\n\t'
+        app.logger.info(f'DELETE PUBLICATIONS{nt}{nt.join(dicts)}')
+        for d in data:
+            Publication.query.filter(Publication.id==d).delete()
+        db.session.commit()
+        return '200'
     return abort(400)
 
 

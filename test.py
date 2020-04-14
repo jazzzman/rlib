@@ -1,7 +1,8 @@
 import unittest
 import re
 from app import app, db
-from app.models import Author, Publication, Journal, Organisation
+from app.models import (Author, Publication, Journal, 
+        Organisation, ExtPubColumn)
 
 
 class Relations(unittest.TestCase):
@@ -135,11 +136,12 @@ class MainAuthorSetting(unittest.TestCase):
         db.create_all()
     def tearDown(self):
         db.session.remove()
+        db.drop_all()
 
     def test_main_set(self):
-        a1 = Author(name='1',lastname='L1')
-        a2 = Author(name='2',lastname='L2')
-        a3 = Author(name='3',lastname='L3')
+        a1 = Author(name='1',lastname='La0101')
+        a2 = Author(name='2',lastname='La0102')
+        a3 = Author(name='3',lastname='La0201')
         pb1 = Publication(title='Pb1')
         pb2 = Publication(title='Pb2')
         db.session.add_all([a1,a2,a3,pb1,pb2])
@@ -150,18 +152,22 @@ class MainAuthorSetting(unittest.TestCase):
         print(a3.publications)
         print(pb1.authors)
         print(pb2.authors)
-        a3.set_main(a2)
+        a1.synonym.append(a2)
+        print('a1 syn:',a1.synonym)
+        print('a1 main:',a1.main)
+        print('a2 syn:',a2.synonym)
+        print('a2 main:',a2.main)
         print(a1.publications)
         print(a2.publications)
         print(a3.publications)
-        print(pb1.authors)
-        print(pb2.authors)
-        a3.set_main(None)
-        print(a1.publications)
-        print(a2.publications)
-        print(a3.publications)
-        print(pb1.authors)
-        print(pb2.authors)
+        print(pb1.to_gost())
+        print(pb2.to_gost())
+        # a3.set_main(None)
+        # print(a1.publications)
+        # print(a2.publications)
+        # print(a3.publications)
+        # print(pb1.authors)
+        # print(pb2.authors)
 
 class exportGOST(unittest.TestCase):
     def setUp(self):
@@ -186,10 +192,34 @@ class exportGOST(unittest.TestCase):
         print(p2.to_gost())
 
         
+class AdditionalPublicationColumns(unittest.TestCase):
+    def setUp(self):
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        db.create_all()
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+    
+    def test_adding_columns(self):
+        pb1 = Publication(title='Pb1')
+        pb2 = Publication(title='Pb2')
+        db.session.add_all([pb1,pb2])
+        db.session.commit()
+        adf1= ExtPubColumn(name='f1',data='pb1_f1_data1')
+        pb2.add_fields.append(ExtPubColumn(name='f2', data='pb2_f2_data2'))
+        pb1.add_fields.append(ExtPubColumn(name='f2', data='pb1_f2_data1'))
+        pb1.add_fields.append(adf1)
+        db.session.add(adf1)
+        db.session.commit()
+        print(ExtPubColumn.query.all())
+        print(ExtPubColumn.query.filter_by(name='f2').all())
 
 
 if __name__ == '__main__':
-    unittest.main(verbosity=2)
+    suite = unittest.TestLoader().loadTestsFromTestCase(MainAuthorSetting)
+    unittest.TextTestRunner(verbosity=2).run(suite)
+    # unittest.main(verbosity=2)
 
 
 

@@ -67,20 +67,27 @@ class Publication(db.Model):
     authors = db.relationship('Author', 
                               secondary=author_publication,
                               backref='publications')
+    add_fields = db.relationship('ExtPubColumn', backref='publication', 
+            lazy='dynamic')
     # journal - backref
 
     def from_dict(self, data):
+        output = {'reject': False,'message':'', 'warnings':''}
         if 'title' in data:
             if Publication.query.filter_by(title=data['title']).first():
-                print("Publication already exist", data['title'])
-                return False
+                output['reject'] = True
+                output['message'] = f"Publication already exist {data['title']}"
+                return output
         if 'doi' in data and data['doi'] != '':
             if Publication.query.filter_by(doi=data['doi']).first():
-                print("Publication already exist. doi:",data['doi'])
-                return False
-        for field in ['title', 'volume', 'issue', 'pages', 'year', 'doi', 'pub_type']:
+                output['reject'] = True
+                output['message'] =  f"Publication already exist. doi: {data['doi']}"
+                return output
+        for field in ['title', 'volume', 'issue', 'pages', 'year', 'doi']:
             if field in data:
                 setattr(self, field, data[field])
+        if 'pub_type' in data:
+            self.pub_type = PubType(data['pub_type'])
         if 'journal' in data:
             journal = Journal.query.filter_by(title = data['journal']).first()
             if journal is None:
@@ -89,6 +96,7 @@ class Publication(db.Model):
             self.journal = journal
         if 'authors_raw' in data:
             self.authors_raw = data['authors_raw']
+            self.authors_raw = self.authors_raw.replace('and ',',')
             for author_raw in data['authors_raw'].split(','):
                 author_raw = author_raw.strip(" \t\n")
                 r = r"\s*?([\w\\\-'`]+)\.?\s*([\w\-`]+)?\.?\s*([\w\-`]+)*"
@@ -105,7 +113,7 @@ class Publication(db.Model):
                         elif len(name)==2 and name.isupper():
                             lastname, name, patr = lastname, name[0], name[1]
                     except Exception as ex:
-                        print(ex,'\n',data['title'],data['authors_raw'],author_raw)
+                        output['warnings'] += f"While parsing {ex}, {data['title']}, {data['authors_raw']}, {author_raw}"+"\n"
                         continue
 
                     isen = re.search('[A-Za-z]', lastname) is not None
@@ -133,8 +141,8 @@ class Publication(db.Model):
                         db.session.add(a)
                     self.authors.append(a.main or a)
                 else:
-                    print(author_raw,'doesnt match to pattern')
-        return True
+                    output['warnings'] += f"{author_raw} doesnt match to pattern" + "\n"
+        return output
 
     def to_dict(self):
         data={}
@@ -143,7 +151,6 @@ class Publication(db.Model):
         data['authors'] = ', '.join([str(a) for a in self.authors])
         data['journal'] = self.journal.title if self.journal is not None else ''
         return(data)
-
 
     def to_gost(self):
         isen = len(re.findall('[a-zA-z]', self.title)) > .6*len(self.title)
@@ -265,4 +272,14 @@ class Organisation(db.Model):
     def __repr__(self):
         return self.title
 
+class ExtPubColumn(db.Model):
+    publication_id = db.Column(db.Integer, 
+            db.ForeignKey('publication.id', name='publication_id_fk'), 
+            primary_key=True)
+    name = db.Column(db.String(255), primary_key=True)
+    data = db.Column(db.String(2048))
+    # publication
+
+    def __repr__(self):
+        return (f'[{self.id},{self.name}]: {self.data}')
 
