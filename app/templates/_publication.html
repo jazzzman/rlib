@@ -3,7 +3,7 @@
         {% if value %}
             {% set attr_id = key+':'+pub['id']|string %}
             {% if key == 'authors' %}
-                <td id="{{attr_id}}">{{ pub[key] | join(', ') }}</td>
+                <td id="{{attr_id}}">{{ pub[key] | to_gost(not pub.isen()) | join(', ') }}</td>
             {% elif key == 'pub_type' %}
                 <td id="{{attr_id}}" class="editable-cell">{{ pub[key].name }}</td>
             {% elif key == 'id' %}

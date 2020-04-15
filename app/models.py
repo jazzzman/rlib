@@ -70,6 +70,10 @@ class Publication(db.Model):
     add_fields = db.relationship('ExtPubColumn', backref='publication', 
             lazy='dynamic')
     # journal - backref
+    
+    def isen(self):
+        return len(re.findall('[a-zA-z]', self.title)) > .6*len(self.title)
+    
 
     def from_dict(self, data):
         output = {'reject': False,'message':'', 'warnings':''}
@@ -153,7 +157,7 @@ class Publication(db.Model):
         return(data)
 
     def to_gost(self):
-        isen = len(re.findall('[a-zA-z]', self.title)) > .6*len(self.title)
+        isen = self.isen()
         attr = []
         attr.append(self.journal.title if self.journal is not None else None)
         attr.append(self.year)
@@ -220,10 +224,19 @@ class Author(db.Model):
     # publications - backref
     # organisations - backref
     # main - backref
+    
+    def set_main(self, main_author):
+        # TODO not best implementation.
+        # self author pubs will be removed
+        self.main = main_author
+        main_author.publications.extend(self.publications)
+        self.publications.clear()
+        for n in ['name', 'lastname', 'patronymic', 'ename', 'elastname', 'epatronymic']:
+            if not getattr(self.main, n) and getattr(self, n):
+                setattr(self.main, n, getattr(self, n))
 
-    def get_all_publications(self):
-        author = self.main or self
-        return author.publications + [p for s in author.synonym for p in s.publications]
+    def add_synonym(self, syn_author):
+        syn_author.set_main(self)
 
     def to_dict(self):
         data = {
@@ -240,23 +253,26 @@ class Author(db.Model):
         return data
 
     def to_gost(self, rus=None):
-        ruath = self.lastname not in ['', None]
-        if rus is None or (rus ^ ruath):
-            return self.to_gost(ruath)
-        elif rus and ruath:
-            return (
+        ruath = bool(self.lastname)
+        ruout = enout = None
+        if ruath:
+            ruout = (
                     f'{self.lastname} '
                     f'{self.name[0]}.'
                     f'{self.patronymic[0]+"." if self.patronymic is not None else ""}'
                     )
-        elif not rus and not ruath:
-            return (
+        if self.elastname:
+            enout = (
                     f'{self.elastname} '
                     f'{self.ename[0]}.'
                     f'{self.epatronymic[0]+"." if self.epatronymic is not None else ""}'
                     )
-        else:
-            return 
+        if rus is None:
+            return self.to_gost(ruath)
+        elif rus:
+            return ruout if ruout else enout
+        elif not rus:
+            return enout if enout else ruout
 
     def __repr__(self):
         return self.to_gost() 

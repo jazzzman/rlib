@@ -117,7 +117,7 @@ def authors():
             return
         asyn = Author.query.get_or_404(data['id'])
         if 'main_id' in data:
-            asyn.main = Author.query.get(data['main_id'])
+            asyn.set_main(Author.query.get(data['main_id']))
             rdata = asyn.to_dict()
             rdata["main_repr"] = str(asyn.main) if asyn.main else ""
         for field in [k for k in data.keys() if k not in ['id','main_id']]:
@@ -265,3 +265,8 @@ def apply_filters(publications, filters):
 @app.template_filter('jsonPresOrd')
 def json_preserve_order(input):
     return json.dumps(input)
+
+
+@app.template_filter('to_gost')
+def auth_gost(input, rus=False):
+    return [a.to_gost(rus) for a in input]

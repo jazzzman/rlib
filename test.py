@@ -130,6 +130,40 @@ class PublicationAdding(unittest.TestCase):
         self.assertEqual(pb.from_dict(data), False)
         print(pb.authors)
 
+
+class EnRuToGOST(unittest.TestCase):
+    def test_RuAuthor(self):
+        a1 = Author(name='1',lastname='Ф1')
+        self.assertEqual(a1.to_gost(),'Ф1 1.')
+        self.assertEqual(a1.to_gost(True),'Ф1 1.')
+        self.assertEqual(a1.to_gost(False),'Ф1 1.')
+        a1.patronymic = 'О'
+        self.assertEqual(a1.to_gost(),'Ф1 1.О.')
+        self.assertEqual(a1.to_gost(True),'Ф1 1.О.')
+        self.assertEqual(a1.to_gost(False),'Ф1 1.О.')
+        a1.elastname = 'L1'
+        a1.ename = 'Name'
+        a1.epatronymic = 'Patr'
+        self.assertEqual(a1.to_gost(),'Ф1 1.О.')
+        self.assertEqual(a1.to_gost(True),'Ф1 1.О.')
+        self.assertEqual(a1.to_gost(False),'L1 N.P.')
+
+    def test_EnAuthor(self):
+        a1 = Author(ename='1',elastname='L1')
+        self.assertEqual(a1.to_gost(),'L1 1.')
+        self.assertEqual(a1.to_gost(True),'L1 1.')
+        self.assertEqual(a1.to_gost(False),'L1 1.')
+        a1.epatronymic = 'P'
+        self.assertEqual(a1.to_gost(),'L1 1.P.')
+        self.assertEqual(a1.to_gost(True),'L1 1.P.')
+        self.assertEqual(a1.to_gost(False),'L1 1.P.')
+        a1.lastname = 'Ф1'
+        a1.name = 'Имя'
+        a1.patronymic = 'Отч'
+        self.assertEqual(a1.to_gost(),'Ф1 И.О.')
+        self.assertEqual(a1.to_gost(True),'Ф1 И.О.')
+        self.assertEqual(a1.to_gost(False),'L1 1.P.')
+
 class MainAuthorSetting(unittest.TestCase):
     def setUp(self):
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
@@ -140,34 +174,42 @@ class MainAuthorSetting(unittest.TestCase):
 
     def test_main_set(self):
         a1 = Author(name='1',lastname='La0101')
-        a2 = Author(name='2',lastname='La0102')
+        a2 = Author(name='2',lastname='La0102', elastname='Ru0102')
         a3 = Author(name='3',lastname='La0201')
+        a4 = Author(name='4',lastname='La0202', elastname='Ru0202')
         pb1 = Publication(title='Pb1')
         pb2 = Publication(title='Pb2')
-        db.session.add_all([a1,a2,a3,pb1,pb2])
+        db.session.add_all([a1,a2,a3,a4,pb1,pb2])
         pb1.authors.extend([a1,a3])
-        pb2.authors.extend([a2])
-        print(a1.publications)
-        print(a2.publications)
-        print(a3.publications)
-        print(pb1.authors)
-        print(pb2.authors)
-        a1.synonym.append(a2)
-        print('a1 syn:',a1.synonym)
-        print('a1 main:',a1.main)
-        print('a2 syn:',a2.synonym)
-        print('a2 main:',a2.main)
-        print(a1.publications)
-        print(a2.publications)
-        print(a3.publications)
-        print(pb1.to_gost())
-        print(pb2.to_gost())
+        pb2.authors.extend([a2,a4])
+        db.session.commit()
+        self.assertEqual(pb1.authors,[a1,a3])
+        self.assertEqual(a4.publications,[pb2])
+        a2.set_main(a1)
+        db.session.commit()
+        self.assertEqual(a1.elastname,a2.elastname)
+        self.assertEqual(a1.publications,[pb1,pb2])
+        self.assertEqual(a2.publications,[])
+        self.assertEqual(list(pb1.authors),[a1,a3])
+        self.assertEqual(list(pb2.authors),[a1,a4])
+        # print('a1 syn:',a1.synonym)
+        # print('a1 main:',a1.main)
+        # print('a2 syn:',a2.synonym)
+        # print('a2 main:',a2.main)
+        # print('a1 elastname:', a1.elastname)
+        # print(a1.publications)
+        # print(a2.publications)
+        # print(a3.publications)
         # a3.set_main(None)
         # print(a1.publications)
         # print(a2.publications)
         # print(a3.publications)
         # print(pb1.authors)
         # print(pb2.authors)
+
+    def test_add_synonym(self):
+        a1.add_synonym(a2)
+        pass
 
 class exportGOST(unittest.TestCase):
     def setUp(self):
