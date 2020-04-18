@@ -28,7 +28,7 @@ $(document).ready(function (){
         activateBtnClass(id);
         var key = this.id.replace("input-","");
         filter[key] = selectedValues;
-        sendFilters('selcet');
+        sendFilters('select');
     });
     $("#input-title").change(function(){
         var id = this.id.replace("input","drop");
@@ -93,7 +93,7 @@ $(document).ready(function (){
     // Modal Btns
     // column selector events
     $("#column-selector-update").click(function (){
-        $("#column-selector").modal('hide');
+        $("#column-selector-modal").modal('hide');
         for (key in columns) {
             pub_columns[key] = columns[key];
         }
@@ -133,7 +133,15 @@ $(document).ready(function (){
         $(".table-success").toggle();
         $("#delete-columns-modal").modal('hide');
     });
-    $("tr").on('click', selectRow);
+    // Row Selection
+    $("tbody tr").on('click', selectRow);
+    // Type Changing
+    //$(document).on('click', '.context-pub-type-selector', function(){
+        //console.log('selector click');
+        //new_pub_type = $(this).text();
+        //$(currentEle).html(new_pub_type);   
+        //data[field] = new_pub_type;
+    //});
 });
 function saveData(data) {
     var a = document.createElement("a");
@@ -174,7 +182,7 @@ function navigate(){
             $(".editable-cell").on('dblclick',startEditing);
             $("[id^='sort-a']").on('click', sortA);
             $("[id^='sort-d']").on('click', sortD);
-            $("tr").on('click', selectRow);
+            $("tbody tr").on('click', selectRow);
             bindNavBtns();
         }
     });
@@ -217,21 +225,28 @@ function updateVal(currentEle, value) {
     var field = $(currentEle).attr("id").split(':')[0];
     var id = $(currentEle).attr("id").split(':')[1];
     var data = { 'id': id };
-
     if ($(currentEle).attr('id').split(":")[0]=="pub_type"){
+        $(currentEle).html('<a class="test-cls" href="#">value</a>');
         $(currentEle).html(html_pub_dd.replace('curr-pub',value));
-        $("#pub_type_dd_btn").focus();
+        //$("#pub_type_dd_btn").focus();
         var new_pub_type = '----------';
-        $('.context-pub-type-selector').click(function(){
+        $('.context-pub-type-selector').on('click', function(){
+            event.stopPropagation();
+            console.log('selector click');
             new_pub_type = $(this).text();
             $(currentEle).html(new_pub_type);   
             data[field] = new_pub_type;
             updatePublication(data);
         });
+        $('#pub_type_dd').on('show.bs.dropdown', function () {
+            console.log($('.context-pub-type-selector').length);
+        })
         $("#pub_type_dd").on('hidden.bs.dropdown', function(){
+            console.log('dd hidden');
             $(currentEle).html(value);   
         });
         $("#pub_type_dd").focusout(function(event){
+            console.log('focus out');
             $(currentEle).html(value);
         });
     }
@@ -257,6 +272,7 @@ function updateVal(currentEle, value) {
     });
 }
 function updatePublication(data){
+    console.log('updatePublication');
     $.ajax({
         url: "/update",
         type: "POST",

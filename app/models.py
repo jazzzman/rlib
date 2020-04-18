@@ -4,17 +4,20 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 import enum
 import re
-
+from sqlalchemy.sql.expression import func
+from sqlalchemy import update, insert
 
 author_publication = db.Table('author_publication',
         db.Column('author_id', db.Integer, db.ForeignKey('author.id', name='author_id_fk')),
-        db.Column('publication_id', db.Integer, db.ForeignKey('publication.id', name='publication_id_fk')))
+        db.Column('publication_id', db.Integer, db.ForeignKey('publication.id', name='publication_id_fk')),
+        db.Column('order', db.Integer))
 
 author_organisation = db.Table('author_organisation',
         db.Column('author_id', db.Integer, db.ForeignKey('author.id', name='author_id_fk')), 
         db.Column('organisation_id', db.Integer, db.ForeignKey('organisation.id', name='organisation_id_fk')))
 
-lab_ids = [69, 9, 20, 10, 15, 8]
+lab_ids = [15, 20, 812, 703, 770, 797, 95, 716, 
+           201, 733, 180, 772, 254, 238]
 
 pub_columns = {
         'id': True, 
@@ -66,7 +69,9 @@ class Publication(db.Model):
     journal_id = db.Column(db.Integer, db.ForeignKey('journal.id', name='journal_id_fk'))
     authors = db.relationship('Author', 
                               secondary=author_publication,
-                              backref='publications')
+                              backref='publications',
+                              order_by=author_publication.c.order,
+                              viewonly=True)
     add_fields = db.relationship('ExtPubColumn', backref='publication', 
             lazy='dynamic')
     # journal - backref
@@ -74,6 +79,16 @@ class Publication(db.Model):
     def isen(self):
         return len(re.findall('[a-zA-z]', self.title)) > .6*len(self.title)
     
+    def append_author(self, author):
+        """Append author to current publication and 
+        preserve author order in it.
+        """
+        max_o = db.session.query(func.max(author_publication.c.order)).\
+                    filter(author_publication.c.publication_id==self.id).\
+                    scalar() or 0
+        db.session.execute(insert(author_publication).\
+                values([author.id,self.id,max_o+1]))
+        db.session.commit()
 
     def from_dict(self, data):
         output = {'reject': False,'message':'', 'warnings':''}
@@ -143,7 +158,7 @@ class Publication(db.Model):
                         setattr(a, attr_n, name)
                         setattr(a, attr_p, patr)
                         db.session.add(a)
-                    self.authors.append(a.main or a)
+                    self.append_author(a.main or a)
                 else:
                     output['warnings'] += f"{author_raw} doesnt match to pattern" + "\n"
         return output
@@ -226,16 +241,26 @@ class Author(db.Model):
     # main - backref
     
     def set_main(self, main_author):
+        """Set main author for current author.
+        Perform FIO and enFIO join. Substitute publications ownership.
+        """
         # TODO not best implementation.
         # self author pubs will be removed
         self.main = main_author
-        main_author.publications.extend(self.publications)
-        self.publications.clear()
+        for p in self.publications:
+            db.session.execute(update(author_publication).\
+                            where(author_publication.c.publication_id==p.id).\
+                            where(author_publication.c.author_id==self.id).\
+                            values(author_id=main_author.id))
+        db.session.commit()
         for n in ['name', 'lastname', 'patronymic', 'ename', 'elastname', 'epatronymic']:
             if not getattr(self.main, n) and getattr(self, n):
                 setattr(self.main, n, getattr(self, n))
 
     def add_synonym(self, syn_author):
+        """Add to current author its synonym.
+        Append FIO and enFIO if needed. Join publications.
+        """
         syn_author.set_main(self)
 
     def to_dict(self):
@@ -297,5 +322,5 @@ class ExtPubColumn(db.Model):
     # publication
 
     def __repr__(self):
-        return (f'[{self.id},{self.name}]: {self.data}')
+        return (f'[{self.publication_id},{self.name}]: {self.data}')
 

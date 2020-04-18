@@ -60,6 +60,7 @@
     </div>
   </div>
 </div>
+<!-- Search Area -->
 <div id="search-div" class="row">
     <div class="col-sm-2">
         <form id="form-authors">
@@ -217,13 +218,13 @@
 <script>
 var pub_columns  = {{pub_columns|jsonPresOrd|safe}};
 var html_pub_dd = `
-<div class="btn-group" id="pub_type_dd">
+<div class="dropdown" id="pub_type_dd">
   <button type="button" id="pub_type_dd_btn" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     curr-pub
   </button>
-  <div class="dropdown-menu dropdown-menu-right">
+  <div class="dropdown-menu" aria-labelledby="pub_type_dd_btn">
     {% for pt in pub_type %}
-    <button class="dropdown-item context-pub-type-selector" type="button">{{pt.name}}</button>
+    <a class="dropdown-item context-pub-type-selector" href='#'>{{pt.name}}</a>
     {% endfor%}
   </div>
 </div>

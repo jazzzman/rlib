@@ -21,9 +21,10 @@ def index():
     years = sorted(set(Publication.query.values(Publication.year)),
                 reverse=True)
     lab_authors = Author.query.filter(Author.id.in_(lab_ids))
+    pub_columns.update({k[0]:False for k in db.session.query(ExtPubColumn.name).distinct()} )
     page=1
     if request.method == 'POST':
-        filters = request.get_json()
+        filters = request.get_json() or request.form.to_dict()
         publications = apply_filters(publications ,filters)
         page = int(filters.get('page',1))
         if 'pub_columns' in filters:
@@ -31,8 +32,10 @@ def index():
         else:
             pub_cols=pub_columns
 
-    publications = publications.paginate(page, 
+    print(publications.statement)
+    publications = publications.distinct().paginate(page, 
             app.config['PUBLICATIONS_PER_PAGE'], False)
+    print(publications.query.statement)
     next_url = url_for('index', page=publications.next_num) \
         if publications.has_next else None
     prev_url = url_for('index', page=publications.prev_num) \
@@ -43,14 +46,15 @@ def index():
     pages_info['from'] = (page-1)*app.config['PUBLICATIONS_PER_PAGE']+1
     pages_info['to'] = min(pages_info['total'],page*app.config['PUBLICATIONS_PER_PAGE'])
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'redirect' not in filters:
         return render_template('table_publication_nav.html', 
                             publications = publications.items, curr_page = page,
                             next_url=next_url, prev_url=prev_url, nav_btns=nav_btns,
                             pages_info=pages_info, pub_columns=pub_cols)
-    return render_template('index.html', title='RLib', publications = publications.items,
-                            curr_page=page, next_url=next_url, prev_url=prev_url, 
-                            nav_btns=nav_btns,  lab_authors=lab_authors,
+    return render_template('index.html', title='RLib', 
+                            publications = publications.items, curr_page=page, 
+                            next_url=next_url, prev_url=prev_url, nav_btns=nav_btns, 
+                            lab_authors=lab_authors,
                             journals=journals, years=years, pub_type = PubType,
                             pages_info=pages_info, pub_columns=pub_columns)
 
@@ -198,6 +202,7 @@ def addcolumn():
             return abort(404)
         for p in Publication.query.all():
             p.add_fields.append(ExtPubColumn(name=data))
+        db.session.commit()
 
         return ''' 
                     <div class="form-check">
@@ -225,6 +230,7 @@ def deletepubs():
 
 
 def apply_filters(publications, filters):
+    print(filters)
     if 'authors' in filters:
         authors = filters['authors']
         publications = publications.join(Publication.authors).\

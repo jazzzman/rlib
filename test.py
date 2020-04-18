@@ -2,8 +2,10 @@ import unittest
 import re
 from app import app, db
 from app.models import (Author, Publication, Journal, 
-        Organisation, ExtPubColumn)
-
+        Organisation, ExtPubColumn, author_publication)
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, update, insert
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.sql.expression import func
 
 class Relations(unittest.TestCase):
     def setUp(self):
@@ -96,6 +98,7 @@ class RegexAuthors(unittest.TestCase):
                         elif len(name)==2 and name.isupper():
                             lastname, name, patr = lastname, name[0], name[1]                       # print(author_raw, lastname, name, patr)
 
+
 class PublicationAdding(unittest.TestCase):
     def tearDown(self):
         db.session.remove()
@@ -164,6 +167,7 @@ class EnRuToGOST(unittest.TestCase):
         self.assertEqual(a1.to_gost(True),'Ф1 И.О.')
         self.assertEqual(a1.to_gost(False),'L1 1.P.')
 
+
 class MainAuthorSetting(unittest.TestCase):
     def setUp(self):
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
@@ -174,9 +178,9 @@ class MainAuthorSetting(unittest.TestCase):
 
     def test_main_set(self):
         a1 = Author(name='1',lastname='La0101')
-        a2 = Author(name='2',lastname='La0102', elastname='Ru0102')
+        a2 = Author(name='2',lastname='La0102', ename='Ru0102')
         a3 = Author(name='3',lastname='La0201')
-        a4 = Author(name='4',lastname='La0202', elastname='Ru0202')
+        a4 = Author(name='4',lastname='La0202', ename='Ru0202')
         pb1 = Publication(title='Pb1')
         pb2 = Publication(title='Pb2')
         db.session.add_all([a1,a2,a3,a4,pb1,pb2])
@@ -187,10 +191,11 @@ class MainAuthorSetting(unittest.TestCase):
         self.assertEqual(a4.publications,[pb2])
         a2.set_main(a1)
         db.session.commit()
-        self.assertEqual(a1.elastname,a2.elastname)
+        self.assertEqual(a1.ename,a2.ename)
         self.assertEqual(a1.publications,[pb1,pb2])
         self.assertEqual(a2.publications,[])
-        self.assertEqual(list(pb1.authors),[a1,a3])
+        self.assertEqual(list(pb1.authors),[a1,a3], 
+                msg="Author Order corrupt")
         self.assertEqual(list(pb2.authors),[a1,a4])
         # print('a1 syn:',a1.synonym)
         # print('a1 main:',a1.main)
@@ -210,6 +215,7 @@ class MainAuthorSetting(unittest.TestCase):
     def test_add_synonym(self):
         a1.add_synonym(a2)
         pass
+
 
 class exportGOST(unittest.TestCase):
     def setUp(self):
@@ -233,7 +239,7 @@ class exportGOST(unittest.TestCase):
         print(p1.to_gost())
         print(p2.to_gost())
 
-        
+
 class AdditionalPublicationColumns(unittest.TestCase):
     def setUp(self):
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
@@ -257,9 +263,123 @@ class AdditionalPublicationColumns(unittest.TestCase):
         print(ExtPubColumn.query.all())
         print(ExtPubColumn.query.filter_by(name='f2').all())
 
+class AutoIncrTwoIndexes(unittest.TestCase):
+    def test_creation_specific_table(self):
+        engine = create_engine('sqlite:///')
+        meta = MetaData()
+        t = Table('test', meta,
+                db.Column('o_id', db.Integer,primary_key = True),
+                db.Column('p_id', db.Integer,primary_key = True),
+                db.Column('a_id',db.Integer, primary_key = True))
+        meta.create_all(engine)
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        conn = engine.connect()
+
+        conn.execute(t.insert().values({'o_id':1,'p_id':0,'a_id':0}))
+        conn.execute(t.insert().values({'o_id':0,'p_id':0,'a_id':1}))
+        conn.execute(t.insert().values({'o_id':2,'p_id':1,'a_id':4}))
+        conn.execute(t.insert().values({'o_id':3,'p_id':1,'a_id':1}))
+        session.commit()
+        print()
+        print(*session.query(t).filter(t.c.p_id==0).order_by('o_id').all(),sep='\n')
+        print("=====================")
+        print(*session.query(t).order_by('o_id').all(),sep='\n')
+        conn.execute(update(t).where(t.c.a_id==1).values(a_id=3))
+        print("=====================")
+        print(*session.query(t).order_by('o_id').all(),sep='\n')
+
+class PublicationWithSortedAuthors(unittest.TestCase):
+    def setUp(self):
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        db.create_all()
+    def tearDown(self):
+        db.session.remove()
+
+    def test_adding_publications(self):
+        print()
+        a1 = Author(name='O', lastname='Last1')
+        a2 = Author(name='O', lastname='Last2')
+        a3 = Author(name='O', lastname='Last3')
+        p1 = Publication(title='Publication1')
+        p2 = Publication(title='Publication2')
+        db.session.add_all([a1,a2,a3,p1,p2])
+        db.session.commit()
+        p1.append_author(a1)
+        p1.append_author(a2)
+        self.assertEqual(p1.authors,[a1,a2])
+        a1.set_main(a3)
+        self.assertEqual(p1.authors,[a3,a2])
+        self.assertEqual(a1.publications,[])
+        self.assertEqual(a3.publications,[p1])
+
+
+class PublicationFiltering(unittest.TestCase):
+    def setUp(self):
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        db.create_all()
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+
+    def test_filter_by_author_id(self):
+        aths, pbs = [], []
+        for i in range(200):
+            aths.append(Author(name="A",lastname=f'LastName{i}'))
+        for i in range(50):
+            pbs.append(Publication(title=f'Publication{i}'))
+        db.session.add_all(pbs)
+        db.session.add_all(aths)
+        db.session.commit()
+
+        for i in range(5):
+            pbs[0].append_author(aths[i])
+            pbs[1].append_author(aths[i])
+        db.session.commit()
+
+        a1, a2, a3 = aths[:3]
+        al = aths[-1]
+        p1, p2 = pbs[:2]
+        pl = pbs[-1]
+        pl.append_author(al)
+        db.session.commit()
+
+        self.assertEqual(Publication.query.join(Publication.authors).\
+                filter(Author.id.in_([a1.id])).all(),[p1,p2])
+        self.assertEqual(Publication.query.join(Publication.authors).\
+                filter(Author.id.in_([al.id])).all(),[pl])
+        self.assertEqual(len(Publication.query.join(Publication.authors).\
+                filter(Author.id.in_([a2.id])).all()),2)
+        self.assertEqual(len(Publication.query.join(Publication.authors).\
+                filter(Author.id.in_([a1.id,al.id])).all()),len(pbs[:2]+[pl]))
+        self.assertEqual(Publication.query.join(Publication.authors).\
+                filter(Author.id.in_([a1.id,al.id])).count(),len(pbs[:2]+[pl]))
+        self.assertCountEqual(Publication.query.all(),pbs)
+        self.assertEqual(len(Publication.query.all()),
+                        Publication.query.\
+                            paginate(1,5,False).total)
+        self.assertEqual(Publication.query.count(),
+                        Publication.query.\
+                            paginate(1,5,False).total)
+        self.assertEqual(3,len([p for p in pbs if p.authors])) 
+        q = Publication.query.join(Publication.authors)
+        print('\n',*db.session.execute(q.statement).fetchall(), sep='\n')
+        print(q.statement)
+        self.assertEqual(3,
+                        Publication.query.\
+                            join(Publication.authors).distinct().limit(4).count())
+        self.assertEqual(3,
+                        len(Publication.query.\
+                            join(Publication.authors).distinct().limit(4).all()))
+        self.assertEqual(3,
+                        Publication.query.\
+                            join(Publication.authors).distinct().\
+                            paginate(1,5,False).total)
+    
+        
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(MainAuthorSetting)
+    suite = unittest.TestLoader().loadTestsFromTestCase(PublicationFiltering)
     unittest.TextTestRunner(verbosity=2).run(suite)
     # unittest.main(verbosity=2)
 

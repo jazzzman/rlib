@@ -1,14 +1,21 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-<form class="form-inline py-2 mb-2">
-    <div class="input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text"><i class="fas fa-search"></i></span>
+<div class="clearfix py-2 mb-2">
+    <div class="float-left">
+        <div class="input-group">
+            <div class="input-group-prepend">
+                <span class="input-group-text"><i class="fas fa-search"></i></span>
+            </div>
+            <input class="form-control" id="author-filter" type="text" placeholder="Search..">
         </div>
-        <input class="form-control" id="author-filter" type="text" placeholder="Search..">
     </div>
-</form>
+    <div class="btn-toolbar float-right" role="toolbar" aria-label="Editor panel">
+        <button id="preview-pubs-toolbar-btn" type="button" class="btn btn-info mr-1" style="display:none;">
+            Preview Publications
+        </button>
+    </div>
+</div>
 <table class="table table-hover table-bordered" cellspacing="0" width="100%">
     <thead class="thead-dark">
         <tr class="sticky-top">
@@ -114,5 +121,6 @@
 
 {% block scripts %}
 {{super()}}
+<script src="{{ url_for('static', filename='js/jquery.redirect.js') }}"></script>
 <script src="{{ url_for('static', filename='js/authors.page.js') }}"></script>
 {% endblock %}

@@ -12,15 +12,19 @@ $(document).ready(function(){
             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
         });
     });
-    $("[id^='sort-a']").on('click', function(e) {
-        e.preventDefault();
-        $(this).blur();
-        sortT2($(this).closest('th').get(0),true);
-    });
-    $("[id^='sort-d']").on('click', function(e) {
-        e.preventDefault();
-        $(this).blur();
-        sortT2($(this).closest('th').get(0),false);
+    // Sorting
+    $("[id^='sort-a']").on('click', sortA);
+    $("[id^='sort-d']").on('click', sortD);
+    // Selecting
+    $("tbody tr").on('click', selectRow);
+    $("#preview-pubs-toolbar-btn").click(function(){
+        var ids = $("tr.table-success").map(function(){
+            return $(this).children().first().text()}).toArray();
+        $.redirect("/index", {
+            'authors':JSON.stringify(ids),
+            redirect:true,
+        },
+          "POST");
     });
 });
 
@@ -66,18 +70,28 @@ const comparer = (idx, asc) => (a, b) => ((v1, v2) =>
     v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
     )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
 
+function sortA() {
+    event.preventDefault();
+    $(this).blur();
+    sortT2($(this).closest('th').get(0),true);
+}
+function sortD() {
+    event.preventDefault();
+    $(this).blur();
+    sortT2($(this).closest('th').get(0),false);
+}
 function sortT2(th, n){
         const table = th.closest('table');
-        Array.from(table.children[1].querySelectorAll('tr:nth-child(n+2)'))
+        Array.from(table.children[1].querySelectorAll('tr:nth-child(n+1)'))
         .sort(comparer(Array.from(th.parentNode.children).indexOf(th), n))
         .forEach(tr => table.children[1].appendChild(tr) );
 }
-//document.querySelectorAll('th').forEach(
-    //th => th.addEventListener('click', (() => {
-        //console.log(th);
-        //const table = th.closest('table');
-        //Array.from(table.querySelectorAll('tr:nth-child(n+2)'))
-        //.sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-        //.forEach(tr => table.appendChild(tr) );
-    //}))
-//)
+function selectRow(){
+    if ($(this).hasClass("table-success")){
+        $(this).removeClass("table-success");
+    }
+    else{
+        $(this).addClass("table-success");
+    }
+    $('#preview-pubs-toolbar-btn').toggle($(".table-success").length>0);
+}
