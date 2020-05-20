@@ -2,17 +2,17 @@
     <thead class="thead-dark">
         <tr class="sticky-top">
             {% for key, value in pub_columns.items() %}
-                {% if value %}
-                    <th scope="th-sm">
-                        <div class="d-flex align-content-center">
-                            <div class="w-100">{{ key }}</div>
-                            <div class="d-flex flex-column flex-shrink-1 pl-1">
-                                <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-{{key}}" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
-                                <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-{{key}}" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
-                            </div>
-                        </div>
-                    </th>
-                {% endif %}    
+            {% if value %}
+            <th scope="th-sm">
+                <div class="d-flex align-content-center">
+                    <div class="w-100">{{ key }}</div>
+                    <div class="d-flex flex-column flex-shrink-1 pl-1">
+                        <div class="my-n1 mt-n2"><a class="text-light" id="sort-a-{{key}}" href="#"><small><i class="fas fa-chevron-up"></i></small></a></div>
+                        <div class="my-n1 mb-n2"><a class="text-light" id="sort-d-{{key}}" href="#"><small><i class="fas fa-chevron-down"></i></small></a></div>
+                    </div>
+                </div>
+            </th>
+            {% endif %}
             {% endfor %}
         </tr>
     </thead>
@@ -25,7 +25,23 @@
 
 <div class="container-fluid">
     <div class="row justify-content-between">
-        <div>Showing {{pages_info['from']}} to {{pages_info['to']}} of {{pages_info['total']}} entries</div>
+        <div>
+            Showing {{pages_info['from']}} to {{pages_info['to']}} of {{pages_info['total']}} entries
+        </div>
+        <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+            <button type="button" class="btn btn-outline-dark" disabled>Show:</button>
+            {% for n in [5,20,50,100] %}
+            {% if n | string == per_page %}
+            <label class="btn btn-outline-secondary active">
+                <input type="radio" name="options" id="perpage-{{n}}" autocomplete="off" checked>{{n}}
+            </label>
+            {% else %}
+            <label class="btn btn-outline-secondary">
+                <input type="radio" name="options" id="perpage-{{n}}" autocomplete="off">{{n}}
+            </label>
+            {% endif %}
+            {% endfor %}
+        </div>
         <nav aria-label="Page navigation">
             <ul class="pagination">
                 {% if prev_url %}

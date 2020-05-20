@@ -1,4 +1,4 @@
-from app import db
+from app import db, app
 from app import login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -16,8 +16,8 @@ author_organisation = db.Table('author_organisation',
         db.Column('author_id', db.Integer, db.ForeignKey('author.id', name='author_id_fk')), 
         db.Column('organisation_id', db.Integer, db.ForeignKey('organisation.id', name='organisation_id_fk')))
 
-lab_ids = [15, 20, 812, 703, 770, 797, 95, 716, 
-           201, 733, 180, 772, 254, 238]
+lab_ids = [15, 20, 3, 8, 41, 33, 126, 120, 95, 201, 360,
+            42, 254, 180, 238, 444, 85, ]
 
 pub_columns = {
         'id': True, 
@@ -79,16 +79,17 @@ class Publication(db.Model):
     def isen(self):
         return len(re.findall('[a-zA-z]', self.title)) > .6*len(self.title)
     
-    def append_author(self, author):
+    def append_author(self, author, commit=True):
         """Append author to current publication and 
         preserve author order in it.
         """
         max_o = db.session.query(func.max(author_publication.c.order)).\
-                    filter(author_publication.c.publication_id==self.id).\
-                    scalar() or 0
+                filter(author_publication.c.publication_id == self.id).\
+                scalar() or -1
         db.session.execute(insert(author_publication).\
                 values([author.id,self.id,max_o+1]))
-        db.session.commit()
+        if commit:
+            db.session.commit()
 
     def from_dict(self, data):
         output = {'reject': False,'message':'', 'warnings':''}
@@ -96,12 +97,12 @@ class Publication(db.Model):
             if Publication.query.filter_by(title=data['title']).first():
                 output['reject'] = True
                 output['message'] = f"Publication already exist {data['title']}"
-                return output
+                return output, None
         if 'doi' in data and data['doi'] != '':
             if Publication.query.filter_by(doi=data['doi']).first():
                 output['reject'] = True
                 output['message'] =  f"Publication already exist. doi: {data['doi']}"
-                return output
+                return output, None
         for field in ['title', 'volume', 'issue', 'pages', 'year', 'doi']:
             if field in data:
                 setattr(self, field, data[field])
@@ -115,8 +116,13 @@ class Publication(db.Model):
             self.journal = journal
         if 'authors_raw' in data:
             self.authors_raw = data['authors_raw']
-            self.authors_raw = self.authors_raw.replace('and ',',')
-            for author_raw in data['authors_raw'].split(','):
+            self.authors_raw = self.authors_raw.replace('and ',',').strip()
+            self.authors_raw = self.authors_raw.replace(',,',',').strip()
+            m = re.findall(r'(\w+,)\s*([A-Z]{1,2}\.){1,2}(,|$)',self.authors_raw)
+            if m:
+                for gr in m:
+                   self.authors_raw=self.authors_raw.replace(gr[0],gr[0][:-1])
+            for author_raw in self.authors_raw.split(','):
                 author_raw = author_raw.strip(" \t\n")
                 r = r"\s*?([\w\\\-'`]+)\.?\s*([\w\-`]+)?\.?\s*([\w\-`]+)*"
                 ms = re.match(r,author_raw)
@@ -158,10 +164,12 @@ class Publication(db.Model):
                         setattr(a, attr_n, name)
                         setattr(a, attr_p, patr)
                         db.session.add(a)
-                    self.append_author(a.main or a)
+                        n='\n'
+                        app.logger.info(f'AUTHOR ADDED:{n}{a.to_gost()}')
+                    self.append_author(a.main or a, False)
                 else:
                     output['warnings'] += f"{author_raw} doesnt match to pattern" + "\n"
-        return output
+        return output, self
 
     def to_dict(self):
         data={}
@@ -219,6 +227,12 @@ class Journal(db.Model):
         if 'quartile' in data:
             self.quartile_JCR = self.quartile_SJR = data['quartile']
         return True
+
+    def to_dict(self):
+        data={}
+        for field in ['title', 'quartile_JCR', 'quartile_SJR', 'is_wos', 'is_scopus', 'is_risc']:
+            data[field] = getattr(self,field)
+        return(data)
 
     def __repr__(self):
         return f'{self.title}'

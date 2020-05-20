@@ -8,6 +8,8 @@
                 <td id="{{attr_id}}" class="editable-cell">{{ pub[key].name }}</td>
             {% elif key == 'id' %}
                 <td id="{{attr_id}}">{{ pub[key] }}</td>
+            {% elif pub[key] is not defined %}
+            <td id="{{attr_id}}" class="editable-cell">{{ pub.add_fields.filter_by(name=key).value('data') }}</td>
             {% else %}
                 <td id="{{attr_id}}" class="editable-cell">{{ pub[key] }}</td>
             {% endif %}

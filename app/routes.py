@@ -20,22 +20,25 @@ def index():
     journals = Journal.query.order_by(Journal.title.asc()).all()
     years = sorted(set(Publication.query.values(Publication.year)),
                 reverse=True)
-    lab_authors = Author.query.filter(Author.id.in_(lab_ids))
+    lab_authors = Author.query.filter(Author.id.in_(lab_ids)).order_by(Author.lastname.asc())
     pub_columns.update({k[0]:False for k in db.session.query(ExtPubColumn.name).distinct()} )
     page=1
+    per_page = request.cookies.get('per_page', app.config['PUBLICATIONS_PER_PAGE'])
+    pub_cols = request.cookies.get('pub_columns', pub_columns)
+    if isinstance(pub_cols,str):
+        pub_cols = json.loads(pub_cols)
     if request.method == 'POST':
         filters = request.get_json() or request.form.to_dict()
         publications = apply_filters(publications ,filters)
         page = int(filters.get('page',1))
+        per_page = filters.get('per_page', per_page)
         if 'pub_columns' in filters:
             pub_cols = filters['pub_columns']
         else:
-            pub_cols=pub_columns
+            pub_cols= pub_cols or pub_columns
 
-    print(publications.statement)
     publications = publications.distinct().paginate(page, 
-            app.config['PUBLICATIONS_PER_PAGE'], False)
-    print(publications.query.statement)
+            int(per_page), False)
     next_url = url_for('index', page=publications.next_num) \
         if publications.has_next else None
     prev_url = url_for('index', page=publications.prev_num) \
@@ -47,16 +50,26 @@ def index():
     pages_info['to'] = min(pages_info['total'],page*app.config['PUBLICATIONS_PER_PAGE'])
 
     if request.method == 'POST' and 'redirect' not in filters:
-        return render_template('table_publication_nav.html', 
+        resp = make_response(render_template('table_publication_nav.html', 
                             publications = publications.items, curr_page = page,
                             next_url=next_url, prev_url=prev_url, nav_btns=nav_btns,
-                            pages_info=pages_info, pub_columns=pub_cols)
-    return render_template('index.html', title='RLib', 
+                            pages_info=pages_info, per_page = per_page,
+                            pub_columns=pub_cols))
+    else:
+        resp = make_response(render_template('index.html', title='RLib', 
                             publications = publications.items, curr_page=page, 
                             next_url=next_url, prev_url=prev_url, nav_btns=nav_btns, 
-                            lab_authors=lab_authors,
+                            lab_authors=lab_authors, per_page = per_page,
                             journals=journals, years=years, pub_type = PubType,
-                            pages_info=pages_info, pub_columns=pub_columns)
+                            pages_info=pages_info, pub_columns=pub_cols))
+
+    if ('per_page' not in request.cookies or 
+        request.cookies.get('per_page') != per_page):
+        resp.set_cookie('per_page',str(per_page))
+    if ('pub_columns' not in request.cookies or
+            request.cookies.get('pub_columns') != jsonify(pub_cols)):
+        resp.set_cookie('pub_columns', json.dumps(pub_cols))
+    return resp
 
 
 @app.route('/signin', methods=['GET','POST'])
@@ -100,12 +113,15 @@ def add():
             return abort(make_response(jsonify(empty_required), 400))
 
         pb = Publication()
-        resp = pb.from_dict(data)
+        resp, pb = pb.from_dict(data)
         db.session.commit()
         if resp['reject']:
             return jsonify({'reject':resp['message']})
         elif resp['warnings'] != '':
             return jsonify({'warnings':resp['warnings']})
+        if pb is not None:
+            n='\n'
+            app.logger.info(f'PUBLICATION ADDED:{n}{pb.to_gost()}')
         return '200'
     return render_template('add.html', title='RLib', pub_type = PubType)
 
@@ -116,17 +132,25 @@ def authors():
     if request.method == 'POST':
         # TODO implement through api
         rdata = {}
+        prev = {}
         data = request.get_json() or {}
         if 'id' not in data:
             return
         asyn = Author.query.get_or_404(data['id'])
         if 'main_id' in data:
+            prev['main_id'] = asyn.main.id if asyn.main else None
+            prev['pubs_id'] = [p.id for p in asyn.publications]
             asyn.set_main(Author.query.get(data['main_id']))
             rdata = asyn.to_dict()
             rdata["main_repr"] = str(asyn.main) if asyn.main else ""
         for field in [k for k in data.keys() if k not in ['id','main_id']]:
+            prev[field] = getattr(asyn, field)
             setattr(asyn, field, data[field] if data[field] != '' else None)
         db.session.commit()
+        n, t ='\n', '\t'
+        app.logger.info(f'AUTHOR UPDATE id:{asyn.id}{n}'
+                        f'{t.join([str(tup) for tup in data.items()])} was '
+                        f'{t.join([str(tup) for tup in prev.items()])}')
         return jsonify(rdata)
     authors = Author.query.order_by(Author.lastname.asc()).all()
     return render_template('authors.html', title='RLib.Authors',
@@ -154,7 +178,7 @@ def journals():
 @app.route('/settings')
 @login_required
 def settings():
-    return render_template('index.html', title='RLib')
+    return abort(404)
 
 
 @app.route('/output', methods=['GET','POST'])
@@ -181,13 +205,24 @@ def output():
 def update():
     if request.method == 'POST':
         data = request.get_json()
+        prev = {}
         publication = Publication.query.get_or_404(data['id'])
         for field in [f for f in data.keys() if f not in ['id','pub_type']]:
-            setattr(publication,field,data[field])
+            if hasattr(publication, field):
+                prev[field] = getattr(publication,field)
+                setattr(publication,field,data[field])
+            else:
+                prev[field] = ExtPubColumn.query.get((publication.id,field)).data
+                ExtPubColumn.query.get((publication.id,field)).data = data[field]
         if 'pub_type' in data:
+            prev['pub_type'] = getattr(publication,'pub_type').name
             setattr(publication,'pub_type',PubType[data['pub_type']])
 
         db.session.commit()
+        n,t='\n','\t'
+        app.logger.info(f'UPDATE PUBLICATION:{n}'
+                        f'{t.join([str(tup) for tup in data.items()])} was ' 
+                        f'{t.join([str(tup) for tup in prev.items()])}')
         return '200' 
     else:
         abort(404)
@@ -230,9 +265,9 @@ def deletepubs():
 
 
 def apply_filters(publications, filters):
-    print(filters)
     if 'authors' in filters:
         authors = filters['authors']
+        authors = eval(authors) if type(authors) is str else authors
         publications = publications.join(Publication.authors).\
                 filter(Author.id.in_(authors))#.\
         if filters.get('ath_intersection', False):

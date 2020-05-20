@@ -135,6 +135,25 @@ $(document).ready(function (){
     });
     // Row Selection
     $("tbody tr").on('click', selectRow);
+    // GOTO Up
+    $('#gotoup').click(function(){
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        return false;
+    });
+    $(window).on('scroll', function(){
+        if ($(document).scrollTop()>60 && $(window).scrollTop() <= ($(document).height() - $(window).height() - 30)){
+            $("#gotoup").show();
+        }
+        else {
+            $("#gotoup").hide();
+        }
+    });
+    // Items PerPage
+    $(document).on('change',"[id^='perpage-']", function(){
+        var pp = $(this).attr('id').split('-')[1];
+        filter['per_page'] = pp
+        sendFilters();
+    });
 });
 function saveData(data) {
     var a = document.createElement("a");

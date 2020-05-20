@@ -26,6 +26,19 @@ $(document).ready(function(){
         },
           "POST");
     });
+    // GOTO Up
+    $('#gotoup').click(function(){
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+        return false;
+    });
+    $(window).on('scroll', function(){
+        if ($(document).scrollTop()>60){
+            $("#gotoup").show();
+        }
+        else {
+            $("#gotoup").hide();
+        }
+    });
 });
 
 function updateVal(currentEle, value) {
