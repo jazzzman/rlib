@@ -1,0 +1,182 @@
+Kholodtsova Maria, Blondel Walter, Daul Christian, Loschenov Viktor
+Particle swarm optimisation combined to spectral fitting approach improves precision for parametric estimation of tissue optical properties
+Part of SPIE/OSJ Biophotonics
+October,28, 2015
+Japan
+
+
+D.V. Pominova, A.V. Ryabova, S.V. Kuznetsov, Yu. A. Rozhnova, I.D. Romanishkin
+Experimental and theoretical rationale for using upconversion sub-microparticles as biosensors for laser scanning microscopy
+Advanced microscopy meeting “Super resolution in different dimensions”
+2-3June,  2015
+Lomonosov Moscow State University, Moscow
+
+
+A. Ryabova, D. Pominova, V. Makarov, V. Loshchenov
+The molecular nanocrystals of photosensitisers: investigation of the interaction with cellular structures. 
+Super-resolution in different dimensions. Advanced microscopy meeting in summer 2015
+2-3 июня 2015
+Москва
+78
+
+Daria Pominova, A.V. Ryabova, S.V. Kuznetsov, J.A. Rozhnova
+UP-CONVERSION NANOPARTICLES SURFACE MODIFICATION WITH PHOTOSENSITIZER MOLECULES OR GOLD NANOPARTICLES FOR BIOMEDICAL APPLICATIONS
+Saratov Fall Meeting SFM'15 – International Symposium Optics and Biophotonics
+September 22 - 25, 2015
+Saratov, Russia
+
+
+Mayakova M., Fedorov P., Kuznetsov S., Voronov V., Pominova D., Ryabova A., Baranchikov A.
+Synthesis and investigation of hexagonal modification NaY1-x-yYbxEryF4 
+ECCG-2015
+9-11September,  2015 
+Italy
+
+
+Д.В. Поминова.
+Исследование кинетических характеристик ап-конверсионной люминесценции
+Материалы конференции молодых ученых ИОФ РАН,
+28 апреля, 2015
+Москва
+
+
+С.В. Кузнецов, Д.С. Ясыркина, Ю.А. Рожнова, А.В. Рябова, Д.В. Поминова, А.А. Лугинина, М.Н. Маякова, В.В. Воронов, А.Е. Баранчиков, В.К. Иванов, П.П. Федоров
+АП-КОНВЕРСИОННЫЕ ЛЮМИНОФОРЫ НА ОСНОВЕ НАНОФТОРИДОВ
+II Байкальский Материаловедческий форум
+29 июня-5 июля 2015
+Улан-Удэ - оз. Байкал
+2 73
+
+Ю.А. Рожнова, С.В. Кузнецов, А.А. Лугинина, В.В. Воронов, А.В. Рябова, Д.В. Поминова, А.Е. Баранчиков, В.К. Иванов, П.П. Федоров
+СИНТЕЗ И ИССЛЕДОВАНИЕ ЛЮМИНЕСЦЕНТНЫХ ХАРАКТЕРИСТИК ПОРОШКОВ Sr1-x-yYbxEryF2+x+y
+II Байкальский Материаловедческий форум
+29 июня-5 июля 2015
+Улан-Удэ - оз. Байкал
+2 106-107
+
+С.В. Кузнецов, Ю.А. Рожнова, М.Н. Маякова, Д.С. Ясыркина, А.М. Пак, Р.Г. Вахренев,В.В. Воронов, А.В. Рябова, Д.В.Поминова, А.А. Лугинина,А.Е. Баранчиков, В.К. Иванов, П.П. Федоров
+Порошки фторидов M1-xRxF2+x, RF3 и NaRF4 (M=Ca, Sr, Ba; R – РЗЭ) для фотоники
+14-я Международная научная конференция-школа «Материалы нано-, микро-, оптоэлектроники и волоконной оптики: физические свойства и применение»
+
+Саранск
+
+
+В.А. Крутько, М.Г.Комова, Д.В.Поминова,  А.В.Попов
+Cложные бораты Ln14O8(GeO4)2(BO3)6 – основа для получения люминофоров широкого спектра (от ИК  до УФ области). Синтез методом горения
+14-я Международная научная конференция-школа «Материалы нано-, микро-, оптоэлектроники и волоконной оптики: физические свойства и применение»
+
+Саранск
+
+
+Kuznetsov Sergey , D.S. Yasyarkina , Y.A. Rozhnova , A.V. Ryabova , D.V. Pominova , A.A. Luginina, M.N. Mayakova , V.V. Voronov , A.E. Baranchikov , V.K. Ivano , P.P. Fedorov
+Efficient up-conversion phosphors on the basis of fluorides for photonics
+Saratov Fall Meeting SFM'15 – International Symposium Optics and Biophotonics
+September 22 - 25, 2015
+Saratov, Russia.
+
+
+J.S. Samsonova, A.V. Borodkin, E. A. Lukyanets, V. B. Loshchenov
+The investigation of Intracellular accumulation of bacteriochlorin by laser microscope and spectrum analyzer
+Advanced microscopy meeting “Super resolution in different dimensions”
+2-3 June,  2015
+Lomonosov Moscow State University, Moscow
+
+
+Ю.С. Самсонова, А.В. Бородкин, Е. А. Макарова, Е.А. Лукьянец, В. Б. Лощенов 
+Оценка возможности использования кристаллических наночастиц  бактериохлорина для локальной гипертермической терапии
+IV всероссийская конференция «Актуальные вопросы фотодинамической терапии и фотодиагностики»
+25-26 сентября, 2015
+Санкт-Петеребург
+
+
+Тиганова И.Г. , Грин М.А., Меерович Г.А., Брусов С.С., Колоскова Ю.С., Степанова Т.В., Алексеева Н.В., Толордава Э.Р., Щепелина Е.Ю., Романова Ю.М., Миронов А.Ф.
+Антимикробная фотодинамическая терапия с использованием нового катионного фотосенсибилизатора бактериохлоринового ряда
+Материалы IV Всероссийской конференции «Актуальные вопросы фотодинамической терапии и фотодиагностики»,
+25-26 сентября 2015
+Санкт-Петеребург
+11
+
+Meerovich G.А., Tiganova I.G., Makarova E.А., Meerovich I.G., Romanova Ju.М., Tolordova E.R., Alekseeva N.V., Stepanova Т.V., Koloskova Yu., Lukianets Е.А., Krivospitskaya N.V., Sipailo I.P., Baikova Т.V. Loschenov V.B., Gonchukov S.A.
+Photodynamic inactivation of bacteria and biofilms using cationic bacteriochlorines.
+24-th International Workshop on Laser Physics (LPHYS’15)
+2015
+Shanghai, China,
+3 8
+
+I. Tiganova, T Stepanova, E Tolordava, G Meerovich, Y Koloskova, S Brusov, M. Grin, A Mironov, Y.Romanova
+Photodynamic therapy of bacterial biofilms with the new cationic photosensitizer
+Eurobiofilms 2015. Fourth European Congress on Microbial Biofilms – Basic and Clinical Aspects
+23-26 June, 2015
+Brno, Czech Republic
+76
+
+А.В. Бородкин, Ю.С. Самсонова, М.В. Лощенов
+Исследование внутриклеточного распределения бактериохлорина в ближнем ИК-диапазоне спектра
+IV всероссийская конференция «Актуальные вопросы фотодинамической терапии и фотодиагностики»
+25-26 сентября, 2015
+Санкт-Петеребург
+
+
+Холодцова М.Н., Блондель В., Лощёнов В.Б.
+Теоретический расчет усиления поля в системе из двух наносфер оксида железа
+IV всероссийская конференция «Актуальные вопросы фотодинамической терапии и фотодиагностики»
+25-26 сентября, 2015
+Санкт-Петеребург
+
+
+Steiner R., Scalfi-Happ C., Wittig R., Ryabova A. and Loschenov V.
+Organic crystalline nanoparticles: fluorescence diagnostics and photodynamic therapy (PDT)
+IV всероссийская конференция «Актуальные вопросы фотодинамической терапии и фотодиагностики»
+25-26 сентября, 2015
+Санкт-Петеребург
+
+
+Ширяев А.А., Мусаев Г.Х., Юриченко Ю.Ю., Рябова А.В., Макаров В.И., Волков В.В., Лощенов В.Б.
+Интраоперационная фотодинамическая терапия при метастатическом поражении печени
+IV всероссийская конференция «Актуальные вопросы фотодинамической терапии и фотодиагностики»
+25-26 сентября, 2015
+Санкт-Петеребург
+
+
+Ширяев А.А., Мусаев Г.Х., Бекшоков А.С., Лощенов М.В., Волков В.В., Бородкин А.В., Макаров В.И.
+Комбинированный метод диагностики и лечения нерезектабельной холангиокарциномы, осложненной механической желтухой
+IV всероссийская конференция «Актуальные вопросы фотодинамической терапии и фотодиагностики»
+25-26 сентября, 2015
+Санкт-Петеребург
+
+
+Жарова Т.А., Иванников С.В., Тоненков А.М., Макаров В.И., Рябова А.В., Лощёнов В.Б.
+Особенности флуоресцентной диагностики и фотодинамической терапии гонартроза у кроликов с применением фотосенсибилизатора Фотодитазин®
+IV всероссийская конференция «Актуальные вопросы фотодинамической терапии и фотодиагностики»
+25-26 сентября, 2015
+Санкт-Петеребург
+
+
+Ягудаев Д.М., Брехов Е.И., Саидов А.С., Кузнецова Ю.О., Калягина Н.А.
+Фотосенсибилизатор для детектирования распределения препарата в тканях и органах при лимфотропном введении при остром воспалении яичка и его придатка
+IV всероссийская конференция «Актуальные вопросы фотодинамической терапии и фотодиагностики»
+25-26 сентября, 2015
+Санкт-Петеребург
+
+
+Y.V. Orlovskii, A.Vanetsev, A.Ryabova, K.Pukhov, A.Popov, E.Samsonova, K.Keevend, I.Romanishkin, I.Sildos, and V.Loschenov.
+Nanoscaled Rare-Earth Doped Crystals Heater 
+Conference “Frontiers in Optics”, General Optics in Biology and Medicine II
+October 19-23, 2014
+
+FTu5F.5
+
+Саидов А.С., Ягудаев Д.М., Брехов Е.И., Кузнецова Ю.О., Калягина Н.А.
+Лимфотропная таргетная терапия острых воспалительных заболеваний яичка и его придатка (экспериментально-клиническое исследование)
+XXII Российский национальный конгресс «Человек и лекарство»
+Москва
+6 - 10 апреля 2015 года
+
+
+T.A. Savelieva, S.S. Model, V.B. Loschenov
+Numerical modelling of light transport in human ocular fundus for photodynamic therapy planning
+International Conference on Computer Simulation in Physics and beyond
+September 6-10, 2015
+Moscow, Russia
+
+

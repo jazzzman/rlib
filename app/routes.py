@@ -10,6 +10,7 @@ from app.models import (User, Author, Publication, Journal, PubType,
         lab_ids, pub_columns, ExtPubColumn)
 from sqlalchemy import func, distinct, or_
 from jinja2 import Template, Environment, PackageLoader, select_autoescape
+from difflib import SequenceMatcher as SM
 
 
 @app.route('/')
@@ -124,6 +125,21 @@ def add():
             app.logger.info(f'PUBLICATION ADDED:{n}{pb.to_gost()}')
         return '200'
     return render_template('add.html', title='RLib', pub_type = PubType)
+
+@app.route('/checktitle', methods=['GET','POST'])
+@login_required
+def checktitle():
+    if request.method == 'POST':
+        # TODO implement through api
+        data = request.get_json() or {}
+        empty_required = {}
+        same = [p.title for p in Publication.query.all() if SM(None, data['title'], p.title).quick_ratio()>.97]
+        if len(same)!=0:
+            empty_required['warnings'] = same
+            empty_required['title']='Publication already exists'
+        if len(empty_required)>0:
+            return abort(make_response(jsonify(empty_required), 400))
+        return '200'
 
 
 @app.route('/authors', methods=['GET','POST'])

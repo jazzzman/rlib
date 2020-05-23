@@ -11,7 +11,37 @@ $(function () {
     $("#alert-warning").hover(function(){
         clearTimeout(timeoutHandle);
     });
-    console.log($("[required]"));
+    $("#input-title").focusout(function(){
+        var title = $(this).val().trim();
+        if (title !== ''){
+            var data ={'title':title} 
+            $.ajax({
+                url: '/checktitle',
+                type: 'POST',
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                error: function(result){
+                    errs = JSON.parse(result['responseText']);
+                    if ($("#input-title").hasClass('is-invalid')){
+                        $("#input-title").removeClass('is-invalid');
+                    }
+                    $("#input-title").addClass("is-invalid");
+                    if (errs['title'] != ''){
+                        $("#input-title").next('.invalid-feedback').text(errs['title']);
+                    }
+                    if ('warnings' in errs){
+                        $("#warnings-message").html("There are similar publications in the database:<br/>"+errs['warnings'].join('<br/>'));
+                        popUpAlert('alert-warning', 10000);
+                    }
+                }
+            });
+        }
+        else{
+            if ($("#input-title").hasClass('is-invalid')){
+                $("#input-title").removeClass('is-invalid');
+            }
+        }
+    });
 });
 
 function add(){
@@ -62,7 +92,6 @@ function add(){
         },
         error: function(result){
             errs = JSON.parse(result['responseText']);
-            console.log(errs);
             Object.keys(errs).forEach(function(key){
                 validateinputs[key].addClass("is-invalid");
                 if (errs[key] != ''){

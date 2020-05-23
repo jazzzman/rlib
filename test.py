@@ -377,9 +377,35 @@ class PublicationFiltering(unittest.TestCase):
                             paginate(1,5,False).total)
     
         
+class JoiningTutorial(unittest.TestCase):
+    def setUp(self):
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        db.create_all()
+    def tearDown(self):
+        db.session.remove()
+
+    def test_cascade_deleting(self):
+        p1= Publication(title='P1')
+        p2= Publication(title='P2')
+        db.session.add_all([p1,p2])
+        db.session.commit()
+
+        p1.add_fields.append(ExtPubColumn(name='f1', data='p1 f1'))
+        p2.add_fields.append(ExtPubColumn(name='f1', data='p2 f1'))
+        db.session.commit()
+
+        print(ExtPubColumn.query.all())
+        self.assertEqual(len(ExtPubColumn.query.all()),2)
+
+        db.session.delete(p1)
+        db.session.commit()
+        print(ExtPubColumn.query.all())
+        self.assertEqual(len(ExtPubColumn.query.all()),1)
+
+        
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(PublicationFiltering)
+    suite = unittest.TestLoader().loadTestsFromTestCase(JoiningTutorial)
     unittest.TextTestRunner(verbosity=2).run(suite)
     # unittest.main(verbosity=2)
 

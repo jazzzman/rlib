@@ -6,6 +6,8 @@ import enum
 import re
 from sqlalchemy.sql.expression import func
 from sqlalchemy import update, insert
+from difflib import SequenceMatcher as SM
+
 
 author_publication = db.Table('author_publication',
         db.Column('author_id', db.Integer, db.ForeignKey('author.id', name='author_id_fk')),
@@ -73,7 +75,7 @@ class Publication(db.Model):
                               order_by=author_publication.c.order,
                               viewonly=True)
     add_fields = db.relationship('ExtPubColumn', backref='publication', 
-            lazy='dynamic')
+            lazy='dynamic', cascade = "all, delete, delete-orphan")
     # journal - backref
     
     def isen(self):
@@ -118,27 +120,61 @@ class Publication(db.Model):
             self.authors_raw = data['authors_raw']
             self.authors_raw = self.authors_raw.replace('and ',',').strip()
             self.authors_raw = self.authors_raw.replace(',,',',').strip()
-            m = re.findall(r'(\w+,)\s*([A-Z]{1,2}\.){1,2}(,|$)',self.authors_raw)
-            if m:
-                for gr in m:
-                   self.authors_raw=self.authors_raw.replace(gr[0],gr[0][:-1])
             for author_raw in self.authors_raw.split(','):
                 author_raw = author_raw.strip(" \t\n")
-                r = r"\s*?([\w\\\-'`]+)\.?\s*([\w\-`]+)?\.?\s*([\w\-`]+)*"
+                r = r"([\w\\\-'`]+(?:\.|\s)?)\s*([\w\-`]+(?:\.|\s))?\s*([\w\-`]+\.?)*"
                 ms = re.match(r,author_raw)
                 if ms:
-                    lastname, name, patr = ms.groups()
+                    lastname, name, patr = [None]*3
+                    gr = [n for n in ms.groups() if n]
                     try:
-                        if len(lastname)<2 and patr is not None:
-                            lastname, name, patr = patr, lastname, name
-                        elif len(lastname)<2 and patr is None:
-                            lastname, name, patr = name, lastname, patr
-                        elif len(lastname)<3 and lastname.isupper():
-                            lastname, name, patr = name, lastname[0], lastname[1]
-                        elif len(name)==2 and name.isupper():
-                            lastname, name, patr = lastname, name[0], name[1]
+                        if all(not n.endswith('.') for n in gr): # case everyone ends without point
+                            if len(gr)<3:
+                                try: # case Fedorov P|PP, P|PP Fedorov
+                                    g = gr.pop([n.isupper() for n in gr].index(True))
+                                    lastname, name, patr = gr[0], g[:1], g[1:]
+                                except ValueError: 
+                                    m = [re.search(r'([A-ZА-Я][a-zа-я]*)\s*([A-ZА-Я][a-zа-я]*)?',n).groups() for n in gr]
+                                    if any(a[-1] is not None for a in m): # case PeA Fedorov, Fedorov PeA
+                                        g = m.pop([a[-1] is not None for a in m].index(True))
+                                        lastname, name, patr = m[0][0], g[:1][0], g[1:][0]
+                                    else: # case Pe Fedorov, Fedorov Pe, Petr Fedorov, Fedorov Petr
+                                        lastname, name = (m[0][0], m[1][0]) if len(m[0][0])>2 else (m[1][0], m[0][0])
+                            else: # Petr A Fedorov, Fedorov Petr A, Pe A Fedorov, Fedorov Pe A
+                                maxs = [len(g) for g in gr]
+                                lastname, name, patr = (gr[2], gr[0], gr[1]) if maxs.index(max(maxs))==2 else (gr[0], gr[1], gr[2])
+                        else: # P.P.|P. Fedorov, Fedorov P.P.|P., Pe.P.|Pe. Fedorov, Fedorov Pe.P.|Pe.
+                            i = [g[-1]!='.' for g in gr].index(True)
+                            if len(gr)<3:
+                                g = gr.pop(i)
+                                lastname, name = g, gr[0][:-1]
+                            else:
+                                g = gr.pop(i)
+                                lastname, name, patr = g, gr[0][:-1], gr[1][:-1]
                     except Exception as ex:
-                        output['warnings'] += f"While parsing {ex}, {data['title']}, {data['authors_raw']}, {author_raw}"+"\n"
+                        print(f"While parsing {ex},  {author_raw}"+"\n")
+                        continue
+            # m = re.findall(r'(\w+,)\s*([A-Z]{1,2}\.){1,2}(,|$)',self.authors_raw)
+            # if m:
+                # for gr in m:
+                   # self.authors_raw=self.authors_raw.replace(gr[0],gr[0][:-1])
+            # for author_raw in self.authors_raw.split(','):
+                # author_raw = author_raw.strip(" \t\n")
+                # r = r"\s*?([\w\\\-'`]+)\.?\s*([\w\-`]+)?\.?\s*([\w\-`]+)*"
+                # ms = re.match(r,author_raw)
+                # if ms:
+                    # lastname, name, patr = ms.groups()
+                    # try:
+                        # if len(lastname)<2 and patr is not None:
+                            # lastname, name, patr = patr, lastname, name
+                        # elif len(lastname)<2 and patr is None:
+                            # lastname, name, patr = name, lastname, patr
+                        # elif len(lastname)<3 and lastname.isupper():
+                            # lastname, name, patr = name, lastname[0], lastname[1]
+                        # elif len(name)==2 and name.isupper():
+                            # lastname, name, patr = lastname, name[0], name[1]
+                    # except Exception as ex:
+                        # output['warnings'] += f"While parsing {ex}, {data['title']}, {data['authors_raw']}, {author_raw}"+"\n"
                         continue
 
                     isen = re.search('[A-Za-z]', lastname) is not None
@@ -217,7 +253,7 @@ class Journal(db.Model):
         return self.publications.count()
 
     def from_dict(self, data):
-        if 'title' in data and Journal.query.filter_by(title=data['title']).first():
+        if Journal.query.filter_by(title=data['title']).count()>0:
             print('Journal already exist:',data['title'])
             return False
 

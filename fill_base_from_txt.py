@@ -4,28 +4,28 @@ from app.models import (Author, Publication, Journal, Organisation,
 import re
 import sys
 import pandas as pd
+from difflib import SequenceMatcher as SM
 
 
 #pubs
-cols = {
-        'authors':1,
-        'title':2,
-        'journal':3,
-        'VIP':4,
-        'DOI':5,
-        'Q':6,
-        }
-#thesis
 # cols = {
         # 'authors':1,
         # 'title':2,
         # 'journal':3,
-        # 'location':4,
-        # 'date':5,
-        # 'VIP':6,
-        # 'thesis_type':7,
-        # 'DOI':8,
+        # 'VIP':4,
+        # 'DOI':5,
+        # 'Q':6,
         # }
+#thesis
+cols = {
+        'authors':0,
+        'title':1,
+        'journal':2,
+        'location':4,
+        'date':3,
+        'VIP':5,
+        # 'DOI':6,
+        }
 
 
 def get_Q(text):
@@ -56,7 +56,7 @@ def get_Q(text):
             isR is not None)
 
 def get_VIP(text):
-    m = re.search(r'\s*(\d+)\s*(?:\(([\d-]+)\)[,:]?)?\s+([\da-zA-z-]+)\s*(\(\d{2,4}\))?',text)
+    m = re.search(r'\s*(\d+)\s*(?:\(([\d-]+)\)[,:]?)?\s+([\da-zA-z-]+)\s*(\(\d{3,4}\))?',text)
     if 'направлена в редакцию' in text or 'принята к печати' in text:
         return [None]*3
     elif not m:
@@ -66,17 +66,27 @@ def get_VIP(text):
     return m.groups()[0],m.groups()[1], m.groups()[2]
 
 
-PUBTYPE = PubType.Article 
-YEAR = 2016
-pubs = pd.read_csv('misc/статьи 2016_WoS&Scopus.csv')
-pubs = pubs.fillna('')
+PUBTYPE = PubType.ConfThesis
+fn = 'misc/тезисы 2013.txt'
+YEAR = int(re.findall(r'\d{4}', fn)[0])
+with open(fn,'r') as file:
+    pubs = file.readlines()
+pubs = [p.strip(' \t\n,') for p in pubs]
 
-for i,row in pubs.iterrows():
-    print(i, row[cols['title']],end=' ')
+# with db.session.no_autoflush:
+for i in range(0,len(pubs),7):
+    row = pubs
+    print(i, row[i+cols['title']],end=' ')
+
+    # if any(SM(None,p.title.lower(), row[i+cols['title']].lower()).ratio() >0.97 for p in Publication.query.all()):
+        # print('EXISTS')
+        # continue
+    # print(i)
+    # continue
     jr = Journal()
-    qq = get_Q(row[cols['Q']] if PUBTYPE == PubType.Article else '')
+    qq = get_Q(row[i+cols['Q']] if PUBTYPE == PubType.Article else '')
     if jr.from_dict({
-        'title': row[cols['journal']],
+        'title': row[i+cols['journal']],
         'quartile_SJR': qq[3],
         'quartile_JCR': qq[1],
         'is_wos': qq[0],
@@ -85,35 +95,40 @@ for i,row in pubs.iterrows():
         }):
         db.session.add(jr)
     else:
-        jr = Journal.query.filter_by(title=row[cols['journal']]).first()
-        jr.quartile_JCR = int(qq[1])
-        jr.quartile_SJR = int(qq[3])
-        jr.is_wos = qq[0]
-        jr.is_scopus = qq[2]
-        jr.is_risc = qq[4]
+        jr = Journal.query.filter_by(title=row[i+cols['journal']]).first()
+        # jr.quartile_JCR = int(qq[1])
+        # jr.quartile_SJR = int(qq[3])
+        # jr.is_wos = qq[0]
+        # jr.is_scopus = qq[2]
+        # jr.is_risc = qq[4]
 
-    if Publication.query.filter_by(title=row[cols['title']]).scalar() is not None:
+    if any(SM(None,p.title.lower(), row[i+cols['title']].lower()).ratio() >0.97 for p in Publication.query.all()):
         print('EXISTS')
         continue
     print()
 
     pb = Publication()
-    vip = get_VIP(row[cols['VIP']]) if PUBTYPE == PubType.Article else [0,'-',row[cols['VIP']]]
+    vip = get_VIP(row[i+cols['VIP']]) if PUBTYPE == PubType.Article else [0,'-',row[i+cols['VIP']]]
+    tvip = row[i+cols['VIP']].split()
+    if len(tvip) == 2:
+        vip[0], vip[2] = tvip
+    elif len(tvip) == 3:
+        vip[0], vip[1], vip[2] = tvip
     resp, _ = pb.from_dict({
-        'title': row[cols['title']],
+        'title': row[i+cols['title']],
         'volume': vip[0],
         'issue': vip[1],
         'pages': vip[2],
         'year': YEAR,
-        'doi': row[cols['DOI']],
-        'authors_raw': row[cols['authors']],
+        # 'doi': row[i+cols['DOI']],
+        'authors_raw': row[i+cols['authors']],
         'pub_type': PUBTYPE, 
         'journal': jr.title
         })
     if PUBTYPE == PubType.ConfThesis:
-        pb.add_fields.append(ExtPubColumn(name='Location',data=row[cols['location']]))
-        pb.add_fields.append(ExtPubColumn(name='ConfThesisType',data=row[cols['thesis_type']]))
-        pb.add_fields.append(ExtPubColumn(name='Date',data=row[cols['date']]))
+        pb.add_fields.append(ExtPubColumn(name='Location',data=row[i+cols['location']]))
+        # pb.add_fields.append(ExtPubColumn(name='ConfThesisType',data=row[i+cols['thesis_type']]))
+        pb.add_fields.append(ExtPubColumn(name='Date',data=row[i+cols['date']]))
     db.session.add(pb)
     print('' if resp['reject'] else resp['message'])
 

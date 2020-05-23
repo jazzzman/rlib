@@ -1,0 +1,264 @@
+D.V. Pominova, A.V. Ryabova, S.V. Kuznetsov, J.A. Rozhnova
+Modeling of rare-earth ions luminescence plasmon enhancement and spectral tuning
+International Winter School Molecules@Surfaces
+31.1 – 5.2 2016
+Bardonecchia, Italy
+V.2, P39:143-144.
+
+
+Pominova D.V.
+Upconversion nanoparticles for biomedical applications
+International Winter School Molecules @ Surfaces
+January 31 – February 5, 2016
+Bardonecchia 
+
+
+
+M. Kholodtsova, W. Blondel, C. Daul, V. Loschenov
+Optimisation par essaims particulaires et fitting spectral pour Améliorer la precision d’estimation de propriétés optiques de tissus
+OptDiag 2016 - Diagnostic et imagerie optique en médecine et en biologie.
+25-27 Mai, 2016
+Paris, France.
+
+
+
+M.N. Kholodtsova, V.I. Makarov, I.D. Romanishkin, W. Blondel, V.B. Loschenov
+Colloidal gold nanoparticles change energy transfer standard scheme of a photosensitiser
+17th International conference ‘Laser Optics 2016’
+27.06-1.07 2016
+St. Petersburg, Russia.
+
+
+
+КУЗНЕЦОВА Ю.О., МАКАРОВ В.И.
+Применение нанофотосенсибилизатора (наночастиц фталоцианина алюминия) для ранней диагностики и профилактики воспалительных заболеваний
+V МЕЖДУНАРОДНАЯ КОНФЕРЕНЦИЯ ПО ФОТОНИКЕ И ИНФОРМАЦИОННОЙ ОПТИКЕ
+3 – 5 февраля 2016 года
+НИЯУ МИФИ, Москва
+
+
+
+Д.С.Фаррахова, Ю.О.Кузнецова, В.Б.Лощенов
+Лазерно-индуцированная флуоресцентная диагностика ранней стадии кариеса с применением наночастиц фталоцианина алюминия
+V МЕЖДУНАРОДНАЯ КОНФЕРЕНЦИЯ ПО ФОТОНИКЕ И ИНФОРМАЦИОННОЙ ОПТИКЕ
+3 – 5 февраля 2016 года
+НИЯУ МИФИ, Москва 
+
+
+
+Кузнецова Ю.О., Фаррахова Д.С., Яссин М. Г., Лощенов В.Б.
+Наночастицы фталоцианина алюминия для раннего выявления заболеваний бактериальной природы
+V всероссийская конференция «Фотодинамическая терапия и фотодиагностика»
+сентябрь 2016
+Москва
+
+
+
+Pominova D.V., Ryabova A.V.
+Theoretical modeling of upconversion luminescence plasmon enhancement. 
+1st conference and spring school on properties, design and applications of upconverting nanomaterials UPCON 2016
+23-27 May 2016
+Wroclaw, Poland
+116
+
+
+Pominova D.V., Ryabova A.V., Kuznetsov S.V., Rozhnova J.A.
+Theoretical and experimental study of optimal pulsed mode regimes for upconversion luminescence excitation. 
+1st conference and spring school on properties, design and applications of upconverting nanomaterials UPCON 2016
+23-27 May 2016
+Wroclaw, Poland
+49
+
+
+S.V. Kuznetsov, V.S. Sedov, D.V. Pominova, A.V. Ryabova, P.P. Fedorov, V.G.Ralchenko
+Up-conversion luminescence of diamond films with integrated La0.895Yb0.0875Er0.0175F3 nanoparticles. 
+1st conference and spring school on properties, design and applications of upconverting nanomaterials UPCON 2016
+23-27 May 2016
+Wroclaw, Poland
+35
+
+
+A.V. Ryabova, D.V. Pominova, P.V. Grachev, I.D. Romanishkin, S.V. Kuznetsov, J.A. Rozhnova, D.S. Yasyrkina, P.P. Fedorov, V.B. Loschenov
+UPCONVERSION MICROPARTICLES AS TIME-RESOLVED PROBES IN LASER SCANNING MULTIPHOTON MICROSCOPY. 
+1st conference and spring school on properties, design and applications of upconverting nanomaterials UPCON 2016
+23-27 May 2016
+Wroclaw, Poland
+121
+
+
+S.V. Kuznetsov, Yu. Rozova, D.S. Yasyrkina, M.N. Mayakova, D.V. Pominova, A.V. Ryabova, V.V. Voronov, P.P. Fedorov
+Development of efficient up-conversion liminophores based on cubic NaYF4:Yb:Er for biomedical application. 
+1st conference and spring school on properties, design and applications of upconverting nanomaterials UPCON 2018
+23-27 May 2016
+Wroclaw, Poland
+94
+
+
+A.V. Ryabova, D.V. Pominova, P.V. Grachev, I.D. Romanishkin, S.V. Kuznetsov, J.A. Rozhnova, D.S. Yasyrkina, P.P. Fedorov, V.B. Loschenov
+UPCONVERSION MICROPARTICLES AS TIME-RESOLVED PROBES. 
+1st B3 International Conference for Young Scientists Lomonosov Moscow State University
+2016, Februrary 16-17
+
+10
+
+
+Steiner Rudolf, Scalfi Claudia-Happ, Wittig Rainer, Ryabova Anastasia, Gräfe Susanna,Loschenov Victor
+Organic nanoparticles for tissue diagnostics and PDT. 
+2016 International Conference Laser Optics (LO)
+
+
+
+
+
+V. B. Loschenov
+Nanophotosensitisers for teranostics. 
+2016 International Conference Laser Optics (LO)
+
+
+S2-52
+10.1109/LO.2016.7550019
+
+Yu. V. Orlovskii, V. V. Hizhnyakov, V. B. Loschenov
+Rare-earth doped nanocrystals as an active medium for terahertz stimulated emission. 
+2016 International Conference Laser Optics (LO)
+
+
+S2-58
+10.1109/LO.2016.7550025
+
+A. A. Gladilin, V. P. Kalinushkin, O. V. Uvarov, E. M. Gavrischuk,N. A. Timofeeva, V. B. Iconnikov, M. I. Studenikin, V. A. Chapnin,A. V. Ryabova
+Defect vizualization and characterization in ZnSe crystals using two-photon confocal microscopy
+2016 International Conference Laser Optics (LO)
+
+
+R3-43
+10.1109/LO.2016.7549753.
+
+M. N. Mayakova, E. O. Solovyeva, R. G. Vahrenev, S. V. Kuznetsov, D. V. Pominova, A. V. Ryabova, V. V. Voronov, P. P. Fedorov
+Synthesis and study of M1−x−yYbxEryF2+x+y (M = Ca, Ba) efficient up-conversion luminophores for biomedical applications. 
+2016 International Conference Laser Optics (LO)
+
+
+R9-20
+10.1109/LO.2016.7549920
+
+I.R. Romanishkin, Y.V. Orlovskii, I.A. Burmistrov, D.V. Pominova, A.S. Vanetsev, E.O. Orlovskaya, A.V. Ryabova
+Near-IR Laser Heating of Rare-Earth Doped Composite Nanoparticle Colloids. 
+The International Conference on Lasers, Applications and Technologies (LAT2016)
+26-30 September
+Minsk, Belarus
+LWA3.
+
+
+J.O.Kuznetsova, D.S. Farrakhova, M. G. Yassin
+Aluminum phthalocyanine nanoparticles as a contrast agent for the detection of tooth enamel microcracks. 
+The International Conference on Lasers, Applications and Technologies (LAT2016)
+26-30 September
+Minsk, Belarus
+LWF4
+
+
+Савельева Т.А., Линьков К.Г., Модель С.С., Антонов А.А., Петров С.Ю., Лощенов В.Б.
+Визуализация оксигенации сосудов глаза 
+V Всероссийская междисциплинарная конференция «Актуальные вопросы фотодинамической терапии и фотодиагностики»
+15-16 сентября 2016
+
+
+
+
+Савельева Т.А.
+Опыт разработки и реализации образовательной программы по флуоресцентной диагностике и фотодинамической терапии и создание на его основе онлайн-курса 
+XVI-й семинар-конференция Проекта 5-100
+
+
+
+
+
+V.B.Loschenov
+Biomedical Photonics and Nuclear Medicine. 
+1st International Symposium on “Physics, Engineering and Technologies for Bio-Medicine”
+2016,  October 18-23
+Moscow
+
+
+
+V.B.Loschenov
+Biomedical Photonics + Nuclear Medicine. Possible points of interaction. 
+1st International Symposium on “Physics, Engineering and Technologies for Bio-Medicine”
+2016,  October 18-23
+Moscow
+
+
+
+Tiganova I., Meerovich G., Koloskova Ju., Tolordava E., Makarova E., Meerovich I., Lukyanets E., Romanova Ju.
+Photodynamic therapy of bacterial biofilms using near-infrared cationic photosensitisers. 
+Congress “Antimicrobial Resistance in microbial biofilms and options for treatment”
+Ghent, Belgium
+October 5-7, 2016.
+086
+
+
+Колоскова Ю.С., Тиганова И.Г., Макарова Е.А., Меерович Г.А., Алексеева Н.В., Толордава Э.Р., Романова Ю.М., Лукьянец Е.А.
+Фотоинактивация бактерий в биопленках в зависимости от заряда и гидрофильности молекулы фотосенсибилизатора. 
+Всероссийская конференция "Фотодинамическая терапия и фотодиагностика"
+
+
+5
+
+
+Макаров В.И., Поминова Д.В., Рябова А.В., Лощенов В.Б.
+Изменение структурных свойств поверхностного слоя молекулярных нанокристаллов фталоцианинов при взаимодействии с биообъектами. 
+Первый Российский Кристаллографический Конгресс
+2016
+
+212
+
+
+Ванецев А.С., Рябова А.В., Орловский Ю.В.
+Коллоиды фторидных кристаллических наночастиц, легированные ионами неодима, для биовизуализации в ближнем ИК диапазоне. 
+Первый Российский Кристаллографический Конгресс
+2016
+
+308
+
+
+Кузнецова Ю.О., Фаррахова Д.С., Лощенов В.Б.
+Кристаллические наночастицы для ранней диагностики заболеваний полости рта. 
+Первый Российский Кристаллографический Конгресс
+2016
+
+208
+
+
+Р.Г. Вахренев, М.Н. Маякова, С.В. Кузнецов, А.В. Рябова, Д.В. Поминова, В.В. Воронов, П.П. Федоров
+Эффективные ап-конверсионные люминофоры на основе фторида кальция, легированного иттербием и эрбием. 
+15-ая международная научная конференция-школа “Материалы нано-, микро-, оптоэлектроники и волоконной оптики: физические свойства и применение”
+Саранск
+11-14 октября 2016 г
+31
+
+
+Ю. А. Рожнова, С.В. Кузнецов, М.Н. Маякова, В.В. Воронов, Р.П. Ермаков, А.В. Рябова, Д.В. Поминова, П.П. Федоров
+Синтез и исследование ап-конверсионных люминофоров на основе нанопорошков SrF2:Yb:R (R=Er, Tm). 
+15-я международная научная конференция-школа “Материалы нано-, микро-, оптоэлектроники и волоконной оптики: физические свойства и применение”.
+Саранск
+11-14 октября 2016 г.
+37
+
+
+Р.Г. Вахренев, М.Н. Маякова, С.В. Кузнецов, А.В. Рябова, Д.В. Поминова, В.В. Воронов, П.П. Федоров
+Синтез и люминесцентные характеристики фторида кальция, легированного иттербием и эрбием для биомедицинских приложений. 
+11-я Всероссийская Конференция “Химия фтора”
+26-30 июня 2016 г
+Москва
+155
+
+
+А.М. Пак, Ю.А. Рожнова, С.В. Кузнецов, А.В. Рябова, Д.В. Поминова, В.В. Воронов, П.П. Федоров
+Синтез люминофоров на основе SrF2:Yb:Er и SrF2:Yb:Tm. 
+11-я Всероссийская Конференция “Химия фтора”
+26-30 июня 2016 г
+Москва
+156
+
+
