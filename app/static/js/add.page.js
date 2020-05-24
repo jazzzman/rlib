@@ -4,10 +4,7 @@ $(function () {
     $("#parse").click(function(){
         //popUpAlert('alert-warning');
     });
-    $("#close-alert").click(function(){
-        clearTimeout(timeoutHandle);
-        toggleAlert();
-    })
+    $("#close-alert").click(closeAlert);
     $("#alert-warning").hover(function(){
         clearTimeout(timeoutHandle);
     });
@@ -20,6 +17,12 @@ $(function () {
                 type: 'POST',
                 data: JSON.stringify(data),
                 contentType: "application/json",
+                success: function(result){
+                    $("#input-title").removeClass("is-invalid");
+                    if (!$("#alert-warning").hasClass('invisible')){
+                        closeAlert();
+                    }
+                },
                 error: function(result){
                     errs = JSON.parse(result['responseText']);
                     if ($("#input-title").hasClass('is-invalid')){
@@ -37,9 +40,7 @@ $(function () {
             });
         }
         else{
-            if ($("#input-title").hasClass('is-invalid')){
-                $("#input-title").removeClass('is-invalid');
-            }
+            $("#input-title").removeClass('is-invalid');
         }
     });
 });
@@ -64,7 +65,7 @@ function add(){
         'pub_type': parseInt(validateinputs['pub_type'].val()),
     }
     if (!$("#alert-warning").hasClass('invisible')){
-        $("#close-alert").trigger('click');
+        closeAlert();
     }
     Object.values(validateinputs).forEach(function(val){
         if (val.hasClass('is-invalid')){
@@ -121,3 +122,8 @@ function toggleAlert(type=''){
     }
     $("#alert-warning").toggleClass('invisible');
 }
+function closeAlert(){
+    clearTimeout(timeoutHandle);
+    toggleAlert();
+}
+

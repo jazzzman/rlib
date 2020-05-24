@@ -53,7 +53,7 @@ $(document).ready(function (){
         else {
             key = "quartile";
             var qs = $("[name='quartile']:checked").map(function(){
-                return this.value;
+                return parseInt(this.value.slice(1));
             })
             .toArray()
             filter[key] = qs;

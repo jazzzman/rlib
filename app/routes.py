@@ -1,6 +1,7 @@
 import clipboard
 import tempfile
 import json
+import math
 from flask import (render_template, redirect, url_for, flash, 
         request, jsonify, session, abort, send_file, make_response)
 from flask_login import current_user, login_user, login_required
@@ -44,11 +45,11 @@ def index():
         if publications.has_next else None
     prev_url = url_for('index', page=publications.prev_num) \
         if publications.has_prev else None
-    max_nav_btn = min(publications.total//publications.per_page+1,page+2)+1
-    nav_btns = [(url_for('index',page=i),i) for i in range(max(1,page-2),max_nav_btn)]
+    max_nav_btn = min(int(math.ceil(publications.total/int(per_page))),page+2)
+    nav_btns = [(url_for('index',page=i),i) for i in range(max(1,page-2),max_nav_btn+1)]
     pages_info = {'total':publications.total} 
-    pages_info['from'] = (page-1)*app.config['PUBLICATIONS_PER_PAGE']+1
-    pages_info['to'] = min(pages_info['total'],page*app.config['PUBLICATIONS_PER_PAGE'])
+    pages_info['from'] = (page-1)*int(per_page)+1
+    pages_info['to'] = min(pages_info['total'],page*int(per_page))
 
     if request.method == 'POST' and 'redirect' not in filters:
         resp = make_response(render_template('table_publication_nav.html', 
