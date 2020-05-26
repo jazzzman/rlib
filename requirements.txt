@@ -18,4 +18,5 @@ six==1.14.0
 SQLAlchemy==1.3.13
 visitor==0.1.3
 Werkzeug==1.0.0
+clipboard
 WTForms==2.2.1
