@@ -67,10 +67,10 @@ def index():
 
     if ('per_page' not in request.cookies or 
         request.cookies.get('per_page') != per_page):
-        resp.set_cookie('per_page',str(per_page))
+        resp.set_cookie('per_page',str(per_page),samesite='Lax')
     if ('pub_columns' not in request.cookies or
             request.cookies.get('pub_columns') != jsonify(pub_cols)):
-        resp.set_cookie('pub_columns', json.dumps(pub_cols))
+        resp.set_cookie('pub_columns', json.dumps(pub_cols),samesite='Lax')
     return resp
 
 
@@ -209,8 +209,7 @@ def output():
                 all()
         plain = '\n'.join([p.to_gost() for p in publications])
         if data['type'] == 'clipboard':
-            clipboard.copy(plain)
-            return '200' 
+            return plain
         elif data['type'] == 'csv':
             return jsonify([plain, 'publications.txt'])
     else:

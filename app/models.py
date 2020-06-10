@@ -223,11 +223,11 @@ class Publication(db.Model):
         attr.append(self.volume)
         attr.append(self.issue)
         attr.append("С. " + self.pages if self.pages is not None else None)
-        attr = [str(a) for a in attr if a is not None]
+        attr = [str(a) for a in attr if a is not None and str(a).strip() not in ['','None','-']]
         try:
             output =(
                     f'{", ".join([a.to_gost(not isen) for a in self.authors])} '
-                    f'{self.title} //'
+                    f'{self.title} // '
                     f'{". - ".join(attr)}'
                     )
         except:

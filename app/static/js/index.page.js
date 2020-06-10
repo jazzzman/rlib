@@ -75,6 +75,19 @@ $(document).ready(function (){
             type: "POST",
             data: JSON.stringify({'type':'clipboard','filters':filter}),
             contentType: "application/json",
+            success: function(plain){
+                var id = 'clipboard_plain'; 
+                $('#table-container').after('<textarea id="'+ id + '" ></textarea>');
+                $('#'+id).text(plain);
+                var el = document.getElementById(id);
+                var range = document.createRange();
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                range.selectNodeContents(el);
+                sel.addRange(range);
+                document.execCommand('copy');
+		        $('#'+id).remove();
+            }
         });
     });
     $("#to-csv").click(function (){
