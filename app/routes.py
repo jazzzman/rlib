@@ -3,7 +3,8 @@ import tempfile
 import json
 import math
 from flask import (render_template, redirect, url_for, flash, 
-        request, jsonify, session, abort, send_file, make_response)
+        request, jsonify, session, abort, send_file, make_response,
+        send_from_directory)
 from flask_login import current_user, login_user, login_required
 from app import app, login, db, bootstrap
 from app.forms import LoginForm
@@ -327,3 +328,11 @@ def json_preserve_order(input):
 @app.template_filter('to_gost')
 def auth_gost(input, rus=False):
     return [a.to_gost(rus) for a in input]
+
+
+@app.route("/.well-known/pki-validation/<cert_name>")
+def get_image(cert_name):
+    try:
+        return send_from_directory('static/.well-known/', filename=cert_name, as_attachment=True)
+    except FileNotFoundError:
+        abort(404)

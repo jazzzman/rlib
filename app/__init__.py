@@ -31,3 +31,7 @@ app.logger.setLevel(logging.INFO)
 
 if not app.debug:
     pass
+
+def url_for_static(filename):
+    root = app.config.get('STATIC_ROOT', '')
+    return join(root, filename)
