@@ -8,24 +8,24 @@ from difflib import SequenceMatcher as SM
 
 
 #pubs
-# cols = {
-        # 'authors':1,
-        # 'title':2,
-        # 'journal':3,
-        # 'VIP':4,
-        # 'DOI':5,
-        # 'Q':6,
-        # }
-#thesis
 cols = {
         'authors':0,
         'title':1,
         'journal':2,
-        'location':4,
-        'date':3,
-        'VIP':5,
-        # 'DOI':6,
+        'VIP':3,
+        'DOI':4,
+        'Q':5,
         }
+#thesis
+# cols = {
+        # 'authors':0,
+        # 'title':1,
+        # 'journal':2,
+        # 'location':4,
+        # 'date':3,
+        # 'VIP':5,
+        # # 'DOI':6,
+        # }
 
 
 def get_Q(text):
@@ -66,15 +66,28 @@ def get_VIP(text):
     return m.groups()[0],m.groups()[1], m.groups()[2]
 
 
-PUBTYPE = PubType.ConfThesis
-fn = 'misc/тезисы 2013.txt'
+PUBTYPE = PubType.Proceedings
+fn = 'misc/просидинги 2016.txt'
 YEAR = int(re.findall(r'\d{4}', fn)[0])
 with open(fn,'r') as file:
     pubs = file.readlines()
 pubs = [p.strip(' \t\n,') for p in pubs]
 
+# initial author parsing check
+# for i in range(0,len(pubs),6):
+    # row=pubs
+    # print('\n',i,row[i+cols['title']])
+    # author_raw = row[i+cols['authors']]
+    # author_raw = re.sub('\d','',author_raw)
+    # author_raw = re.sub(' and ',',',author_raw)
+    # author_raw = re.sub(' и ',',',author_raw)
+    # author_raw = re.sub(',,',',',author_raw)
+    # for a in author_raw.split(','):
+        # print(Author.parse(a))
+# sys.exit()
+
 # with db.session.no_autoflush:
-for i in range(0,len(pubs),7):
+for i in range(0,len(pubs),6):
     row = pubs
     print(i, row[i+cols['title']],end=' ')
 
@@ -109,6 +122,7 @@ for i in range(0,len(pubs),7):
 
     pb = Publication()
     vip = get_VIP(row[i+cols['VIP']]) if PUBTYPE == PubType.Article else [0,'-',row[i+cols['VIP']]]
+    vip = list(vip)
     tvip = row[i+cols['VIP']].split()
     if len(tvip) == 2:
         vip[0], vip[2] = tvip
@@ -120,7 +134,7 @@ for i in range(0,len(pubs),7):
         'issue': vip[1],
         'pages': vip[2],
         'year': YEAR,
-        # 'doi': row[i+cols['DOI']],
+        'doi': row[i+cols['DOI']],
         'authors_raw': row[i+cols['authors']],
         'pub_type': PUBTYPE, 
         'journal': jr.title
@@ -136,5 +150,3 @@ db.session.commit()
 print(Publication.query.filter_by(title=None).count(),'empty rows were deleted')
 Publication.query.filter_by(title=None).delete()
 db.session.commit()
-
-

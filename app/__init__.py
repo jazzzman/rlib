@@ -12,6 +12,8 @@ import os
 app = Flask(__name__)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
+db.session.execute('pragma foreign_keys=ON') # for cascade deleting from 
+                                             # tables in case of SQLLite db
 migrate = Migrate(app, db)
 login = LoginManager(app)
 bootstrap = Bootstrap(app)

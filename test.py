@@ -3,7 +3,7 @@ import re
 from app import app, db
 from app.models import (Author, Publication, Journal, 
         Organisation, ExtPubColumn, author_publication)
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, update, insert
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, update, insert, select
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import func
 
@@ -295,6 +295,7 @@ class PublicationWithSortedAuthors(unittest.TestCase):
         db.create_all()
     def tearDown(self):
         db.session.remove()
+        db.drop_all()
 
     def test_adding_publications(self):
         print()
@@ -312,6 +313,20 @@ class PublicationWithSortedAuthors(unittest.TestCase):
         self.assertEqual(p1.authors,[a3,a2])
         self.assertEqual(a1.publications,[])
         self.assertEqual(a3.publications,[p1])
+
+    def test_increment_ap_table(self):
+        a1 = Author(name='O', lastname='Last1')
+        a2 = Author(name='O', lastname='Last2')
+        a3 = Author(name='O', lastname='Last3')
+        p1 = Publication(title='Publication1')
+        db.session.add_all([a1,a2,a3,p1])
+        db.session.commit()
+        p1.append_author(a1)
+        p1.append_author(a2)
+        p1.append_author(a3)
+        
+        print(*db.session.query(author_publication).all(),
+            sep='\n')
 
 
 class PublicationFiltering(unittest.TestCase):
@@ -377,35 +392,68 @@ class PublicationFiltering(unittest.TestCase):
                             paginate(1,5,False).total)
     
         
-class JoiningTutorial(unittest.TestCase):
+class DeletingEverythingFromEverywhere(unittest.TestCase):
     def setUp(self):
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
         db.create_all()
+        db.session.execute('pragma foreign_keys=ON') 
+
+        self.p1= Publication(title='P1')
+        self.p2= Publication(title='P2')
+        db.session.add_all([self.p1,self.p2])
+        
+        self.a1 = Author(lastname='Last1', name='O')
+        self.a2 = Author(lastname='Last2', name='T')
+        self.a3 = Author(lastname='Last3', name='H')
+        db.session.add_all([self.a1,self.a2,self.a3])
+
+        db.session.commit()
+
     def tearDown(self):
         db.session.remove()
 
-    def test_cascade_deleting(self):
-        p1= Publication(title='P1')
-        p2= Publication(title='P2')
-        db.session.add_all([p1,p2])
-        db.session.commit()
+    def test_cascade_deleting_pubextpub(self):
 
-        p1.add_fields.append(ExtPubColumn(name='f1', data='p1 f1'))
-        p2.add_fields.append(ExtPubColumn(name='f1', data='p2 f1'))
+        self.p1.add_fields.append(ExtPubColumn(name='f1', data='p1 f1'))
+        self.p2.add_fields.append(ExtPubColumn(name='f1', data='p2 f1'))
         db.session.commit()
 
         print(ExtPubColumn.query.all())
         self.assertEqual(len(ExtPubColumn.query.all()),2)
 
-        db.session.delete(p1)
+        db.session.delete(self.p1)
         db.session.commit()
         print(ExtPubColumn.query.all())
         self.assertEqual(len(ExtPubColumn.query.all()),1)
 
+    def test_author_pub(self):
+        self.p1.append_author(self.a1)
+        self.p1.append_author(self.a2)
+        self.p1.append_author(self.a3)
+
+        self.assertEqual(len(self.p1.authors),3)
+
+        self.p1.delete_author(self.a1)
+        self.assertEqual(len(self.p1.authors),2)
+        self.assertEqual(len(db.session.execute(
+            select([author_publication]).\
+            where(author_publication.c.publication_id == self.p1.id)).fetchall()),2)
+
+        db.session.delete(self.a2)
+        db.session.commit()
+
+        self.assertEqual(len(self.p1.authors),1)
+        self.assertEqual(len(db.session.execute(
+            select([author_publication]).\
+            where(author_publication.c.publication_id == self.p1.id)).fetchall()),1)
+
+
+
         
 
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(JoiningTutorial)
+    suite = unittest.TestLoader().\
+            loadTestsFromTestCase(PublicationWithSortedAuthors)
     unittest.TextTestRunner(verbosity=2).run(suite)
     # unittest.main(verbosity=2)
 

@@ -16,16 +16,16 @@ cols = {
         'Q':6,
         }
 #thesis
-# cols = {
-        # 'authors':1,
-        # 'title':2,
-        # 'journal':3,
-        # 'location':4,
-        # 'date':5,
-        # 'VIP':6,
-        # 'thesis_type':7,
-        # 'DOI':8,
-        # }
+cols = {
+        'authors':1,
+        'title':2,
+        'journal':3,
+        'location':4,
+        'date':5,
+        'VIP':6,
+        'thesis_type':7,
+        'DOI':8,
+        }
 
 
 def get_Q(text):
@@ -66,10 +66,22 @@ def get_VIP(text):
     return m.groups()[0],m.groups()[1], m.groups()[2]
 
 
-PUBTYPE = PubType.Article 
-YEAR = 2016
-pubs = pd.read_csv('misc/статьи 2016_WoS&Scopus.csv')
+PUBTYPE = PubType.ConfThesis 
+YEAR = 2018
+pubs = pd.read_csv('misc/тезисы 2018.csv')
 pubs = pubs.fillna('')
+
+# initial author parsing check
+# for i,row in pubs.iterrows():
+    # print('\n',i,row[cols['title']])
+    # author_raw = row[cols['authors']]
+    # author_raw = re.sub('\d','',author_raw)
+    # author_raw = re.sub(' and ',',',author_raw)
+    # author_raw = re.sub(' и ',',',author_raw)
+    # author_raw = re.sub(',,',',',author_raw)
+    # for a in author_raw.split(','):
+        # print(Author.parse(a))
+# sys.exit()
 
 for i,row in pubs.iterrows():
     print(i, row[cols['title']],end=' ')
@@ -121,5 +133,3 @@ db.session.commit()
 print(Publication.query.filter_by(title=None).count(),'empty rows were deleted')
 Publication.query.filter_by(title=None).delete()
 db.session.commit()
-
-

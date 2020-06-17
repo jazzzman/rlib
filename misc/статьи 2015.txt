@@ -1,21 +1,126 @@
-P.V. Zinin, A.V. Ryabova, V.A. Davydov, V. Khabashesku, S. Boritko, S.K. Sharma, D.V. Pominova, V. Loshenov. Anomalous fluorescence of the spherical carbon nitride nanostructures. // Chemical Physics Letters 633 (2015) 95–98. doi:10.1016/j.cplett.2015.05.020
-A.A. Osychenko, A.D. Zalessky, A.S. Krivokharchenko, A.K. Shakhbazian, A.V. Ryabova, V.A. Nadtochenko. Fusion of blastomeres in mouse embryos under the action of femtosecond laser radiation. Efficiency of blastocyst formation and embryo development. // Quantum Electronics 45 (5) 498 – 502 (2015). DOI: 10.1070/QE2015v045n05ABEH015767
-Shcherbakov AB, Zholobak NM, Baranchikov AE, Ryabova AV, Ivanov VK. Cerium fluoride nanoparticles protect cells against oxidative stress. // Mater Sci Eng C Mater Biol Appl. 2015; 50:151-9. doi: 10.1016/j.msec.2015.01.094.
-Y.V. Orlovskii, A.S. Vanetsev, I.D. Romanishkin, A.V. Ryabova, K.K. Pukhov, A.E. Baranchikov, E.V. Samsonova, K. Keevend, I. Sildos, and V.B. Loschenov. Laser heating of the Y1-xDyxPO4 nanocrystals. // Optical Materials Express Vol. 5, Issue 5, pp. 1230-1239 (2015) •https://doi.org/10.1364/OME.5.001230
-E.V. Samsonova, AV. Popov, A.S. Vanetsev, K. Keevend, K. Kaldvee, L. Puust, A.E. Baranchikov, A.V. Ryabova, S.G. Fedorenko, V. Kiisk, I. Sildos, J. Kikas, R. Steiner, V.B. Loschenov, Yu. V. Orlovskii. Fluorescence quenching mechanism for water-dispersible Nd3+:KYF4 nanoparticles synthesized by microwave-hydrothermal technique. // Journal of Luminescence. 2015. doi:10.1016/j.jlumin.2015.03.015
-Yu.A. Rozhnova, S.V. Kuznetsov, A.A. Luginina, V.V. Voronov, A.V. Ryabova, D.V. Pominova, R.P. Ermakov, V.A. Usachev, N.E. Kononenko, A.E. Baranchikov, V.K. Ivanov, P.P. Fedorov. New Sr1-x-zRx(NH4)zF2+x-z (R = Yb, Er) solid solution as precursor for high efficiency up-conversion luminophor and optical ceramics on the base of strontium fluoride. // RSC Advances.
-Makarov, V. I.; Vasil'chenko, S. Yu; Ryabova, A. V.;et al... Loschenov V.B. Photodynamic effect of iron(III) oxide nanoparticles coated with zinc phthalocyanine. // Russian Journal of General Chemistry 2015 85(1): 338-340. DOI: 10.1134/S107036321501048X.
-P. V. Grachev, K. G. Lin’kov, V. B. Loschenov. A method of controlled skin surface cooling during photodynamic therapy and hyperthermia treatment. // Supplement: Rossiiskii Khimicheskii Zhurnal-Zhurnal Rossiiskogo Khimicheskogo Obshchestva Im. D.I. Mendeleeva (Russian Chemistry Journal) Russian Journal of General Chemistry. January 2015, Volume 85, Issue 1, pp 346-350.
-T. A. Savelieva, V. B. Loshchenov, S. A. Goryainov, L. V. Shishkina, A. A. Potapov. A spectroscopic method for simultaneous determination of protoporphyrin IX and hemoglobin in the nerve tissues at intraoperative diagnosis. // Supplement: Rossiiskii Khimicheskii Zhurnal-Zhurnal Rossiiskogo Khimicheskogo Obshchestva Im. D.I. Mendeleeva (Russian Chemistry Journal) Russian Journal of General Chemistry. June 2015, Volume 85, Issue 6, pp 1549-1557.
-Ивичева С.Н., Каргин Ю.Ф., Куцев С.В., Волков В.В. Упорядоченные пленки и покрытия на основе TiO2·nH2O. // Журнал НЕОРГАНИЧЕСКИЕ МАТЕРИАЛЫ, 2015, Т51, № 7, С733-738
- Каргин Ю.Ф., Ивичева С.Н., Волков В.В. Фазовые взаимоотношения в системе Bi2O3-TiO2. // Журнал НЕОРГАНИЧЕСКАЯ ХИМИЯ, 2015, Т60, №5, С 691-697.
-Matthias Trottmann, Sabine Kölle, Regina Leeb, Daniel Doering, Sven Reese, Christian G. Stief, Kate Dulohery, Myles Leavy, Julia Kuznetsova, Christian Homann and Ronald Sroka. Ex vivo investigations on the potential of optical coherence tomography (OCT) as a diagnostic tool for reproductive medicine in a bovine model, DOI: 10.1002/jbio.201500009, 2015,  Journal of Biophotonics
-Маклыгина Ю.С., Бородкин А.В., Лощенов В.Б. Лазерный микроскоп-спектроанализатор для исследования внутриклеточного накопления фотосенсбилизаторов ближнего инфракрасного диапазона спектра in vitro. Biomedical Photonics, том 4, №1, 2015.
-Maria N. Kholodtsova, Christian Daul, Victor B. Loschenov and Walter C.P.M. Blondel, Spatially and spectrally resolved particle swarm optimisation approach to increase precision in optical properties estimation by means of tissular diffuse-reflectance spectroscopy, Optics Express Vol. 24, Issue 12, pp. 12682-12700 (2016) https://doi.org/10.1364/OE.24.012682
-В. А. Крутько,  М. Г. Комова,  С. А. Новикова, Д. В. Поминова. Синтез методом сжигания геля соединений  LaxGd14 – xB6Ge2O34(x = 3, 4), солегированных активными ионами Yb3+–Tm3+ //Неорганические материалы, 2015, том 51, № 12, с. 1–7. [V. A. Krut’ko · M. G. Komova · S. A. Novikova · D. V. Pominova. Gel combustion synthesis of La x Gd14–x B6Ge2O34 (x = 3 and 4) codoped with Yb3+–Er3+ and Yb3+–Tm3+ active ions. INORGANIC MATERIALS 51(12):1270-1276]
-I.G. Meerovich, M.V. Gulyaev, G.A. Meerovich,  M.S. Belov, V.M. Derkacheva, O.V. Dolotova, V.B. Loschenov, A.Yu. Baryshnikov,  Yu. A. Pirogov. Study of Phthalocyanine Derivatives as Contrast Agents for Magnetic Resonance Imaging.  Russian Journal of General Chemistry, 2015, Vol. 85, No. 1, pp. 333–337.
-I. G. Meerovich, E. V. Sanarova, G. A. Meerovich, V. M. Derkacheva, K. A. Volkov, V.M. Negrimovsky, S. V. Barkanova, E. A. Lukyanets, N. A. Oborotova, Z. S. Smirnova, L. M. Borisova, A. V. Lantsova, A. P. Polozkova, O. L. Orlova, V. B. Loschenov, L. V. Umnova, A. Yu. Baryshnikov, G. N. Vorozhtsov. Near-Infrared Photosensitizers based on Nanostructured Forms of Phthalocyanine Derivatives. Russian Journal of General Chemistry, 2015, Vol. 85, No. 1, pp. 280-288.
-Yagudaev D.M., Brechov E.I., Saidov A.C., Kalyagina N.A., Kuznetsova J.O., Loschenov V.B, Lymphotropic administration of photosensitizer as a model of target therapy of testicle inflammation: experimental and clinical data, Photodiagnosis and Photodynamic Therapy -в печати
-Бокерия Л.А., Городков А.Ю., Тарарак Э.М., Кузьмин С.Г., Лощенов В.Б., Шараев П.И., Коратаева А.А., Макаров В.И., Крестинич И.М., Жоржолиани Ш.Т., Цыганков Ю.М. Разработка эндоваскулярных методов фотодинамической терапии на кроликах с экспериментальным атеросклерозом и стенозированием артерий в местах установки стентов. Клиническая физиология кровообращения. 2015. № 1. С. 53-63.
-SA Filatova, VA Kamynin, AV Ryabova, VB Loshchenov, PV Zelenkov, IO Zolotovskii, VB Tsvetkov and AS Kurkov. Impact of holmium fibre laser radiation (λ = 2.1 μm) on the spinal cord dura mater and adipose tissue. //  Quantum Electronics, 2015Volume 45 LASER APPLICATIONS IN MEDICINE, Number 8.
-K.S. Sarkisyan, O.A. Zlobovskaya, D.A. Gorbachev, N.G. Bozhanova, G.V. Sharonov, D.B. Staroverov, E.S. Egorov, A.V. Ryabova, K.M. Solntsev, A.S. Mishin, K.A. Lukyanov. KillerOrange, a Genetically Encoded Photosensitizer Activated by Blue and Green Light. // PLoS ONE 2015,  10(12): e0145287. https://doi.org/10.1371/journal.pone.0145287
+P.V. Zinin, A.V. Ryabova, V.A. Davydov, V. Khabashesku, S. Boritko, S.K. Sharma, D.V. Pominova, V. Loshenov
+Anomalous fluorescence of the spherical carbon nitride nanostructures. 
+Chemical Physics Letters
+633  95–98
+doi:10.1016/j.cplett.2015.05.020
+
+A.A. Osychenko, A.D. Zalessky, A.S. Krivokharchenko, A.K. Shakhbazian, A.V. Ryabova, V.A. Nadtochenko
+Fusion of blastomeres in mouse embryos under the action of femtosecond laser radiation. Efficiency of blastocyst formation and embryo development. 
+Quantum Electronics
+45 (5) 498 – 502
+DOI: 10.1070/QE2015v045n05ABEH015767
+
+Shcherbakov AB, Zholobak NM, Baranchikov AE, Ryabova AV, Ivanov VK
+Cerium fluoride nanoparticles protect cells against oxidative stress. 
+Mater Sci Eng C Mater Biol Appl.
+50 151 9
+doi: 10.1016/j.msec.2015.01.094.
+
+Y.V. Orlovskii, A.S. Vanetsev, I.D. Romanishkin, A.V. Ryabova, K.K. Pukhov, A.E. Baranchikov, E.V. Samsonova, K. Keevend, I. Sildos, and V.B. Loschenov
+Laser heating of the Y1-xDyxPO4 nanocrystals. 
+Optical Materials Express
+5 5 1230-1239
+https://doi.org/10.1364/OME.5.001230
+
+E.V. Samsonova, AV. Popov, A.S. Vanetsev, K. Keevend, K. Kaldvee, L. Puust, A.E. Baranchikov, A.V. Ryabova, S.G. Fedorenko, V. Kiisk, I. Sildos, J. Kikas, R. Steiner, V.B. Loschenov, Yu. V. Orlovskii
+Fluorescence quenching mechanism for water-dispersible Nd3+:KYF4 nanoparticles synthesized by microwave-hydrothermal technique. 
+Journal of Luminescence
+ 
+doi:10.1016/j.jlumin.2015.03.015
+
+Yu.A. Rozhnova, S.V. Kuznetsov, A.A. Luginina, V.V. Voronov, A.V. Ryabova, D.V. Pominova, R.P. Ermakov, V.A. Usachev, N.E. Kononenko, A.E. Baranchikov, V.K. Ivanov, P.P. Fedorov
+New Sr1-x-zRx(NH4)zF2+x-z (R = Yb, Er) solid solution as precursor for high efficiency up-conversion luminophor and optical ceramics on the base of strontium fluoride. 
+RSC Advances
+
+
+
+Makarov V. I., Vasil'chenko S. Yu, Ryabova, A. V., Loschenov V.B.
+Photodynamic effect of iron(III) oxide nanoparticles coated with zinc phthalocyanine
+Russian Journal of General Chemistry
+85 1 338-340
+DOI: 10.1134/S107036321501048X.
+
+P. V. Grachev, K. G. Lin’kov, V. B. Loschenov
+A method of controlled skin surface cooling during photodynamic therapy and hyperthermia treatment. 
+Supplement: Rossiiskii Khimicheskii Zhurnal-Zhurnal Rossiiskogo Khimicheskogo Obshchestva Im. D.I. Mendeleeva (Russian Chemistry Journal) Russian Journal of General Chemistry
+85 1 346-350
+
+
+T. A. Savelieva, V. B. Loshchenov, S. A. Goryainov, L. V. Shishkina, A. A. Potapov
+A spectroscopic method for simultaneous determination of protoporphyrin IX and hemoglobin in the nerve tissues at intraoperative diagnosis. 
+Supplement: Rossiiskii Khimicheskii Zhurnal-Zhurnal Rossiiskogo Khimicheskogo Obshchestva Im. D.I. Mendeleeva (Russian Chemistry Journal) Russian Journal of General Chemistry
+85 6 1549-1557
+
+
+Ивичева С.Н., Каргин Ю.Ф., Куцев С.В., Волков В.В.
+Упорядоченные пленки и покрытия на основе TiO2·nH2O. 
+НЕОРГАНИЧЕСКИЕ МАТЕРИАЛЫ
+51 7 733-738
+
+
+Каргин Ю.Ф., Ивичева С.Н., Волков В.В.
+Фазовые взаимоотношения в системе Bi2O3-TiO2. 
+НЕОРГАНИЧЕСКАЯ ХИМИЯ
+60 5 691-697
+
+
+Matthias Trottmann, Sabine Kölle, Regina Leeb, Daniel Doering, Sven Reese, Christian G. Stief, Kate Dulohery, Myles Leavy, Julia Kuznetsova, Christian Homann and Ronald Sroka
+Ex vivo investigations on the potential of optical coherence tomography (OCT) as a diagnostic tool for reproductive medicine in a bovine model
+Journal of Biophotonics
+
+DOI: 10.1002/jbio.201500009
+
+Маклыгина Ю.С., Бородкин А.В., Лощенов В.Б.
+Лазерный микроскоп-спектроанализатор для исследования внутриклеточного накопления фотосенсбилизаторов ближнего инфракрасного диапазона спектра in vitro
+Biomedical Photonics
+4 1
+
+
+Maria N. Kholodtsova, Christian Daul, Victor B. Loschenov and Walter C.P.M. Blondel
+Spatially and spectrally resolved particle swarm optimisation approach to increase precision in optical properties estimation by means of tissular diffuse-reflectance spectroscopy
+Optics Express
+24 12 12682-12700 
+https: doi.org/10.1364/OE.24.012682
+
+В. А. Крутько,  М. Г. Комова,  С. А. Новикова, Д. В. Поминова
+Синтез методом сжигания геля соединений  LaxGd14 – xB6Ge2O34(x = 3, 4), солегированных активными ионами Yb3+–Tm3+ 
+Неорганические материалы
+51 12 1–7
+
+
+I.G. Meerovich, M.V. Gulyaev, G.A. Meerovich,  M.S. Belov, V.M. Derkacheva, O.V. Dolotova, V.B. Loschenov, A.Yu. Baryshnikov,  Yu. A. Pirogov
+Study of Phthalocyanine Derivatives as Contrast Agents for Magnetic Resonance Imaging
+Russian Journal of General Chemistry
+85 1 333–337
+
+
+I. G. Meerovich, E. V. Sanarova, G. A. Meerovich, V. M. Derkacheva, K. A. Volkov, V.M. Negrimovsky, S. V. Barkanova, E. A. Lukyanets, N. A. Oborotova, Z. S. Smirnova, L. M. Borisova, A. V. Lantsova, A. P. Polozkova, O. L. Orlova, V. B. Loschenov, L. V. Umnova, A. Yu. Baryshnikov, G. N. Vorozhtsov
+Near-Infrared Photosensitizers based on Nanostructured Forms of Phthalocyanine Derivatives
+Russian Journal of General Chemistry
+85 1 280-288
+
+
+Yagudaev D.M., Brechov E.I., Saidov A.C., Kalyagina N.A., Kuznetsova J.O., Loschenov V.B
+Lymphotropic administration of photosensitizer as a model of target therapy of testicle inflammation: experimental and clinical data
+Photodiagnosis and Photodynamic Therapy
+
+
+
+Бокерия Л.А., Городков А.Ю., Тарарак Э.М., Кузьмин С.Г., Лощенов В.Б., Шараев П.И., Коратаева А.А., Макаров В.И., Крестинич И.М., Жоржолиани Ш.Т., Цыганков Ю.М.
+Разработка эндоваскулярных методов фотодинамической терапии на кроликах с экспериментальным атеросклерозом и стенозированием артерий в местах установки стентов
+Клиническая физиология кровообращения
+1  53-63
+
+
+SA Filatova, VA Kamynin, AV Ryabova, VB Loshchenov, PV Zelenkov, IO Zolotovskii, VB Tsvetkov and AS Kurkov
+Impact of holmium fibre laser radiation (λ = 2.1 μm) on the spinal cord dura mater and adipose tissue. 
+Quantum Electronics
+45 8
+
+
+K.S. Sarkisyan, O.A. Zlobovskaya, D.A. Gorbachev, N.G. Bozhanova, G.V. Sharonov, D.B. Staroverov, E.S. Egorov, A.V. Ryabova, K.M. Solntsev, A.S. Mishin, K.A. Lukyanov
+KillerOrange, a Genetically Encoded Photosensitizer Activated by Blue and Green Light
+PLoS ONE
+10 12 e0145287
+https://doi.org/10.1371/journal.pone.0145287
+

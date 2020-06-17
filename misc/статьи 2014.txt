@@ -1,83 +1,120 @@
 P. Fedorov, D. Yasyrkina, S. Kuznetsov, V. Voronov, R. Ermakov, A. Ryabova, D. Pominova, A. Baranchikov, V. Ivanov, V. Osiko
 Effect of the pH on the formation of NaYF4:Yb:Er nanopowders by co-crystallization in presence of polyethyleneimine
-Journal of Fluorine Chemistry. V.158, February 2014, Pages 60–64.
+Journal of Fluorine Chemistry
+158 60–64
+
 
 E.Samsonova, A.Popov, A.Vanetsev, K.Keevend, E.Orlovskaya, V.Kiisk, S.Lange, U.Joost, K.Kaldvee, U.Mäeorg, N.Glushkov, A.Ryabova, I.Sildos, V.Osiko, R.Steiner, V.Loschenov and Y.Orlovskii
 Energy Transfer Kinetics Probe for OH- Quenchers in the YPO4:Nd3+ Nanocrystals Suitable for Imaging in the Biological Tissue Transparency Window. 
- Physical Chemistry Chemical Physics, 2014, DOI: 10.1039/C4CP03774J
+Physical Chemistry Chemical Physics
+
+10.1039/C4CP03774J
 
 E.G. Maksimov, F.-J. Schmitt, G.V. Tsoraev, A.V. Ryabova, T. Friedrich, V.Z. Paschenko
 Fluorescence quenching in the lichen Peltigera aphthosa due to desiccation
-Plant Physiology and Biochemistry. 2014. 81:67-73 DOI: 10.1016/j.plaphy.2014.01.005 IF 2.78.
+Plant Physiology and Biochemistry
+81 67-73
+10.1016/j.plaphy.2014.01.005 IF 2.78.
 
 Yu.A. Rozhnova, A.A. Luginina, V.V. Voronov, R.P. Ermakov, S.V. Kuznetsov, A.V. Ryabova, D.V. Pominova, V.V. Arbenina, V.V. Osiko, P.P. Fedorov
 White light luminophores based on Yb3+/Er3+/Tm3+-coactivated strontium fluoride powders. 
- Materials Chemistry and Physics 148 (2014) 201-207.
+Materials Chemistry and Physics
+148 201-207
+
 
 J.Breymayer, A.Rück, A.V. Ryabova, V.B. Loschenov, R.W. Steiner
 Fluorescence Investigation of the Effect of Monocytes/Macrophages and Skin Cells on Aluminium Phthalocyanine Nanoparticles. 
- Journal Photodiagnosis and Photodynamic Therapy. Volume 11, Issue 3, September 2014, Pages 380–390.
+Journal Photodiagnosis and Photodynamic Therapy
+11 3 380–390
+
 
 N.Kalyagina, T.Savelieva, W.Blondel, C.Daul, D.Wolf and V.Loschenov
 Two-Stage Analysis on Models for Quantitative Differentiation of Early-Pathological Bladder States. 
- International Journal of Photoenergy. Volume 2014 (2014), Article ID 230829, 7 pages. http://dx.doi.org/10.1155/2014/230829
+International Journal of Photoenergy
+2014 230829 7
+http://dx.doi.org/10.1155/2014/230829
 
 Kholodtsova M.N., Grachev P.V., Savelieva T.A., Kalyagina N.A., Loschenov V.B., Blondel W
 SCATTERED AND FLUORESCENT PHOTON TRACK RECONSTRUCTION IN A BIOLOGICAL TISSUE. 
- International Journal of Photoenergy. 2014. Т. 2014. С. 517510.
+International Journal of Photoenergy
+2014 517510
+
 
 M. Yu. Babiy, S. S. Golik, A. V. Kolesnikov, F. G. Bystrov
 Femtosecond Laser Machining of Silica and Transparent Materials 
- Applied Mechanics and Materials, 2014, V. 525, р. 128-132, DOI 10.4028/www.scientific.net/AMM.525.128
+Applied Mechanics and Materials
+525 128-132
+10.4028/www.scientific.net/AMM.525.128
 
 Babiy M., Bystrov F., Biryukova Y., Golik S.
 Three-Dimensional Ultrafast Laser Micromachining of Silicon For Microsystems. 
- Applied Mechanics and Materials Vol. 590 (2014) pp 197-201, DOI 10.4028/www.scientific.net/AMM.590.197
+Applied Mechanics and Materials
+590 197-201
+10.4028/www.scientific.net/AMM.590.197
 
 Горяйнов С.А., Потапов А.А., Пицхелаури Д.И., Кобяков Г.Л., Охлопков В.А., Гаврилов А.Г., Шурхай В.А., Жуков В.Ю., Шишкина Л.В., Лощенов В.Б., Савельева Т.А., Кузьмин С.Г., Чумакова А.П., Spallone A.
 ИНТРАОПЕРАЦИОННАЯ ФЛУОРЕСЦЕНТНАЯ ДИАГНОСТИКА И ЛАЗЕРНАЯ СПЕКТРОСКОПИЯ ПРИ ПОВТОРНЫХ ОПЕРАЦИЯХ ПО ПОВОДУ ГЛИОМ ГОЛОВНОГО МОЗГА. 
- Вопросы нейрохирургии им. Н.Н. Бурденко. 2014. Т. 78. № 2. С. 22-31. 
+Вопросы нейрохирургии им. Н.Н. Бурденко
+78 2 22-31
+
 
 Дементьева О.В., Филиппенко М.А., Виноградова М.М., Огарев В.А., Меерович Г.А., Каршиева С.Ш., Белов М.С., Лукьянец Е.А., Рудой В.М.
 МЕЗОПОРИСТЫЕ ЧАСТИЦЫ КРЕМНЕЗЕМА КАК НАНОКОНТЕЙНЕРЫ ДЛЯ ФТАЛОЦИАНИНОВЫХ ФОТОСЕНСИБИЛИЗАТОРОВ: ОЦЕНКА ЭФФЕКТИВНОСТИ В ЭКСПЕРИМЕНТАХ IN VIVO. 
- Российские нанотехнологии. 2014. Т. 9. № 3-4. С. 25-32. [Dement'eva O.V., Filippenko M.A., Vinogradova M.M., Ogarev V.A., Rudoy V.M., Meerovich G.A., Karshieva S.S., Belov M.S., Luk'yanets E.A. MESOPOROUS SILICA PARTICLES AS NANOCONTAINERS FOR PHTHALOCYANINE PHOTOSENSITIZERS: ESTIMATION OF EFFICIENCY IN IN VIVO EXPERIMENTS. // Nanotechnologies in Russia. 2014. Т. 9. № 3-4. С. 126-135.]
+Российские нанотехнологии
+9 3-4 25-32
+
 
 Smirnova Z.S., Ermakova K.V., Kubasova I.Y., Borisova L.M., Kiselyova M.P., Oborotova N.A., Meerovich G.A., Luk'Yanets E.A.
 EXPERIMENTAL STUDY OF COMBINED THERAPY FOR MALIGNANT GLIOMA. 
- Bulletin of Experimental Biology and Medicine. 2014. Т. 156. № 4. С. 480-482.
+Bulletin of Experimental Biology and Medicine
+156 4 480-482
+
 
 Г.М. Юсубалиева, Я.А. Зоркина, В.П. Баклаушев, О.И. Гурина, С.А. Горяйнов, Е.В. Александрова, В.Ю. Жуков, Т.А. Савельева, А.А. Потапов, В.П. Чехонин
 Антитела к коннексину-43 в интраоперационной диагностике экспериментальных низкодифференцированных глиом. 
- Вопросы нейрохирургии имени Н.Н. Бурденко. 2014; 3: С. 3-13.
+Вопросы нейрохирургии имени Н.Н. Бурденко
+3 3-13
+
 
 И.Г. Меерович, К.А. Волков, Г.А. Меерович, , Е.А. Лукьянец, , В.М. Негримовский, В.Б. Лощенов, Н.А. Оборотова, А.Ю. Барышников
 ПРЕДВАРИТЕЛЬНЫЕ ИССЛЕДОВАНИЯ IN VIVO  НОВОГО ИНФРАКРАСНОГО ФОТОСЕНСИБИЛИЗАТОРА ДЛЯ ФОТОДИНАМИЧЕСКОЙ ТЕРАПИИ ОПУХОЛЕЙ НА ОСНОВЕ МИЦЕЛЛЯРНОЙ ДИСПЕРСИИ 4,5-ОКТАКИС(ДЕЦИЛТИО)-3,6-ОКТАХЛОРФТАЛОЦИАНИНА ЦИНКА. 
- Российский Биотерпевтический журнал, 2014, т.13, №3, с.41-44.
+Российский Биотерпевтический журнал
+13 3 41-44
+
 
 E. Sanarova, I. Meerovich, A. Lantsova, E. Kotova,, Z. Shprakh, A. Polozkova, O. Orlova, G. Meerovich, L. Borisova, E. Lukyanets, Z. Smirnova, N. Oborotova, A. Baryshnikov
 Thiosens liposomal dosage form technology development and photodynamic efficiency assessment. 
- Journal of Drug Delivery Science & Technology (2014) 24 (4), pp. 315-319.
+Journal of Drug Delivery Science & Technology
+24 4 315-319
+
 
 M.Loshchenov, P.Zelenkov, A.Potapov, S. Goryajnov, A. Borodkin
 Endoscopic fluorescence visualization of 5-ALA photosensitized central nervous system tumors in the neural tissue transparency spectral range. 
- Photonics & Lasers in Medicine. Volume 3, Issue 2 (Apr 2014) Pages 159–170, ISSN (Online) 2193-0643, ISSN (Print) 2193-0635, DOI: 10.1515/plm-2013-0017
+Photonics & Lasers in Medicine
+3 2 159–170
+10.1515/plm-2013-0017
 
 E.F. Kustov, V.B. Loschenov and I.T. Basieva
 Decay times of radiative and non-radiative transitions in rare-earth ions. 
- Phys. Scr. 2014. Number T163. 014032.  doi:10.1088/0031-8949/2014/T163/014032
+Phys. Scr.
+T163 014032
+10.1088/0031-8949/2014/T163/014032
 
 I.G. Meerovich, M.V. Gulyaev, G.A. Meerovich,  M.S. Belov, V.M. Derkacheva, O.V. Dolotova, V.B. Loschenov, A.Yu. Baryshnikov,  Yu. A. Pirogov
 Study of Phthalocyanine Derivatives as Contrast Agents for Magnetic Resonance Imaging
-Russian Journal of General Chemistry, 2014, Vol. 84, No. 12, pp. 2645–2649.
+Russian Journal of General Chemistry
+84 12 2645–2649
+
 
 I. G. Meerovich, E. V. Sanarova, G. A. Meerovich, V. M. Derkacheva, K. A. Volkov, V. M. Negrimovsky, S. V. Barkanova, E. A. Lukyanets, N. A. Oborotova, Z. S. Smirnova, L. M. Borisova, A. V. Lantsova, A. P. Polozkova, O. L. Orlova, V. B. Loschenov, L. V. Umnova, A. Yu. Baryshnikov, G. N. Vorozhtsov
 Near-Infrared Photosensitizers based on Nanostructured Forms of Phthalocyanine Derivatives.
-Russian Journal of General Chemistry, 2014, Vol. 84, No. 12, pp. 2606-2614.
+Russian Journal of General Chemistry
+84 12 2606-2614
+
 
 С.С. Брусов, Ю.С. Колоскова,  М.А. Грин, И.Г. Тиганова, О.Е. Пагина, Э.Р. Толордава, Т.В. Степанова, Г.А. Меерович, Ю.М. Романова, А.Ф. Миронов
 Новый катионный        пурпуринимид для фотодинамической инактивации биопленок Pseudomonas aeruginosa
-Российский биотерапевтический журнал. 2014. Т.13. №4. С.45-50.
-
-
+Российский биотерапевтический журнал
+13 4 45-50
 
 

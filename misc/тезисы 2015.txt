@@ -33,7 +33,7 @@ ECCG-2015
 Italy
 
 
-Д.В. Поминова.
+Д.В. Поминова
 Исследование кинетических характеристик ап-конверсионной люминесценции
 Материалы конференции молодых ученых ИОФ РАН,
 28 апреля, 2015
@@ -159,7 +159,7 @@ IV всероссийская конференция «Актуальные во
 Санкт-Петеребург
 
 
-Y.V. Orlovskii, A.Vanetsev, A.Ryabova, K.Pukhov, A.Popov, E.Samsonova, K.Keevend, I.Romanishkin, I.Sildos, and V.Loschenov.
+Y.V. Orlovskii, A.Vanetsev, A.Ryabova, K.Pukhov, A.Popov, E.Samsonova, K.Keevend, I.Romanishkin, I.Sildos, and V.Loschenov
 Nanoscaled Rare-Earth Doped Crystals Heater 
 Conference “Frontiers in Optics”, General Optics in Biology and Medicine II
 October 19-23, 2014
