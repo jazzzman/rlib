@@ -25,6 +25,7 @@ pip-log.txt
 # Unit test / coverage reports
 .coverage
 .tox
+.pytest_cache
 nosetests.xml
 
 # Translations
@@ -37,3 +38,5 @@ nosetests.xml
 
 venv
 rlib.log*
+
+.vscode
