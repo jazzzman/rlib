@@ -10,9 +10,14 @@ from difflib import SequenceMatcher as SM
 
 
 author_publication = db.Table('author_publication',
-        db.Column('author_id', db.Integer, db.ForeignKey('author.id', name='author_id_fk', ondelete='CASCADE')),
-        db.Column('publication_id', db.Integer, db.ForeignKey('publication.id', name='publication_id_fk', ondelete='CASCADE')),
+        db.Column('author_id', db.Integer, 
+            db.ForeignKey('author.id', name='author_id_fk', ondelete='CASCADE')),
+        db.Column('main_id', db.Integer ),
+        db.Column('publication_id', db.Integer, 
+            db.ForeignKey('publication.id', name='publication_id_fk', ondelete='CASCADE')),
         db.Column('order', db.Integer))
+
+
 
 author_organisation = db.Table('author_organisation',
         db.Column('author_id', db.Integer, db.ForeignKey('author.id', name='author_id_fk')), 
@@ -95,7 +100,10 @@ class Publication(db.Model):
                 filter(author_publication.c.publication_id == self.id).first() else\
                 -1
         db.session.execute(insert(author_publication).\
-                values([author.id,self.id,max_o+1]))
+                values([author.id,
+                        author.main.id if author.main else author.id,
+                        self.id,
+                        max_o+1]))
         if commit:
             db.session.commit()
         return True
@@ -108,6 +116,21 @@ class Publication(db.Model):
                 where(author_publication.c.publication_id == self.id))
         if commit:
             db.session.commit()
+
+    def change_raw_authors(self, raw_authors, delete_zero_authors=False):
+        """Remove publication from previous parsed authors.
+        If delete_zero_authors == True delete authors with 
+        zero count publications. Parse new authors, and 
+        append publication to these authors."""
+        for author in self.authors:
+            self.delete_author(author)
+        if delete_zero_authors:
+            for author in Author.query.all():
+                if len(author.publications)==0:
+                    db.session.delete(author)
+        self.authors_raw = raw_authors
+        self.parse_authors()
+
 
     def from_dict(self, data):
         output = {'reject': False,'message':'', 'warnings':''}
@@ -136,39 +159,43 @@ class Publication(db.Model):
             self.authors_raw = data['authors_raw']
             self.authors_raw = self.authors_raw.replace('and ',',').strip()
             self.authors_raw = self.authors_raw.replace(',,',',').strip()
-            for author_raw in self.authors_raw.split(','):
-                lastname, name, patr = Author.parse(author_raw)
-                if any([lastname, name, patr]):
-                    isen = re.search('[A-Za-z]', lastname) is not None
-                    attr_ln = 'elastname' if isen else 'lastname'
-                    attr_n = 'ename' if isen else 'name'
-                    attr_p = 'epatronymic' if isen else 'patronymic'
-                    if isen:
-                        a = Author.query.filter(Author.elastname == lastname).\
-                                         filter(Author.ename == name)
-                    else:
-                        a = Author.query.filter(Author.lastname == lastname).\
-                                         filter(Author.name == name)
-
-                    if patr is not None:
-                        if isen:
-                            a=a.filter(Author.epatronymic == patr)
-                        else:
-                            a=a.filter(Author.patronymic == patr)
-                    a = a.first()
-                    if a is None:
-                        a = Author()
-                        setattr(a, attr_ln, lastname)
-                        setattr(a, attr_n, name)
-                        setattr(a, attr_p, patr)
-                        db.session.add(a)
-                        n='\n'
-                        app.logger.info(f'AUTHOR ADDED:{n}{a.to_gost()}')
-                    self.append_author(a.main or a, False)
-                else:
-                    output['warnings'] += f"{author_raw} doesnt match to pattern" + "\n"
+            output['warnings'] += self.parse_authors() 
         return output, self
 
+    def parse_authors(self):
+        msg=''
+        for author_raw in self.authors_raw.split(','):
+            lastname, name, patr = Author.parse(author_raw)
+            if any([lastname, name, patr]):
+                isen = re.search('[A-Za-z]', lastname) is not None
+                attr_ln = 'elastname' if isen else 'lastname'
+                attr_n = 'ename' if isen else 'name'
+                attr_p = 'epatronymic' if isen else 'patronymic'
+                if isen:
+                    a = Author.query.filter(Author.elastname == lastname).\
+                                     filter(Author.ename == name)
+                else:
+                    a = Author.query.filter(Author.lastname == lastname).\
+                                     filter(Author.name == name)
+
+                if patr is not None:
+                    if isen:
+                        a=a.filter(Author.epatronymic == patr)
+                    else:
+                        a=a.filter(Author.patronymic == patr)
+                a = a.first()
+                if a is None:
+                    a = Author()
+                    setattr(a, attr_ln, lastname)
+                    setattr(a, attr_n, name)
+                    setattr(a, attr_p, patr)
+                    db.session.add(a)
+                    n='\n'
+                    app.logger.info(f'AUTHOR ADDED:{n}{a.to_gost()}')
+                self.append_author(a, False)
+            else:
+                msg += f"{author_raw} doesnt match to pattern" + "\n"
+        return msg
     def to_dict(self):
         data={}
         for field in ['title', 'volume', 'issue', 'pages', 'year', 'doi', 'pub_type']:
@@ -256,18 +283,24 @@ class Author(db.Model):
         """Set main author for current author.
         Perform FIO and enFIO join. Substitute publications ownership.
         """
-        # TODO not best implementation.
-        # self author pubs will be removed
         self.main = main_author
-        for p in self.publications:
-            db.session.execute(update(author_publication).\
-                            where(author_publication.c.publication_id==p.id).\
-                            where(author_publication.c.author_id==self.id).\
-                            values(author_id=main_author.id))
-        db.session.commit()
-        for n in ['name', 'lastname', 'patronymic', 'ename', 'elastname', 'epatronymic']:
-            if not getattr(self.main, n) and getattr(self, n):
-                setattr(self.main, n, getattr(self, n))
+        if main_author is not None:
+            for p in self.publications:
+                db.session.execute(update(author_publication).\
+                                where(author_publication.c.publication_id==p.id).\
+                                where(author_publication.c.author_id==self.id).\
+                                values(main_id=main_author.id))
+            db.session.commit()
+            for n in ['name', 'lastname', 'patronymic', 'ename', 'elastname', 'epatronymic']:
+                if not getattr(self.main, n) and getattr(self, n):
+                    setattr(self.main, n, getattr(self, n))
+        else:
+            for p in self.publications:
+                db.session.execute(update(author_publication).\
+                                where(author_publication.c.publication_id==p.id).\
+                                where(author_publication.c.author_id==self.id).\
+                                values(main_id=self.id))
+            db.session.commit()
 
     def add_synonym(self, syn_author):
         """Add to current author its synonym.
@@ -349,7 +382,6 @@ class Author(db.Model):
             except Exception as ex:
                 print(f"While parsing {ex},  {author_raw}"+"\n")
         return lastname, name, patr
-        
 
 
 

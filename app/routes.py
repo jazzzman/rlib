@@ -9,7 +9,7 @@ from flask_login import current_user, login_user, login_required
 from app import app, login, db, bootstrap
 from app.forms import LoginForm
 from app.models import (User, Author, Publication, Journal, PubType, 
-        lab_ids, pub_columns, ExtPubColumn)
+        lab_ids, pub_columns, ExtPubColumn, author_publication)
 from sqlalchemy import func, distinct, or_
 from jinja2 import Template, Environment, PackageLoader, select_autoescape
 from difflib import SequenceMatcher as SM
@@ -285,8 +285,8 @@ def apply_filters(publications, filters):
     if 'authors' in filters:
         authors = filters['authors']
         authors = eval(authors) if type(authors) is str else authors
-        publications = publications.join(Publication.authors).\
-                filter(Author.id.in_(authors))#.\
+        publications = publications.join(author_publication).\
+                filter(author_publication.c.main_id.in_(authors))#.\
         if filters.get('ath_intersection', False):
             publications = publications.group_by(Publication.id).\
                         having(func.count(Publication.id) == len(authors))
@@ -331,7 +331,7 @@ def auth_gost(input, rus=False):
 
 
 @app.route("/.well-known/pki-validation/<cert_name>")
-def get_image(cert_name):
+def get_cert(cert_name):
     try:
         return send_from_directory('static/.well-known/', filename=cert_name, as_attachment=True)
     except FileNotFoundError:

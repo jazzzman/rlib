@@ -100,8 +100,13 @@ class RegexAuthors(unittest.TestCase):
 
 
 class PublicationAdding(unittest.TestCase):
+    def setUp(self):
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        db.create_all()
+        db.session.execute('pragma foreign_keys=ON') 
     def tearDown(self):
         db.session.remove()
+        db.drop_all()
 
     def test_by_json(self):
         pb = Publication()
@@ -132,6 +137,28 @@ class PublicationAdding(unittest.TestCase):
         }
         self.assertEqual(pb.from_dict(data), False)
         print(pb.authors)
+
+    def test_replace_raw_authors(self):
+        pub = {
+                'authors_raw':'Laone O., Latwo T., Lathree T.',
+                'title':'Publication publications',
+                'year':1205,
+                'journal':'Zipper',
+                'volume':'12',
+                'pub_type':2
+                }
+        _, pub = Publication().from_dict(pub)
+        db.session.add(pub)
+        db.session.commit()
+        self.assertEqual(len(Publication.query.all()),1)
+        self.assertEqual(len(Author.query.all()),3)
+        self.assertEqual(db.session.query(author_publication).count(),3)
+        pub.change_raw_authors('TheOne E., TheTwo O.')
+        self.assertEqual(db.session.query(author_publication).count(),2)
+        self.assertEqual(len(Author.query.all()),5)
+        pub.change_raw_authors('QheOne E., QheTwo Q.',True)
+        self.assertEqual(db.session.query(author_publication).count(),2)
+        self.assertEqual(len(Author.query.all()),2)
 
 
 class EnRuToGOST(unittest.TestCase):
@@ -214,7 +241,18 @@ class MainAuthorSetting(unittest.TestCase):
 
     def test_add_synonym(self):
         a1.add_synonym(a2)
-        pass
+
+    def test_get_main(self):
+        a1 = Author(name='1',lastname='La0101')
+        a2 = Author(name='2',lastname='La0102', ename='Ru0102')
+        a3 = Author(name='3',lastname='La0201')
+        db.session.add_all([a1,a2,a3])
+        db.session.commit()
+        
+        a2.set_main(a1)
+        self.assertEqual(a2.main or a2, a1)
+        self.assertIsNone(a1.main)
+        self.assertIsNone(a3.main)
 
 
 class exportGOST(unittest.TestCase):
@@ -391,6 +429,48 @@ class PublicationFiltering(unittest.TestCase):
                             join(Publication.authors).distinct().\
                             paginate(1,5,False).total)
     
+    def test_filter_by_main_id_column(self):
+        aths, pbs = [], []
+        for i in range(200):
+            aths.append(Author(name="A",lastname=f'LastName{i}'))
+        for i in range(50):
+            pbs.append(Publication(title=f'Publication{i}', year = i%5))
+        db.session.add_all(pbs)
+        db.session.add_all(aths)
+        db.session.commit()
+
+        for i in range(5):
+            pbs[0].append_author(aths[i])
+            pbs[1].append_author(aths[i])
+        db.session.commit()
+
+        a1, a2, a3 = aths[:3]
+        al = aths[-1]
+        p1, p2 = pbs[:2]
+        pl = pbs[-1]
+        pl.append_author(al)
+        db.session.commit()
+        
+        self.assertEqual(db.session.query(author_publication).\
+                filter(author_publication.c.main_id==a1.id).\
+                count(),2)
+        a2.set_main(a1)
+        self.assertEqual(db.session.query(author_publication).\
+                filter(author_publication.c.main_id==a1.id).\
+                count(),4)
+        a2.set_main(None)
+        self.assertEqual(db.session.query(author_publication).\
+                filter(author_publication.c.main_id==a1.id).\
+                count(),2)
+
+        publications = Publication.query.order_by(Publication.year.desc())
+        self.assertEqual(publications.join(author_publication).\
+                filter(author_publication.c.main_id.in_([a1.id,a2.id])).\
+                count(),4)
+        a2.set_main(a1)
+        self.assertEqual(publications.join(author_publication).\
+                filter(author_publication.c.main_id.in_([a1.id])).\
+                count(),4)
         
 class DeletingEverythingFromEverywhere(unittest.TestCase):
     def setUp(self):
@@ -411,9 +491,9 @@ class DeletingEverythingFromEverywhere(unittest.TestCase):
 
     def tearDown(self):
         db.session.remove()
+        db.drop_all()
 
     def test_cascade_deleting_pubextpub(self):
-
         self.p1.add_fields.append(ExtPubColumn(name='f1', data='p1 f1'))
         self.p2.add_fields.append(ExtPubColumn(name='f1', data='p2 f1'))
         db.session.commit()
@@ -453,7 +533,7 @@ class DeletingEverythingFromEverywhere(unittest.TestCase):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().\
-            loadTestsFromTestCase(PublicationWithSortedAuthors)
+            loadTestsFromTestCase(PublicationAdding)
     unittest.TextTestRunner(verbosity=2).run(suite)
     # unittest.main(verbosity=2)
 
