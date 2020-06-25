@@ -4,19 +4,19 @@ import json
 import math
 from flask import (render_template, redirect, url_for, flash, 
         request, jsonify, session, abort, send_file, make_response,
-        send_from_directory)
+        send_from_directory, current_app)
 from flask_login import current_user, login_user, login_required
-from app import app, login, db, bootstrap
-from app.forms import LoginForm
+from app import db
 from app.models import (User, Author, Publication, Journal, PubType, 
         lab_ids, pub_columns, ExtPubColumn, author_publication)
 from sqlalchemy import func, distinct, or_
 from jinja2 import Template, Environment, PackageLoader, select_autoescape
 from difflib import SequenceMatcher as SM
+from app.main import bp
 
 
-@app.route('/')
-@app.route('/index', methods=['GET','POST'])
+@bp.route('/', methods=['GET','POST'])
+@bp.route('/index', methods=['GET','POST'])
 @login_required
 def index():
     publications = Publication.query.order_by(Publication.year.desc())
@@ -26,7 +26,7 @@ def index():
     lab_authors = Author.query.filter(Author.id.in_(lab_ids)).order_by(Author.lastname.asc())
     pub_columns.update({k[0]:False for k in db.session.query(ExtPubColumn.name).distinct()} )
     page=1
-    per_page = request.cookies.get('per_page', app.config['PUBLICATIONS_PER_PAGE'])
+    per_page = request.cookies.get('per_page', current_app.config['PUBLICATIONS_PER_PAGE'])
     pub_cols = request.cookies.get('pub_columns', pub_columns)
     if isinstance(pub_cols,str):
         pub_cols = json.loads(pub_cols)
@@ -42,12 +42,12 @@ def index():
 
     publications = publications.distinct().paginate(page, 
             int(per_page), False)
-    next_url = url_for('index', page=publications.next_num) \
+    next_url = url_for('main.index', page=publications.next_num) \
         if publications.has_next else None
-    prev_url = url_for('index', page=publications.prev_num) \
+    prev_url = url_for('main.index', page=publications.prev_num) \
         if publications.has_prev else None
     max_nav_btn = min(int(math.ceil(publications.total/int(per_page))),page+2)
-    nav_btns = [(url_for('index',page=i),i) for i in range(max(1,page-2),max_nav_btn+1)]
+    nav_btns = [(url_for('main.index',page=i),i) for i in range(max(1,page-2),max_nav_btn+1)]
     pages_info = {'total':publications.total} 
     pages_info['from'] = (page-1)*int(per_page)+1
     pages_info['to'] = min(pages_info['total'],page*int(per_page))
@@ -75,27 +75,7 @@ def index():
     return resp
 
 
-@app.route('/signin', methods=['GET','POST'])
-def signin():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User()
-        if not user.check_password(form.password.data):
-            flash('Invalid username or password')
-            return redirect(url_for('login'))
-        login_user(user, remember=False)
-        return redirect(url_for('index'))
-    return render_template('login.html', title='Sign In', form=form)
-
-
-@login.unauthorized_handler
-def unauthorized():
-    return redirect(url_for('signin'))
-
-
-@app.route('/add', methods=['GET','POST'])
+@bp.route('/add', methods=['GET','POST'])
 @login_required
 def add():
     required = {
@@ -124,11 +104,11 @@ def add():
             return jsonify({'warnings':resp['warnings']})
         if pb is not None:
             n='\n'
-            app.logger.info(f'PUBLICATION ADDED:{n}{pb.to_gost()}')
+            current_app.logger.info(f'PUBLICATION ADDED:{n}{pb.to_gost()}')
         return '200'
     return render_template('add.html', title='RLib', pub_type = PubType)
 
-@app.route('/checktitle', methods=['GET','POST'])
+@bp.route('/checktitle', methods=['GET','POST'])
 @login_required
 def checktitle():
     if request.method == 'POST':
@@ -144,7 +124,7 @@ def checktitle():
         return '200'
 
 
-@app.route('/authors', methods=['GET','POST'])
+@bp.route('/authors', methods=['GET','POST'])
 @login_required
 def authors():
     if request.method == 'POST':
@@ -166,7 +146,7 @@ def authors():
             setattr(asyn, field, data[field] if data[field] != '' else None)
         db.session.commit()
         n, t ='\n', '\t'
-        app.logger.info(f'AUTHOR UPDATE id:{asyn.id}{n}'
+        current_app.logger.info(f'AUTHOR UPDATE id:{asyn.id}{n}'
                         f'{t.join([str(tup) for tup in data.items()])} was '
                         f'{t.join([str(tup) for tup in prev.items()])}')
         return jsonify(rdata)
@@ -175,7 +155,7 @@ def authors():
             authors=authors)
 
 
-@app.route('/journals', methods=['GET','POST'])
+@bp.route('/journals', methods=['GET','POST'])
 @login_required
 def journals():
     if request.method == 'POST':
@@ -193,13 +173,13 @@ def journals():
             journals=journals)
 
 
-@app.route('/settings')
+@bp.route('/settings')
 @login_required
 def settings():
     return abort(404)
 
 
-@app.route('/output', methods=['GET','POST'])
+@bp.route('/output', methods=['GET','POST'])
 @login_required
 def output():
     if request.method == 'POST':
@@ -217,7 +197,7 @@ def output():
         abort(404)
 
 
-@app.route('/update', methods=['GET','POST'])
+@bp.route('/update', methods=['GET','POST'])
 @login_required
 def update():
     if request.method == 'POST':
@@ -237,7 +217,7 @@ def update():
 
         db.session.commit()
         n,t='\n','\t'
-        app.logger.info(f'UPDATE PUBLICATION:{n}'
+        current_app.logger.info(f'UPDATE PUBLICATION:{n}'
                         f'{t.join([str(tup) for tup in data.items()])} was ' 
                         f'{t.join([str(tup) for tup in prev.items()])}')
         return '200' 
@@ -245,7 +225,7 @@ def update():
         abort(404)
 
 
-@app.route('/addcolumn', methods=['GET','POST'])
+@bp.route('/addcolumn', methods=['GET','POST'])
 @login_required
 def addcolumn():
     if request.method == 'POST':
@@ -265,7 +245,7 @@ def addcolumn():
     return abort(400)
 
 
-@app.route('/deletepubs', methods=['GET','POST'])
+@bp.route('/deletepubs', methods=['GET','POST'])
 @login_required
 def deletepubs():
     if request.method == 'POST':
@@ -273,7 +253,7 @@ def deletepubs():
         dicts = [p.to_gost()
                 for p in Publication.query.filter(Publication.id.in_(data))]
         nt = '\n\t'
-        app.logger.info(f'DELETE PUBLICATIONS{nt}{nt.join(dicts)}')
+        current_app.logger.info(f'DELETE PUBLICATIONS{nt}{nt.join(dicts)}')
         for d in data:
             Publication.query.filter(Publication.id==d).delete()
         db.session.commit()
@@ -320,17 +300,8 @@ def apply_filters(publications, filters):
                 filter(or_(*db))
     return publications
 
-@app.template_filter('jsonPresOrd')
-def json_preserve_order(input):
-    return json.dumps(input)
 
-
-@app.template_filter('to_gost')
-def auth_gost(input, rus=False):
-    return [a.to_gost(rus) for a in input]
-
-
-@app.route("/.well-known/pki-validation/<cert_name>")
+@bp.route("/.well-known/pki-validation/<cert_name>")
 def get_cert(cert_name):
     try:
         return send_from_directory('static/.well-known/', filename=cert_name, as_attachment=True)

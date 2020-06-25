@@ -1,6 +1,7 @@
-from app import db, app
+from app import db
 from app import login
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask import current_app
 from flask_login import UserMixin
 import enum
 import re
@@ -129,7 +130,7 @@ class Publication(db.Model):
                 if len(author.publications)==0:
                     db.session.delete(author)
         self.authors_raw = raw_authors
-        self.parse_authors()
+        return self.parse_authors()
 
 
     def from_dict(self, data):
@@ -165,7 +166,7 @@ class Publication(db.Model):
     def parse_authors(self):
         msg=''
         for author_raw in self.authors_raw.split(','):
-            lastname, name, patr = Author.parse(author_raw)
+            lastname, name, patr = Author.parse_fullname(author_raw)
             if any([lastname, name, patr]):
                 isen = re.search('[A-Za-z]', lastname) is not None
                 attr_ln = 'elastname' if isen else 'lastname'
@@ -191,7 +192,7 @@ class Publication(db.Model):
                     setattr(a, attr_p, patr)
                     db.session.add(a)
                     n='\n'
-                    app.logger.info(f'AUTHOR ADDED:{n}{a.to_gost()}')
+                    current_app.logger.info(f'AUTHOR ADDED:{n}{a.to_gost()}')
                 self.append_author(a, False)
             else:
                 msg += f"{author_raw} doesnt match to pattern" + "\n"
@@ -348,7 +349,7 @@ class Author(db.Model):
         return self.to_gost() 
 
     @staticmethod
-    def parse(author_raw):
+    def parse_fullname(author_raw):
         author_raw = author_raw.strip(" \t\n")
         r = r"([\w\\\-'`]+(?:\.|\s)?)\s*([\w\-`]+(?:\.|\s))?\s*([\w\-`]+\.?)*"
         ms = re.match(r,author_raw)
@@ -383,6 +384,11 @@ class Author(db.Model):
                 print(f"While parsing {ex},  {author_raw}"+"\n")
         return lastname, name, patr
 
+    def parse_author(author_raw):
+        lastname, name, patr = Author.parse_fullname(author_raw)
+        if len(re.findall('[a-zA-z]', lastname)) > .6*len(lastname):
+            return Author(elastname=lastname, ename=name, epatronymic=patr)
+        return Author(lastname=lastname, name=name, patronymic=patr)
 
 
 class Organisation(db.Model):

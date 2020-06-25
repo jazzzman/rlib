@@ -1,20 +1,95 @@
 import unittest
 import re
-from app import app, db
+from app import create_app, db
 from app.models import (Author, Publication, Journal, 
         Organisation, ExtPubColumn, author_publication)
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, update, insert, select
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.sql.expression import func
+from config import Config
+
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite://'
+
+
+class SqliteSetUp(unittest.TestCase):
+    def setUp(self):
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.create_all()
+        db.session.execute('pragma foreign_keys=ON') # for cascade deleting from 
+                                                     # tables in case of SQLLite db
+
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
+
+class BPimplementation(SqliteSetUp):
+    def test_fresh_db(self):
+        self.assertEqual(db.session.query(Author).count(),0)
+
+
+class PublicationWithMainAuthors(SqliteSetUp):
+    def test_pub_count_by_main_id(self):
+        a1 = Author.parse_author('TheOne E.')
+        a2 = Author.parse_author('TheTwo O.')
+        a3 = Author.parse_author('TheThree W.')
+
+        pub1 = Publication(title='Publication publications')
+        pub2 = Publication(title='Second Publication of Publications')
+        db.session.add_all([a1,a2,a3,pub1,pub2])
+        db.session.commit()
+        
+        pub1.change_raw_authors('Laone O., Latwo T., Lathree T.')
+        pub2.append_author(a1)
+        pub2.append_author(a2)
+
+        self.assertEqual(db.session.query(Author).count(),6)
+        self.assertEqual(db.session.query(author_publication).\
+                count(),5)
+        self.assertEqual(db.session.query(author_publication).\
+                filter(author_publication.c.author_id == a1.id).\
+                count(), 1)
+        a1s = Author.query.filter_by(elastname='Laone ').first()
+        a1.add_synonym(a1s)
+        self.assertEqual(db.session.query(author_publication).\
+                filter(author_publication.c.author_id == a1.id).\
+                count(), 1)
+        self.assertEqual(db.session.query(author_publication).\
+                filter(author_publication.c.main_id == a1.id).\
+                count(), 2)
+
+        pub3 = Publication(title='The mostPublication publications')
+        db.session.add(pub3)
+        db.session.commit()
+
+        pub3.change_raw_authors('Laone O.')
+        self.assertEqual(db.session.query(author_publication).\
+                filter(author_publication.c.author_id == a1.id).\
+                count(), 1)
+        self.assertEqual(db.session.query(author_publication).\
+                filter(author_publication.c.author_id == a1s.id).\
+                count(), 2)
+        self.assertEqual(db.session.query(author_publication).\
+                filter(author_publication.c.main_id == a1.id).\
+                count(), 3)
+
 
 class Relations(unittest.TestCase):
     def setUp(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         db.create_all()
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+        self.app_context.pop()
 
     def test_authorpublication(self):
         p1 = Publication(title='p1', authors_raw='a1, a2, a3')
@@ -101,12 +176,15 @@ class RegexAuthors(unittest.TestCase):
 
 class PublicationAdding(unittest.TestCase):
     def setUp(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         db.create_all()
-        db.session.execute('pragma foreign_keys=ON') 
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+        self.app_context.pop()
 
     def test_by_json(self):
         pb = Publication()
@@ -197,11 +275,15 @@ class EnRuToGOST(unittest.TestCase):
 
 class MainAuthorSetting(unittest.TestCase):
     def setUp(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         db.create_all()
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+        self.app_context.pop()
 
     def test_main_set(self):
         a1 = Author(name='1',lastname='La0101')
@@ -257,10 +339,15 @@ class MainAuthorSetting(unittest.TestCase):
 
 class exportGOST(unittest.TestCase):
     def setUp(self):
-        # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         db.create_all()
+
     def tearDown(self):
         db.session.remove()
+        db.drop_all()
+        self.app_context.pop()
 
     def test_export(self):
         print(Author.query.all())
@@ -280,13 +367,16 @@ class exportGOST(unittest.TestCase):
 
 class AdditionalPublicationColumns(unittest.TestCase):
     def setUp(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         db.create_all()
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
-    
+        self.app_context.pop()
+
     def test_adding_columns(self):
         pb1 = Publication(title='Pb1')
         pb2 = Publication(title='Pb2')
@@ -329,11 +419,15 @@ class AutoIncrTwoIndexes(unittest.TestCase):
 
 class PublicationWithSortedAuthors(unittest.TestCase):
     def setUp(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         db.create_all()
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+        self.app_context.pop()
 
     def test_adding_publications(self):
         print()
@@ -366,14 +460,17 @@ class PublicationWithSortedAuthors(unittest.TestCase):
         print(*db.session.query(author_publication).all(),
             sep='\n')
 
-
 class PublicationFiltering(unittest.TestCase):
     def setUp(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         db.create_all()
+
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+        self.app_context.pop()
 
     def test_filter_by_author_id(self):
         aths, pbs = [], []
@@ -474,24 +571,15 @@ class PublicationFiltering(unittest.TestCase):
         
 class DeletingEverythingFromEverywhere(unittest.TestCase):
     def setUp(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        self.app = create_app(TestConfig)
+        self.app_context = self.app.app_context()
+        self.app_context.push()
         db.create_all()
-        db.session.execute('pragma foreign_keys=ON') 
-
-        self.p1= Publication(title='P1')
-        self.p2= Publication(title='P2')
-        db.session.add_all([self.p1,self.p2])
-        
-        self.a1 = Author(lastname='Last1', name='O')
-        self.a2 = Author(lastname='Last2', name='T')
-        self.a3 = Author(lastname='Last3', name='H')
-        db.session.add_all([self.a1,self.a2,self.a3])
-
-        db.session.commit()
 
     def tearDown(self):
         db.session.remove()
         db.drop_all()
+        self.app_context.pop()
 
     def test_cascade_deleting_pubextpub(self):
         self.p1.add_fields.append(ExtPubColumn(name='f1', data='p1 f1'))
@@ -526,14 +614,11 @@ class DeletingEverythingFromEverywhere(unittest.TestCase):
         self.assertEqual(len(db.session.execute(
             select([author_publication]).\
             where(author_publication.c.publication_id == self.p1.id)).fetchall()),1)
-
-
-
         
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().\
-            loadTestsFromTestCase(PublicationAdding)
+            loadTestsFromTestCase(PublicationWithMainAuthors)
     unittest.TextTestRunner(verbosity=2).run(suite)
     # unittest.main(verbosity=2)
 
